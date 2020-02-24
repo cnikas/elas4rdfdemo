@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Elas4RDF Results</title>
+</head>
+<body>
+<div class="results-top">
+    <a href="/" class="logo-container-results">
+        <img class="logo-results" src="/resources/elas4rdflogo.png" alt="Elas4RDF logo">
+    </a>
+    <form id="searchForm" class="search-form-results" action="/results">
+        <div class="form-group">
+            <div id="searchInputContainer" class="search-input-container-results">
+                <input th:value="${param.query}" type="text" class="search-input-results" id="searchInput" name="query">
+                <button type="submit" class="search-icon-container">
+                    <img src="resources/search_icon.png">
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="tabs-container">
+    <div class="tabs">
+        <a th:href="${'results?type=triples&query=' + query + '&page=' + page}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">
+            <img src="/resources/rdficon.png">
+            Triples
+        </a>
+        <a th:href="${'results?type=entities&query=' + query + '&page=' + page}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
+            <img src="/resources/entitiesicon.png">
+            Entities
+        </a>
+        <div class="tab">
+            <img src="">
+            Question Answering
+        </div>
+        <div class="tab">
+            <img src="">
+            Graph
+        </div>
+    </div>
+</div>
+<div class="results-info">
+    <span>You searched for "<span th:text="${param.query}"></span>" - <b th:text="${type}"></b></span>
+</div>
+<div rth:if="${type == 'triples'}" class="triples-box">
+    <span th:each="triple : ${triples}">
+        <div class="result">
+            <div>
+                <div class="title"><a th:href="${triple.subject}" th:text="${triple.uriToString(triple.subject)}"></a> (dbpedia resource)</div>
+                <div class="description" th:text="${triple.shorten(triple.subExt)}"></div>
+                <div class="uri" th:text="${triple.subject}"></div>
+            </div>
+            -
+            <div>
+                <div class="title"><a th:href="${triple.predicate}" th:text="${triple.uriToString(triple.predicate)}"></a> (dbpedia ontology)</div>
+                <div class="uri" th:text="${triple.predicate}"></div>
+            </div>
+            -
+            <div>
+                <div class="title">
+                    <span th:if="${triple.optObjectUri() != ''}"><a  th:href="${triple.optObjectUri()}" th:text="${triple.shorten(triple.object)}"></a> (dbpedia resource)</span>
+                    <span th:if="${triple.optObjectUri() == ''}" th:text="${triple.shorten(triple.object)}"></span>
+                </div>
+                <div class="description" th:text="${triple.shorten(triple.objExt)}"></div>
+                <div class="uri" th:text="${triple.shorten(triple.object)}"></div>
+            </div>
+        </div>
+        <hr>
+    </span>
+</div>
+<div th:if="${type == 'entities'}" class="entities-box">
+    <span th:each="entity : ${entities}">
+        <div class="entity-result">
+            <div>
+                <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (dbpedia resource)</div>
+                <div class="description" th:text="${entity.ext}"></div>
+                <div class="uri" th:text="${entity.entity}"></div>
+            </div>
+        </div>
+        <hr>
+    </span>
+</div>
+<div class="pagination">
+    Page:
+    <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'results?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
+</div>
+<footer class="footer" id="footer">
+    <div class="copyright">
+        <a href="http://www.ics.forth.gr/isl/sar/privacy/TermsOfUse-ISL_EN.pdf" target="_blank">Terms of Use</a>
+        |
+        <a href="http://www.ics.forth.gr/isl/sar/privacy/PrivacyPolicy-ISL_EN.pdf" style="padding-left:0px!important;" target="_blank">Privacy Policy</a>
+        | © Copyright 2020 FOUNDATION FOR RESEARCH &amp; TECHNOLOGY - HELLAS, All rights reserved.
+        <div class="footer-images">
+            <a href="https://www.ics.forth.gr/isl/"><img src="/resources/isl_logo.png" height="30"></a>
+            <a href="https://www.ics.forth.gr/"><img src="/resources/ics_logo.png" height="30"></a>
+        </div>
+    </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/js/script.js"></script>
+</body>
+</html>
