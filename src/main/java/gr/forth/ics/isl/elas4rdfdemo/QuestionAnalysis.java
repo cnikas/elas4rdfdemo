@@ -10,7 +10,7 @@ import edu.stanford.nlp.trees.Tree;
 import gr.forth.ics.isl.elas4rdfdemo.models.Keyword;
 import gr.forth.ics.isl.elas4rdfdemo.models.ParsedQuestion;
 import gr.forth.ics.isl.elas4rdfdemo.models.ParsedSyntax;
-import gr.forth.ics.isl.utilities.StringUtils;
+import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtils;
 import mitos.stemmer.trie.Trie;
 
 import static gr.forth.ics.isl.elas4rdfdemo.Main.simple_pipeline;

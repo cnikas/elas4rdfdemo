@@ -1,13 +1,10 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
-import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.CoreSentence;
 import gr.forth.ics.isl.elas4rdfdemo.models.Answer;
 import gr.forth.ics.isl.elas4rdfdemo.models.Keyword;
 import gr.forth.ics.isl.elas4rdfdemo.models.ParsedQuestion;
 import gr.forth.ics.isl.elas4rdfdemo.models.Query;
-import gr.forth.ics.isl.utilities.StringUtils;
-import org.apache.jena.atlas.json.JSON;
+import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -20,6 +17,22 @@ public class AnswerExtraction {
     //public static ArrayList<JSONObject> allTriples;
     public AnswerExtraction() {
          elas4RDF = new Elas4RDFRest();
+    }
+
+    public ArrayList<Answer> extractAnswers(ParsedQuestion q){
+
+        ArrayList<Answer> answers = new ArrayList<>();
+
+        answers.addAll(extractAnswerWithEntity(q));
+
+        answers.addAll(extractAnswerWithQuery(q));
+
+        answers.addAll(extractAnswerWithExtFields(q));
+
+        Comparator<Answer> ansComp = Comparator.comparingDouble(Answer::getScore).reversed();
+        Collections.sort(answers,ansComp);
+
+        return answers;
     }
 
     public JSONObject extractAnswerJson(ParsedQuestion q){
@@ -105,7 +118,7 @@ public class AnswerExtraction {
                 for(String t : terms){
                     if(foundPredicate.toLowerCase().contains(t.toLowerCase().replace(" ",""))){
                         ArrayList<String> relevantTerms  = new ArrayList<>(Arrays.asList(term,t));
-                        candidateTriples.add(new Answer(resultsArray.getJSONObject(i).getString(otherType),resultsArray.getJSONObject(i),relevantTerms));
+                        candidateTriples.add(new Answer(resultsArray.getJSONObject(i).getString(otherType),resultsArray.getJSONObject(i),relevantTerms,resultsArray.getJSONObject(i).getDouble("score")));
                         break;
                     }
                 }
@@ -131,7 +144,7 @@ public class AnswerExtraction {
                 for(String term : predicateTerms){
                     if(foundPredicate.toLowerCase().contains(term.toLowerCase().replace(" ",""))){
                         ArrayList<String> relevantTerms  = new ArrayList<>(Arrays.asList(firstTerm,term));
-                        candidates.add(new Answer(resultsArray.getJSONObject(i).getString("obj"),resultsArray.getJSONObject(i),relevantTerms));
+                        candidates.add(new Answer(resultsArray.getJSONObject(i).getString("obj"),resultsArray.getJSONObject(i),relevantTerms,resultsArray.getJSONObject(i).getDouble("score")));
                     }
                 }
             }
@@ -198,7 +211,7 @@ public class AnswerExtraction {
                 double relevance = (double)cnt/(double)terms.size();
                 double threshold = Double.parseDouble(props.getProperty("extFieldsRelevanceThreshold"));
                 if(Double.compare(relevance,threshold)>=0){
-                    answers.add(new Answer(resultArray.getJSONObject(i).getString(otherType),resultArray.getJSONObject(i),relevantTerms));
+                    answers.add(new Answer(resultArray.getJSONObject(i).getString(otherType),resultArray.getJSONObject(i),relevantTerms,resultArray.getJSONObject(i).getDouble("score")));
                 }
             }
         }
@@ -287,7 +300,7 @@ public class AnswerExtraction {
         }
 
         if(relevantFirstTerm&&relevantPredicate){
-            return new Answer(triple.getString(otherType),triple,relevantTerms);
+            return new Answer(triple.getString(otherType),triple,relevantTerms,triple.getDouble("score"));
         } else {
             return null;
         }

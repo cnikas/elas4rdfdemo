@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <title>Elas4RDF Results</title>
 </head>
 <body>
@@ -12,12 +12,12 @@
     <a href="/" class="logo-container-results">
         <img class="logo-results" src="/resources/elas4rdflogo.png" alt="Elas4RDF logo">
     </a>
-    <form id="searchForm" class="search-form-results" action="/results">
+    <form id="searchForm" class="search-form-results" th:action="${'/results'+type+'/'}">
         <div class="form-group">
             <div id="searchInputContainer" class="search-input-container-results">
                 <input th:value="${param.query}" type="text" class="search-input-results" id="searchInput" name="query">
                 <button type="submit" class="search-icon-container">
-                    <img src="resources/search_icon.png">
+                    <img src="/resources/search_icon.png">
                 </button>
             </div>
         </div>
@@ -25,28 +25,24 @@
 </div>
 <div class="tabs-container">
     <div class="tabs">
-        <a th:href="${'results?type=triples&query=' + query + '&page=' + page}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">
+        <a th:href="${'/results/triples?query=' + query + '&page=' + page}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">
             <img src="/resources/rdficon.png">
             Triples
         </a>
-        <a th:href="${'results?type=entities&query=' + query + '&page=' + page}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
+        <a th:href="${'/results/entities?query=' + query + '&page=' + page}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
             <img src="/resources/entitiesicon.png">
             Entities
         </a>
-        <div class="tab">
-            <img src="">
+        <a th:href="${'/results/qa?query=' + query + '&page=' + page}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
+            <img src="/resources/qaicon.svg">
             Question Answering
-        </div>
-        <div class="tab">
-            <img src="">
-            Graph
-        </div>
+        </a>
     </div>
 </div>
 <div class="results-info">
     <span>You searched for "<span th:text="${param.query}"></span>" - <b th:text="${type}"></b></span>
 </div>
-<div rth:if="${type == 'triples'}" class="triples-box">
+<div th:if="${type == 'triples'}" class="triples-box">
     <span th:each="triple : ${triples}">
         <div class="result">
             <div>
@@ -79,6 +75,23 @@
                 <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (dbpedia resource)</div>
                 <div class="description" th:text="${entity.ext}"></div>
                 <div class="uri" th:text="${entity.entity}"></div>
+            </div>
+        </div>
+        <hr>
+    </span>
+</div>
+<div th:if="${type == 'qa'}" class="entities-box">
+    <span th:each="answer : ${answers}">
+        <div class="answer-result">
+            <div>
+                <div class="title">
+                    <span th:if="${answer.optUri(answer.getAnswerString()) != ''}"><a th:href="${answer.getAnswerString()}" th:text="${answer.uriToString(answer.getAnswerString())}"></a> (dbpedia resource)</span>
+                    <span th:if="${answer.optUri(answer.getAnswerString()) == ''}" th:text="${answer.getAnswerString()}"></span>
+                    -
+                    <span th:text="${answer.getScore()}"></span>
+                </div>
+                <div><span>From triple: </span> <span class="origin" th:text="${answer.originPretty()}"></span></div>
+                <div><span>Relevant keywords: </span> <span class="relevant-keywords" th:text="${answer.relevantKeywordsPretty()}"></span></div>
             </div>
         </div>
         <hr>

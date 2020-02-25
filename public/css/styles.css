@@ -3,6 +3,7 @@ body{
     font-family: 'Open Sans', Arial, sans-serif;
     display:flex;
     flex-direction: column;
+    overflow-x:hidden;
 }
 button, input[type="submit"], input[type="reset"] {
 	background: none;
@@ -217,4 +218,7 @@ a.disabled {
 }
 a{
     word-wrap: break-word;
+}
+.origin, .relevant-keywords{
+    font-weight: 600;
 }

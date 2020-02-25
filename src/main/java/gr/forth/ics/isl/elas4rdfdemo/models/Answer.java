@@ -1,6 +1,5 @@
 package gr.forth.ics.isl.elas4rdfdemo.models;
 
-import org.apache.jena.atlas.json.JSON;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,11 +9,21 @@ public class Answer {
     private String answerString;
     private JSONObject tripleOrigin;
     private ArrayList<String> relevantKeywords;
+    private double score;
 
-    public Answer(String answerString, JSONObject tripleOrigin, ArrayList<String> relevantKeywords) {
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public Answer(String answerString, JSONObject tripleOrigin, ArrayList<String> relevantKeywords, double score) {
         this.answerString = answerString;
         this.tripleOrigin = tripleOrigin;
         this.relevantKeywords = relevantKeywords;
+        this.score = score;
     }
 
     public String getAnswerString() {
@@ -50,7 +59,35 @@ public class Answer {
             ja.put(s);
         }
         jo.put("relevantKeywords",ja);
+        jo.put("score",String.valueOf(score));
 
         return jo;
+    }
+
+    public String optUri(String s){
+        if(s.startsWith("http"))
+            return s;
+        else
+            return "";
+    }
+
+    public String uriToString(String uri){
+        String clean = "";
+        if(uri.startsWith("http")){
+            clean = uri.substring(uri.lastIndexOf("/")+1);
+        }else if(clean.contains("@")){
+            clean = clean.substring(0,clean.indexOf("@"));
+        }else{
+            clean = uri;
+        }
+        return clean.trim();
+    }
+
+    public String originPretty(){
+        return tripleOrigin.getString("sub") + " - " + tripleOrigin.getString("pre") + " - " + tripleOrigin.getString("obj");
+    }
+
+    public String relevantKeywordsPretty(){
+        return String.join(", ",relevantKeywords);
     }
 }
