@@ -22,3 +22,4 @@ $(".tab").on('click',function(){
    $(this).removeClass('active');
 });
 
+$(document).on('load',init());

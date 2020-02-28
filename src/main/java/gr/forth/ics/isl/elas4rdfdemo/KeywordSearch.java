@@ -16,7 +16,7 @@ public class KeywordSearch {
 
     public ArrayList<ResultTriple> searchTriples(String query){
         ArrayList<ResultTriple> triples = new ArrayList<>();
-        JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"eindex","triples");
+        JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"terms_eindex","triples");
         JSONArray ja = jo.getJSONObject("results").getJSONArray("triples");
         for(int i=0; i < ja.length(); i++){
             JSONObject object = ja.getJSONObject(i);
@@ -27,7 +27,7 @@ public class KeywordSearch {
 
     public ArrayList<ResultEntity> searchEntities(String query){
         ArrayList<ResultEntity> entities = new ArrayList<>();
-        JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"eindex","entities");
+        JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"terms_eindex","entities");
         JSONArray ja = jo.getJSONObject("results").getJSONArray("entities");
         for(int i=0; i < ja.length(); i++){
             JSONObject object = ja.getJSONObject(i);

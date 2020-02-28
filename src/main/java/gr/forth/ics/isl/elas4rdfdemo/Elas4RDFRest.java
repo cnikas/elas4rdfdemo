@@ -14,6 +14,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -153,6 +154,11 @@ public class Elas4RDFRest {
             HttpResponse response = client.execute(termsRequest);
 
             String json_string = EntityUtils.toString(response.getEntity());
+            try{
+                new JSONObject(json_string);
+            } catch(JSONException ex){
+                return null;
+            }
             responseObject = new JSONObject(json_string);
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();

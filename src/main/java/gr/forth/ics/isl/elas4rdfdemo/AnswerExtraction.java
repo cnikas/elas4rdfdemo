@@ -7,6 +7,8 @@ import gr.forth.ics.isl.elas4rdfdemo.models.Query;
 import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
 import static gr.forth.ics.isl.elas4rdfdemo.Main.props;
 import java.util.*;
@@ -14,12 +16,16 @@ import java.util.*;
 public class AnswerExtraction {
 
     public Elas4RDFRest elas4RDF;
-    //public static ArrayList<JSONObject> allTriples;
+    QuestionAnalysis qa;
+
     public AnswerExtraction() {
-         elas4RDF = new Elas4RDFRest();
+        qa = new QuestionAnalysis();
+        elas4RDF = new Elas4RDFRest();
     }
 
-    public ArrayList<Answer> extractAnswers(ParsedQuestion q){
+    public ArrayList<Answer> extractAnswers(String query){
+
+        ParsedQuestion q = qa.analyzeQuestion(query);
 
         ArrayList<Answer> answers = new ArrayList<>();
 
@@ -88,8 +94,6 @@ public class AnswerExtraction {
 
         }
 
-        //allTriples.addAll(candidateTriples);
-
         return candidateAnswers;
 
     }
@@ -110,7 +114,16 @@ public class AnswerExtraction {
         }
         ArrayList<Answer> candidateTriples =new ArrayList<>();
         JSONObject results = elas4RDF.executeMultiMatchQuery(uri,term,"terms_bindex",Integer.parseInt(props.getProperty("multiMatchQuerySize")),type);
-        JSONArray resultsArray = results.optJSONObject("results").optJSONArray("triples");
+
+        JSONObject resultsObject = null;
+        if(results      != null){
+            resultsObject = results.optJSONObject("results");
+        }
+        JSONArray resultsArray = null;
+        if( resultsObject != null){
+            resultsArray = resultsObject.optJSONArray("triples");
+        }
+
         if(resultsArray != null){
             for(int i=0; i<resultsArray.length(); i++){
                 String foundPredicate = cleanUriOrLiteral(resultsArray.getJSONObject(i).getString("pre"));
@@ -137,7 +150,16 @@ public class AnswerExtraction {
         ArrayList<Answer> candidates = new ArrayList<>();
 
         JSONObject results = elas4RDF.executeConstantScoreRequest(firstTerm,"terms_bindex",Integer.parseInt(props.getProperty("constantScoreQuerySize")));
-        JSONArray resultsArray = results.optJSONObject("results").optJSONArray("triples");
+
+        JSONObject resultsObject = null;
+        if(results      != null){
+            resultsObject = results.optJSONObject("results");
+        }
+        JSONArray resultsArray = null;
+        if( resultsObject != null){
+            resultsArray = resultsObject.optJSONArray("triples");
+        }
+
         if(resultsArray != null){
             for(int i=0; i<resultsArray.length(); i++){
                 String foundPredicate = cleanUriOrLiteral(resultsArray.getJSONObject(i).getString("pre"));
@@ -195,8 +217,15 @@ public class AnswerExtraction {
         ArrayList<Answer> answers =new ArrayList<>();
         String joinedTerms = String.join(" ",terms);
 
-        JSONObject result = elas4RDF.queryExtFields(joinedTerms,type,Integer.parseInt(props.getProperty("extFieldsQuerySize")));
-        JSONArray resultArray = result.optJSONObject("results").optJSONArray("triples");
+        JSONObject results = elas4RDF.queryExtFields(joinedTerms,type,Integer.parseInt(props.getProperty("extFieldsQuerySize")));
+        JSONObject resultsObject = null;
+        if(results      != null){
+            resultsObject = results.optJSONObject("results");
+        }
+        JSONArray resultArray = null;
+        if( resultsObject != null){
+            resultArray = resultsObject.optJSONArray("triples");
+        }
         if(resultArray != null){
             for(int i=0; i<resultArray.length();i++){
                 ArrayList<String> relevantTerms  = new ArrayList<>();
@@ -215,8 +244,6 @@ public class AnswerExtraction {
                 }
             }
         }
-
-        //allTriples.addAll(candidateTriples);
 
         return answers;
     }
@@ -238,11 +265,18 @@ public class AnswerExtraction {
         ArrayList<Query> subQueries = buildQueries(q,type);
 
         for(Query query : subQueries){
-            JSONObject queryResults = elas4RDF.executeQuery(query.getQuery(),"terms_bindex",Integer.parseInt(props.getProperty("dslQuerySize")));
-            JSONArray queryResultsArray = queryResults.optJSONObject("results").optJSONArray("triples");
-            if(queryResultsArray != null){
-                for (int i = 0; i < queryResultsArray.length(); i++) {
-                    JSONObject triple = queryResultsArray.getJSONObject(i);
+            JSONObject results = elas4RDF.executeQuery(query.getQuery(),"terms_bindex",Integer.parseInt(props.getProperty("dslQuerySize")));
+            JSONObject resultsObject = null;
+            if(results      != null){
+                resultsObject = results.optJSONObject("results");
+            }
+            JSONArray resultsArray = null;
+            if( resultsObject != null){
+                resultsArray = resultsObject.optJSONArray("triples");
+            }
+            if(resultsArray != null){
+                for (int i = 0; i < resultsArray.length(); i++) {
+                    JSONObject triple = resultsArray.getJSONObject(i);
                     Answer ans = relevantResult(query,triple,type);
                     if(ans != null){
                         answers.add(ans);
@@ -313,7 +347,14 @@ public class AnswerExtraction {
         String foundUri = "";
         JSONObject results = elas4RDF.checkUriForTermRequest(term,"terms_bindex",Integer.parseInt(props.getProperty("checkUriQuerySize")));
         double maxJsim = 0.0;
-        JSONArray resultsArray = results.optJSONObject("results").optJSONArray("triples");
+        JSONObject resultsObject = null;
+        if(results != null){
+            resultsObject = results.optJSONObject("results");
+        }
+        JSONArray resultsArray = null;
+        if( resultsObject != null){
+            resultsArray = resultsObject.optJSONArray("triples");
+        }
         if(resultsArray != null){
             for(int i=0;i<resultsArray.length();i++){
                 String currUri = cleanUriOrLiteral(resultsArray.getJSONObject(i).getString("sub"));
@@ -358,5 +399,7 @@ public class AnswerExtraction {
         }
         return queries;
     }
+
+
 
 }

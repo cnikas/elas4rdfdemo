@@ -1,28 +1,36 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
+import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleAnswerRepository;
+import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleEntityRepository;
+import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleTripleRepository;
 import gr.forth.ics.isl.elas4rdfdemo.models.Answer;
 import gr.forth.ics.isl.elas4rdfdemo.models.ResultEntity;
 import gr.forth.ics.isl.elas4rdfdemo.models.ResultTriple;
-import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 @Controller
+@EnableCaching(proxyTargetClass=true)
 public class Elas4rdfDemoApplication {
 
-	QuestionAnalysis qa;
-	AnswerExtraction ae;
-	KeywordSearch ks;
+	@Autowired
+    private SimpleAnswerRepository sar;
+	@Autowired
+	private SimpleTripleRepository str;
+	@Autowired
+	private SimpleEntityRepository ser;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Elas4rdfDemoApplication.class, args);
@@ -32,9 +40,6 @@ public class Elas4rdfDemoApplication {
 	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() {
 		Main.initializeTools();
-		qa = new QuestionAnalysis();
-		ae =  new AnswerExtraction();
-		ks = new KeywordSearch();
 	}
 
 	@GetMapping("/results/triples")
@@ -44,7 +49,7 @@ public class Elas4rdfDemoApplication {
 		int endIndex = 0;
 		int startIndex = (page-1)*10;
 
-		ArrayList<ResultTriple> results = ks.searchTriples(query);
+		ArrayList<ResultTriple> results = str.searchTriples(query);
 		maxPages = results.size()/10;
 		if(page==maxPages+1){
 			endIndex = results.size();
@@ -90,14 +95,19 @@ public class Elas4rdfDemoApplication {
 		int endIndex = 0;
 		int startIndex = (page-1)*10;
 
-		ArrayList<ResultEntity> results = ks.searchEntities(query);
+		ArrayList<ResultEntity> results = ser.searchEntities(query);
 		maxPages = results.size()/10;
 		if(page==maxPages+1){
 			endIndex = results.size();
 		} else {
 			endIndex = startIndex+10;
 		}
-		model.addAttribute("entities", results.subList(startIndex,endIndex));
+		List<ResultEntity> subResults = results.subList(startIndex,endIndex);
+		for(ResultEntity res : subResults){
+			res.imageUrl = res.findImageUrl();
+		}
+
+		model.addAttribute("entities", subResults);
 
 		ArrayList<Integer> pageList = new ArrayList<>();
 		if(maxPages == 0){
@@ -132,7 +142,10 @@ public class Elas4rdfDemoApplication {
 	@GetMapping("/results/qa")
 	public String handleQa(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page, Model model) {
 
-		ArrayList<Answer> answers = ae.extractAnswers(qa.analyzeQuestion(query));
+		ArrayList<Answer> answers;
+		answers = sar.getAnswers(query);
+
+
 		int maxPages = answers.size()/10;
 		int endIndex = 0;
 		int startIndex = (page-1)*10;
@@ -172,5 +185,20 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("page",page);
 		return "results";
 	}
+
+    @GetMapping("/results/graph")
+    public String handleGraph(@RequestParam(name="query") String query, Model model) {
+
+
+		ArrayList<Answer> answers;
+		answers = sar.getAnswers(query);
+
+
+		model.addAttribute("query",query);
+        model.addAttribute("type","graph");
+		model.addAttribute("page",1);
+        model.addAttribute("jsonGraph",AnswerExploration.createModel(answers).toString());
+        return "graph";
+    }
 
 }

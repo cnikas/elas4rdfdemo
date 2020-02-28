@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link type="text/css" href="/css/ForceDirected.css" rel="stylesheet" />
+    <title>Elas4RDF Results</title>
+</head>
+<body>
+<div class="results-top">
+    <a href="/" class="logo-container-results">
+        <img class="logo-results" src="/resources/elas4rdflogo.png" alt="Elas4RDF logo">
+    </a>
+    <form id="searchForm" class="search-form-results" th:action="${'/results/'+type+'/'}">
+        <div class="form-group">
+            <div id="searchInputContainer" class="search-input-container-results">
+                <input th:value="${param.query}" type="text" class="search-input-results" id="searchInput" name="query">
+                <button type="submit" class="search-icon-container">
+                    <img src="/resources/search_icon.png">
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="tabs-container">
+    <div class="tabs">
+        <a th:href="${'/results/triples?query=' + query + '&page=' + page}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">
+            <img src="/resources/rdficon.png">
+            Triples
+        </a>
+        <a th:href="${'/results/entities?query=' + query + '&page=' + page}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
+            <img src="/resources/entitiesicon.png">
+            Entities
+        </a>
+        <a th:href="${'/results/qa?query=' + query + '&page=' + page}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
+            <img src="/resources/qaicon.svg">
+            Question Answering
+        </a>
+        <a th:href="${'/results/graph?query=' + query}" th:class="${type == 'graph'} ? 'tab active' : 'tab'">
+            <img src="/resources/graphicon.svg">
+            Graph
+        </a>
+    </div>
+</div>
+<div class="results-info">
+    <span>You searched for "<span th:text="${param.query}"></span>" - <b th:text="${type}"></b></span>
+</div>
+<div id="graph-container">
+    <div id="center-container">
+        <div id="infovis"></div>
+    </div>
+    <div id="log"></div>
+</div>
+<footer class="footer" id="footer">
+    <div class="copyright">
+        <a href="http://www.ics.forth.gr/isl/sar/privacy/TermsOfUse-ISL_EN.pdf" target="_blank">Terms of Use</a>
+        |
+        <a href="http://www.ics.forth.gr/isl/sar/privacy/PrivacyPolicy-ISL_EN.pdf" style="padding-left:0px!important;" target="_blank">Privacy Policy</a>
+        | © Copyright 2020 FOUNDATION FOR RESEARCH &amp; TECHNOLOGY - HELLAS, All rights reserved.
+        <div class="footer-images">
+            <a href="https://www.ics.forth.gr/isl/"><img src="/resources/isl_logo.png" height="30"></a>
+            <a href="https://www.ics.forth.gr/"><img src="/resources/ics_logo.png" height="30"></a>
+        </div>
+    </div>
+</footer>
+<script th:inline="javascript">
+var json = [[${jsonGraph}]];
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- JIT Library File -->
+<script language="javascript" type="text/javascript" src="/js/jit.js"></script>
+<!-- Example File -->
+<script language="javascript" type="text/javascript" src="/js/graphvis.js"></script>
+<script src="/js/script.js"></script>
+</body>
+</html>

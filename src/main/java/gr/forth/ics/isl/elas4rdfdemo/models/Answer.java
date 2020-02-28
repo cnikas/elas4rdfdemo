@@ -84,7 +84,7 @@ public class Answer {
     }
 
     public String originPretty(){
-        return tripleOrigin.getString("sub") + " - " + tripleOrigin.getString("pre") + " - " + tripleOrigin.getString("obj");
+        return "<a href=\""+tripleOrigin.getString("sub")+"\">"+tripleOrigin.getString("sub")+"</a>" + " - " + "<a href=\""+tripleOrigin.getString("pre")+"\">"+tripleOrigin.getString("pre")+"</a>" + " - " + "<a href=\""+tripleOrigin.getString("pre")+"\">"+tripleOrigin.getString("pre")+"</a>";
     }
 
     public String relevantKeywordsPretty(){

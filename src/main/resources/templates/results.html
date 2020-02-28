@@ -12,7 +12,7 @@
     <a href="/" class="logo-container-results">
         <img class="logo-results" src="/resources/elas4rdflogo.png" alt="Elas4RDF logo">
     </a>
-    <form id="searchForm" class="search-form-results" th:action="${'/results'+type+'/'}">
+    <form id="searchForm" class="search-form-results" th:action="${'/results/'+type+'/'}">
         <div class="form-group">
             <div id="searchInputContainer" class="search-input-container-results">
                 <input th:value="${param.query}" type="text" class="search-input-results" id="searchInput" name="query">
@@ -36,6 +36,10 @@
         <a th:href="${'/results/qa?query=' + query + '&page=' + page}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
             <img src="/resources/qaicon.svg">
             Question Answering
+        </a>
+        <a th:href="${'/results/graph?query=' + query}" th:class="${type == 'graph'} ? 'tab active' : 'tab'">
+            <img src="/resources/graphicon.svg">
+            Graph
         </a>
     </div>
 </div>
@@ -71,6 +75,7 @@
 <div th:if="${type == 'entities'}" class="entities-box">
     <span th:each="entity : ${entities}">
         <div class="entity-result">
+            <img th:if="${entity.imageUrl != ''}" th:src="${entity.imageUrl}">
             <div>
                 <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (dbpedia resource)</div>
                 <div class="description" th:text="${entity.ext}"></div>
@@ -90,7 +95,14 @@
                     -
                     <span th:text="${answer.getScore()}"></span>
                 </div>
-                <div><span>From triple: </span> <span class="origin" th:text="${answer.originPretty()}"></span></div>
+                <div>
+                    <span>From triple: </span>
+                    <span class="origin">
+                        <a th:href="${answer.getTripleOrigin().getString('sub')}" th:text="${answer.getTripleOrigin().getString('sub')}"></a> -
+                        <a th:href="${answer.getTripleOrigin().getString('pre')}" th:text="${answer.getTripleOrigin().getString('pre')}"></a> -
+                        <a th:href="${answer.getTripleOrigin().getString('obj')}" th:text="${answer.getTripleOrigin().getString('obj')}"></a>
+                    </span>
+                </div>
                 <div><span>Relevant keywords: </span> <span class="relevant-keywords" th:text="${answer.relevantKeywordsPretty()}"></span></div>
             </div>
         </div>
@@ -99,7 +111,7 @@
 </div>
 <div class="pagination">
     Page:
-    <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'results?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
+    <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'/results/'+type+'?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
 </div>
 <footer class="footer" id="footer">
     <div class="copyright">

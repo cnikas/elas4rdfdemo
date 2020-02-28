@@ -196,10 +196,12 @@ hr{
 .entity-result{
     width: 95%;
     display:flex;
-    justify-content: space-between;
 }
-.entityresult>div{
-    width: 100%;
+.entity-result>div{
+    width: auto;
+}
+.entity-result>img{
+    width: 150px;
 }
 .tab:hover{
     background-color: rgba(5, 65, 155, 0.3)
@@ -220,5 +222,8 @@ a{
     word-wrap: break-word;
 }
 .origin, .relevant-keywords{
+    font-weight: 600;
+}
+.answer-result>div>.title{
     font-weight: 600;
 }
