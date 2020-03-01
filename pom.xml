@@ -20,21 +20,13 @@
 
 	<repositories>
 		<repository>
-			<id>central</id>
+			<id>1_central</id>
 			<name>Maven Central</name>
 			<layout>default</layout>
 			<url>https://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
 		</repository>
 		<repository>
-			<id>FORTH-ISL-third-party</id>
-			<name>FORTH ISL Nexus repository - third party releases</name>
-			<url>http://www.ics.forth.gr/isl/maven-third-party/</url>
-		</repository>
-		<repository>
-			<id>FORTH-ISL-snapshots</id>
+			<id>2_FORTH-ISL-snapshots</id>
 			<name>FORTH ISL Nexus repository - Snapshots</name>
 			<url>http://www.ics.forth.gr/isl/maven-snapshots</url>
 			<snapshots>
