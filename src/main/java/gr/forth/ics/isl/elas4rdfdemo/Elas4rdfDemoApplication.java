@@ -3,9 +3,14 @@ package gr.forth.ics.isl.elas4rdfdemo;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleAnswerRepository;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleEntityRepository;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleTripleRepository;
-import gr.forth.ics.isl.elas4rdfdemo.models.Answer;
-import gr.forth.ics.isl.elas4rdfdemo.models.ResultEntity;
-import gr.forth.ics.isl.elas4rdfdemo.models.ResultTriple;
+import gr.forth.ics.isl.elas4rdfdemo.models.*;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,9 +21,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
 @SpringBootApplication
 @Controller
@@ -31,6 +45,10 @@ public class Elas4rdfDemoApplication {
 	private SimpleTripleRepository str;
 	@Autowired
 	private SimpleEntityRepository ser;
+
+	public TriplesContainer triplesContainer;
+	public EntitiesContainer entitiesContainer;
+	public ArrayList<Answer> answers;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Elas4rdfDemoApplication.class, args);
@@ -49,14 +67,15 @@ public class Elas4rdfDemoApplication {
 		int endIndex = 0;
 		int startIndex = (page-1)*10;
 
-		ArrayList<ResultTriple> results = str.searchTriples(query);
-		maxPages = results.size()/10;
+		triplesContainer = str.searchTriples(query);
+
+		maxPages = triplesContainer.getTriples().size()/10;
 		if(page==maxPages+1){
-			endIndex = results.size();
+			endIndex = triplesContainer.getTriples().size();
 		} else {
 			endIndex = startIndex+10;
 		}
-		model.addAttribute("triples", results.subList(startIndex,endIndex));
+		model.addAttribute("triples", triplesContainer.getTriples().subList(startIndex,endIndex));
 
 		ArrayList<Integer> pageList = new ArrayList<>();
 		if(maxPages == 0){
@@ -82,9 +101,11 @@ public class Elas4rdfDemoApplication {
 
 		//String jsonAnswer = ae.extractAnswerJson(qa.analyzeQuestion(query)).toString();
 		model.addAttribute("pages", pageList);
+		model.addAttribute("maxPages", maxPages);
 		model.addAttribute("query",query);
 		model.addAttribute("type","triples");
 		model.addAttribute("page",page);
+		model.addAttribute("maxSize",triplesContainer.getMaxSize());
 		return "results";
 	}
 
@@ -95,17 +116,15 @@ public class Elas4rdfDemoApplication {
 		int endIndex = 0;
 		int startIndex = (page-1)*10;
 
-		ArrayList<ResultEntity> results = ser.searchEntities(query);
-		maxPages = results.size()/10;
+		entitiesContainer = ser.searchEntities(query);
+
+		maxPages = entitiesContainer.getEntities().size()/10;
 		if(page==maxPages+1){
-			endIndex = results.size();
+			endIndex = entitiesContainer.getEntities().size();
 		} else {
 			endIndex = startIndex+10;
 		}
-		List<ResultEntity> subResults = results.subList(startIndex,endIndex);
-		for(ResultEntity res : subResults){
-			res.imageUrl = res.findImageUrl();
-		}
+		List<ResultEntity> subResults = entitiesContainer.getEntities().subList(startIndex,endIndex);
 
 		model.addAttribute("entities", subResults);
 
@@ -133,18 +152,18 @@ public class Elas4rdfDemoApplication {
 
 		//String jsonAnswer = ae.extractAnswerJson(qa.analyzeQuestion(query)).toString();
 		model.addAttribute("pages", pageList);
+		model.addAttribute("maxPages", maxPages);
 		model.addAttribute("query",query);
 		model.addAttribute("type","entities");
 		model.addAttribute("page",page);
+		model.addAttribute("maxSize",entitiesContainer.getMaxSize());
 		return "results";
 	}
 
 	@GetMapping("/results/qa")
 	public String handleQa(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page, Model model) {
 
-		ArrayList<Answer> answers;
 		answers = sar.getAnswers(query);
-
 
 		int maxPages = answers.size()/10;
 		int endIndex = 0;
@@ -181,24 +200,75 @@ public class Elas4rdfDemoApplication {
 
 		model.addAttribute("pages", pageList);
 		model.addAttribute("query",query);
+		model.addAttribute("maxPages",maxPages);
 		model.addAttribute("type","qa");
 		model.addAttribute("page",page);
 		return "results";
 	}
 
     @GetMapping("/results/graph")
-    public String handleGraph(@RequestParam(name="query") String query, Model model) {
+    public String handleGraph(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="100") int size, Model model) {
 
+		triplesContainer = str.searchTriples(query);
+		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),size);
 
-		ArrayList<Answer> answers;
-		answers = sar.getAnswers(query);
-
+		String jsonGraph = ae.createModelFromTriples().toString();
 
 		model.addAttribute("query",query);
         model.addAttribute("type","graph");
-		model.addAttribute("page",1);
-        model.addAttribute("jsonGraph",AnswerExploration.createModel(answers).toString());
+		model.addAttribute("size",size);
+        model.addAttribute("jsonGraph",jsonGraph);
         return "graph";
     }
+
+	@GetMapping("/loadimage")
+	@ResponseBody
+	public String loadImage(@RequestParam(name="id") String id) {
+		return findImageUrl(id);
+	}
+
+	public String findImageUrl(String id){
+		String url="";
+		String baseURL = "https://en.wikipedia.org/w/api.php?action=query&titles="+id+"&prop=pageimages&format=json&pithumbsize=100";
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			URIBuilder builder = new URIBuilder(baseURL);
+
+			HttpGet request = new HttpGet(builder.build());
+			request.addHeader(CONTENT_TYPE, "application/json");
+
+			HttpResponse response = client.execute(request);
+
+			String json_string = EntityUtils.toString(response.getEntity());
+			JSONObject responseObject = new JSONObject(json_string);
+			if(responseObject != null){
+				Iterator<String> ijo = responseObject.getJSONObject("query").getJSONObject("pages").keys();
+				if(ijo.hasNext()){
+					JSONObject jo = responseObject.getJSONObject("query").getJSONObject("pages").getJSONObject(ijo.next());
+					if(jo.has("thumbnail")){
+						url = jo.getJSONObject("thumbnail").getString("source");
+					}
+				}
+			}
+		} catch (URISyntaxException | IOException e) {
+			e.printStackTrace();
+		}
+		return url;
+	}
+
+	@GetMapping("/file")
+	public void returnFile(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="100") int size, HttpServletResponse response) throws IOException {
+		triplesContainer = str.searchTriples(query);
+		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),triplesContainer.getTriples().size());
+		String myString = ae.createFile();
+
+		response.setContentType("text/plain; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.setHeader("Content-Disposition","attachment;filename=triples.ttl");
+		PrintWriter out = response.getWriter();
+		out.println(myString);
+		out.flush();
+		out.close();
+	}
 
 }

@@ -22,4 +22,14 @@ $(".tab").on('click',function(){
    $(this).removeClass('active');
 });
 
-$(document).on('load',init());
+
+$(".entity-result").each(function(index){
+    var idString = $(this).data("id");
+    var element = $(this);
+    $.get( "/loadimage", { id: idString} )
+      .done(function( data ) {
+        if(data != ""){
+            element.prepend('<img src="'+data+'">');
+        }
+      });
+});

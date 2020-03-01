@@ -25,17 +25,17 @@
 </div>
 <div class="tabs-container">
     <div class="tabs">
-        <a th:href="${'/results/triples?query=' + query + '&page=' + page}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">
-            <img src="/resources/rdficon.png">
-            Triples
-        </a>
-        <a th:href="${'/results/entities?query=' + query + '&page=' + page}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
+        <a th:href="${'/results/entities?query=' + query}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
             <img src="/resources/entitiesicon.png">
             Entities
         </a>
-        <a th:href="${'/results/qa?query=' + query + '&page=' + page}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
+        <a th:href="${'/results/triples?query=' + query}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">
+            <img src="/resources/rdficon.png">
+            Triples
+        </a>
+        <a th:href="${'/results/qa?query=' + query}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
             <img src="/resources/qaicon.svg">
-            Question Answering
+            QA
         </a>
         <a th:href="${'/results/graph?query=' + query}" th:class="${type == 'graph'} ? 'tab active' : 'tab'">
             <img src="/resources/graphicon.svg">
@@ -44,29 +44,32 @@
     </div>
 </div>
 <div class="results-info">
-    <span>You searched for "<span th:text="${param.query}"></span>" - <b th:text="${type}"></b></span>
+    <span>You searched for "<span th:text="${param.query}"></span>" - <span th:if="${type != 'qa'}" th:text="${'found '+maxSize+' '+type}"></span></span>
+</div>
+<div th:if="${type == 'triples'}" class="results-info">
+    <a th:href="${'/file?query='+query}">Download triples</a>
 </div>
 <div th:if="${type == 'triples'}" class="triples-box">
     <span th:each="triple : ${triples}">
         <div class="result">
-            <div>
+            <div class="big-col">
                 <div class="title"><a th:href="${triple.subject}" th:text="${triple.uriToString(triple.subject)}"></a> (dbpedia resource)</div>
                 <div class="description" th:text="${triple.shorten(triple.subExt)}"></div>
                 <div class="uri" th:text="${triple.subject}"></div>
             </div>
             -
-            <div>
+            <div class="small-col">
                 <div class="title"><a th:href="${triple.predicate}" th:text="${triple.uriToString(triple.predicate)}"></a> (dbpedia ontology)</div>
                 <div class="uri" th:text="${triple.predicate}"></div>
             </div>
             -
-            <div>
+            <div class="big-col">
                 <div class="title">
                     <span th:if="${triple.optObjectUri() != ''}"><a  th:href="${triple.optObjectUri()}" th:text="${triple.shorten(triple.object)}"></a> (dbpedia resource)</span>
                     <span th:if="${triple.optObjectUri() == ''}" th:text="${triple.shorten(triple.object)}"></span>
                 </div>
                 <div class="description" th:text="${triple.shorten(triple.objExt)}"></div>
-                <div class="uri" th:text="${triple.shorten(triple.object)}"></div>
+                <div class="uri" th:if="${triple.optObjectUri() != ''}" th:text="${triple.shorten(triple.object)}"></div>
             </div>
         </div>
         <hr>
@@ -74,8 +77,7 @@
 </div>
 <div th:if="${type == 'entities'}" class="entities-box">
     <span th:each="entity : ${entities}">
-        <div class="entity-result">
-            <img th:if="${entity.imageUrl != ''}" th:src="${entity.imageUrl}">
+        <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
             <div>
                 <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (dbpedia resource)</div>
                 <div class="description" th:text="${entity.ext}"></div>
@@ -112,6 +114,7 @@
 <div class="pagination">
     Page:
     <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'/results/'+type+'?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
+    <span th:if="${page < maxPages-2}">...</span>
 </div>
 <footer class="footer" id="footer">
     <div class="copyright">

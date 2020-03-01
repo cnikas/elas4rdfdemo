@@ -158,3 +158,5 @@ function init(){
   });
   // end
 }
+
+$(document).on('load',init());

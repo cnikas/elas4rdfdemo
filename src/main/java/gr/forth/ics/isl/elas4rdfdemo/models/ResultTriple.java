@@ -7,6 +7,46 @@ public class ResultTriple {
     public String objExt;
     public String subExt;
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getPredicate() {
+        return predicate;
+    }
+
+    public void setPredicate(String predicate) {
+        this.predicate = predicate;
+    }
+
+    public String getObject() {
+        return object;
+    }
+
+    public void setObject(String object) {
+        this.object = object;
+    }
+
+    public String getObjExt() {
+        return objExt;
+    }
+
+    public void setObjExt(String objExt) {
+        this.objExt = objExt;
+    }
+
+    public String getSubExt() {
+        return subExt;
+    }
+
+    public void setSubExt(String subExt) {
+        this.subExt = subExt;
+    }
+
     public String uriToString(String uri){
         String clean = "";
         if(uri.startsWith("http")){
