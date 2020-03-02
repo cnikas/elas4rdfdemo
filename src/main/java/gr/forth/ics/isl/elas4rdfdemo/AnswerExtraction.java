@@ -4,11 +4,9 @@ import gr.forth.ics.isl.elas4rdfdemo.models.Answer;
 import gr.forth.ics.isl.elas4rdfdemo.models.Keyword;
 import gr.forth.ics.isl.elas4rdfdemo.models.ParsedQuestion;
 import gr.forth.ics.isl.elas4rdfdemo.models.Query;
-import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtils;
+import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtilsSimple;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.SessionScope;
 
 import static gr.forth.ics.isl.elas4rdfdemo.Main.props;
 import java.util.*;
@@ -361,7 +359,7 @@ public class AnswerExtraction {
                 if(currUri.replaceAll("_"," ").equalsIgnoreCase(term)){
                     foundUri = currUri;
                 } else{
-                    double jSim = StringUtils.JaccardSim(currUri.toLowerCase().split("_"),term.toLowerCase().split(" "));
+                    double jSim = StringUtilsSimple.JaccardSim(currUri.toLowerCase().split("_"),term.toLowerCase().split(" "));
                     if(Double.compare(jSim,maxJsim)>0){
                         maxJsim = jSim;
                         foundUri = currUri;

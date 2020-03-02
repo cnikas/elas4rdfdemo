@@ -1,19 +1,5 @@
 package gr.forth.ics.isl.elas4rdfdemo.models;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Iterator;
-
-import static org.apache.http.HttpHeaders.CONTENT_TYPE;
-
 public class ResultEntity {
     public String ext;
     public String entity;
@@ -52,7 +38,12 @@ public class ResultEntity {
             return s;
     }
 
-    public static void main(String[] args){
+    public String extClean(){
+        String exc = this.ext;
+        if(exc.startsWith("[") && exc.endsWith("]"))
+            return exc.substring(1,exc.length()-1);
+        else
+            return exc;
     }
 
 }

@@ -5,20 +5,25 @@ import gr.forth.ics.isl.elas4rdfdemo.models.ResultTriple;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFFormat;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
 
-import static org.apache.jena.riot.RDFFormat.TURTLE_PRETTY;
+import static org.apache.jena.riot.RDFFormat.*;
 
 public class AnswerExploration {
 
     private Model model;
 
     public AnswerExploration(ArrayList<ResultTriple> allTriples, int size){
-        if(allTriples != null){
+        if(allTriples != null ){
+
+            if(size > allTriples.size()){
+                size = allTriples.size();
+            }
             // create an empty Model
             model = ModelFactory.createDefaultModel();
             for(ResultTriple triple : allTriples.subList(0,size)){
@@ -28,7 +33,6 @@ public class AnswerExploration {
         }
     }
     public JSONArray createModel(ArrayList<Answer> allTriples){
-
 
         if(allTriples == null){
             return null;
@@ -93,9 +97,15 @@ public class AnswerExploration {
         return jsonGraph;
     }
 
-    public String createFile(){
+    public String createFile(String type){
+        RDFFormat format = TURTLE_PRETTY;
+        if(type.equals("ntriples")){
+            format = NTRIPLES;
+        } else if(type.equals("jsonld")){
+            format = JSONLD;
+        }
         StringWriter sw = new StringWriter();
-        RDFDataMgr.write(sw, model, TURTLE_PRETTY);
+        RDFDataMgr.write(sw, model, format);
         return sw.toString();
     }
 

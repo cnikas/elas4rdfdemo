@@ -44,10 +44,10 @@
     </div>
 </div>
 <div class="results-info">
-    <span>You searched for "<span th:text="${param.query}"></span>" - <span th:if="${type != 'qa'}" th:text="${'found '+maxSize+' '+type}"></span></span>
+    <span>You searched for "<span th:text="${param.query}"></span>" <span th:if="${type != 'qa'}" th:text="${'- found '+maxSize+' '+type}"></span></span>
 </div>
 <div th:if="${type == 'triples'}" class="results-info">
-    <a th:href="${'/file?query='+query}">Download triples</a>
+    <span>Download triples: </span><a th:href="${'/file?query='+query+'&type=turtle'}">Turtle</a><a th:href="${'/file?query='+query+'&type=ntriples'}">N-Triples</a><a th:href="${'/file?query='+query+'&type=jsonld'}">JSON-LD</a>
 </div>
 <div th:if="${type == 'triples'}" class="triples-box">
     <span th:each="triple : ${triples}">
@@ -80,7 +80,7 @@
         <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
             <div>
                 <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (dbpedia resource)</div>
-                <div class="description" th:text="${entity.ext}"></div>
+                <div class="description" th:text="${entity.extClean()}"></div>
                 <div class="uri" th:text="${entity.entity}"></div>
             </div>
         </div>

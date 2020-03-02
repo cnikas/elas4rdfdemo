@@ -67,10 +67,15 @@ public class ResultTriple {
     }
 
     public String shorten(String s){
-        if(s.length() > 280 && !s.startsWith("http"))
-            return s.substring(0,280)+"...";
-        else
-            return s;
+        String exc = s;
+
+        if(exc.startsWith("[") && exc.endsWith("]"))
+            exc = exc.substring(1,exc.length()-1);
+
+        if(exc.length() > 280 && !exc.startsWith("http"))
+            exc = exc.substring(0,280)+"...";
+
+        return exc;
     }
 
     public ResultTriple(String subject, String predicate, String object, String subExt, String objExt){

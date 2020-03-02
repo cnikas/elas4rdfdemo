@@ -2,6 +2,10 @@ package gr.forth.ics.isl.elas4rdfdemo.models;
 
 import java.util.ArrayList;
 
+/*
+ * Container class for the list of loaded triples and the total number of triples found.
+ *
+ */
 public class TriplesContainer {
     private int maxSize;
 

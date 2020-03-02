@@ -257,14 +257,20 @@ public class Elas4rdfDemoApplication {
 	}
 
 	@GetMapping("/file")
-	public void returnFile(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="100") int size, HttpServletResponse response) throws IOException {
+	public void returnFile(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="100") int size, @RequestParam(name="type",  defaultValue="turtle") String type, HttpServletResponse response) throws IOException {
 		triplesContainer = str.searchTriples(query);
 		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),triplesContainer.getTriples().size());
-		String myString = ae.createFile();
-
+		String myString = ae.createFile(type);
+		String extension = ".ttl";
+		if(type.equals("ntriples")){
+			extension = ".nt";
+		} else if(type.equals("jsonld")){
+			extension = ".jsonld";
+		}
 		response.setContentType("text/plain; charset=UTF-8");
+		response.setHeader("Content-Disposition","attachment;filename=triples"+extension);
 		response.setCharacterEncoding("UTF-8");
-		response.setHeader("Content-Disposition","attachment;filename=triples.ttl");
+
 		PrintWriter out = response.getWriter();
 		out.println(myString);
 		out.flush();

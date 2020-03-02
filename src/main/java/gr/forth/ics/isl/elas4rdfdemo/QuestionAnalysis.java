@@ -10,9 +10,7 @@ import edu.stanford.nlp.trees.Tree;
 import gr.forth.ics.isl.elas4rdfdemo.models.Keyword;
 import gr.forth.ics.isl.elas4rdfdemo.models.ParsedQuestion;
 import gr.forth.ics.isl.elas4rdfdemo.models.ParsedSyntax;
-import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtils;
-import mitos.stemmer.trie.Trie;
-
+import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtilsSimple;
 import static gr.forth.ics.isl.elas4rdfdemo.Main.simple_pipeline;
 import static gr.forth.ics.isl.elas4rdfdemo.Main.syntax_pipeline;
 
@@ -20,13 +18,8 @@ import java.util.*;
 
 public class QuestionAnalysis {
 
-    //The paths for the stopWords Files.
-    public static String filePath_en = "src/main/resources/stoplists/stopwordsEn.txt";
-    public static String filePath_gr = "src/main/resources/stoplists/stopwordsGr.txt";
-    public static HashMap<String, Trie> stopLists = new HashMap<>();
-
     public QuestionAnalysis() {
-        StringUtils.generateStopLists(filePath_en, filePath_gr);
+        StringUtilsSimple.generateStopLists();
     }
 
     /**
@@ -163,7 +156,7 @@ public class QuestionAnalysis {
         String tmp_token = "";
         for (CoreLabel tok : tokens) {
             tmp_token = tok.word().toLowerCase().trim();
-            if (!tmp_token.isEmpty() && !StringUtils.isStopWord(tmp_token)) {
+            if (!tmp_token.isEmpty() && !StringUtilsSimple.isStopWord(tmp_token)) {
                 final_tokens.add(tmp_token);
             }
         }
@@ -375,7 +368,7 @@ public class QuestionAnalysis {
         HashSet<String> clean_words = new HashSet<>();
 
         for(String token : question.split(" ")){
-            if(!StringUtils.isStopWord(token) && !wordsToRemove.contains(token.toLowerCase())){
+            if(!StringUtilsSimple.isStopWord(token) && !wordsToRemove.contains(token.toLowerCase())){
                 clean_words.add(token.toLowerCase());
             }
         }
