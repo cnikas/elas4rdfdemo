@@ -2,7 +2,8 @@ package gr.forth.ics.isl.elas4rdfdemo;
 
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
-import gr.forth.ics.isl.utilities.HttpGetWithEntity;
+
+import gr.forth.ics.isl.elas4rdfdemo.utilities.HttpGetWithEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
