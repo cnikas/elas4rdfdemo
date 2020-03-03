@@ -207,7 +207,7 @@ public class Elas4rdfDemoApplication {
 	}
 
     @GetMapping("/results/graph")
-    public String handleGraph(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="100") int size, Model model) {
+    public String handleGraph(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="25") int size, Model model) {
 
 		triplesContainer = str.searchTriples(query);
 		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),size);

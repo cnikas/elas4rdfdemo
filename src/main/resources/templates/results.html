@@ -4,20 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/elas4rdf/css/styles.css">
     <title>Elas4RDF Results</title>
 </head>
 <body>
 <div class="results-top">
-    <a href="/" class="logo-container-results">
-        <img class="logo-results" src="/resources/elas4rdflogo.png" alt="Elas4RDF logo">
+    <a href="/elas4rdf" class="logo-container-results">
+        <img class="logo-results" src="/elas4rdf/resources/elas4rdflogo.png" alt="Elas4RDF logo">
     </a>
-    <form id="searchForm" class="search-form-results" th:action="${'/results/'+type+'/'}">
+    <form id="searchForm" class="search-form-results" th:action="${'/elas4rdf/results/'+type+'/'}">
         <div class="form-group">
             <div id="searchInputContainer" class="search-input-container-results">
                 <input th:value="${param.query}" type="text" class="search-input-results" id="searchInput" name="query">
                 <button type="submit" class="search-icon-container">
-                    <img src="/resources/search_icon.png">
+                    <img src="/elas4rdf/resources/search_icon.png">
                 </button>
             </div>
         </div>
@@ -25,20 +25,20 @@
 </div>
 <div class="tabs-container">
     <div class="tabs">
-        <a th:href="${'/results/entities?query=' + query}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
-            <img src="/resources/entitiesicon.png">
+        <a th:href="${'/elas4rdf/results/entities?query=' + query}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
+            <img src="/elas4rdf/resources/entitiesicon.png">
             Entities
         </a>
-        <a th:href="${'/results/triples?query=' + query}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">
-            <img src="/resources/rdficon.png">
+        <a th:href="${'/elas4rdf/results/triples?query=' + query}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">
+            <img src="/elas4rdf/resources/rdficon.png">
             Triples
         </a>
-        <a th:href="${'/results/qa?query=' + query}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
-            <img src="/resources/qaicon.svg">
+        <a th:href="${'/elas4rdf/results/qa?query=' + query}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
+            <img src="/elas4rdf/resources/qaicon.svg">
             QA
         </a>
-        <a th:href="${'/results/graph?query=' + query}" th:class="${type == 'graph'} ? 'tab active' : 'tab'">
-            <img src="/resources/graphicon.svg">
+        <a th:href="${'/elas4rdf/results/graph?query=' + query}" th:class="${type == 'graph'} ? 'tab active' : 'tab'">
+            <img src="/elas4rdf/resources/graphicon.svg">
             Graph
         </a>
     </div>
@@ -47,7 +47,7 @@
     <span>You searched for "<span th:text="${param.query}"></span>" <span th:if="${type != 'qa'}" th:text="${'- found '+maxSize+' '+type}"></span></span>
 </div>
 <div th:if="${type == 'triples'}" class="results-info">
-    <span>Download triples: </span><a th:href="${'/file?query='+query+'&type=turtle'}">Turtle</a><a th:href="${'/file?query='+query+'&type=ntriples'}">N-Triples</a><a th:href="${'/file?query='+query+'&type=jsonld'}">JSON-LD</a>
+    <span>Download triples: </span><a th:href="${'/elas4rdf/file?query='+query+'&type=turtle'}">Turtle</a><a th:href="${'/elas4rdf/file?query='+query+'&type=ntriples'}">N-Triples</a><a th:href="${'/elas4rdf/file?query='+query+'&type=jsonld'}">JSON-LD</a>
 </div>
 <div th:if="${type == 'triples'}" class="triples-box">
     <span th:each="triple : ${triples}">
@@ -113,7 +113,7 @@
 </div>
 <div class="pagination">
     Page:
-    <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'/results/'+type+'?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
+    <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'/elas4rdf/results/'+type+'?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
     <span th:if="${page < maxPages-2}">...</span>
 </div>
 <footer class="footer" id="footer">
@@ -123,12 +123,12 @@
         <a href="http://www.ics.forth.gr/isl/sar/privacy/PrivacyPolicy-ISL_EN.pdf" style="padding-left:0px!important;" target="_blank">Privacy Policy</a>
         | © Copyright 2020 FOUNDATION FOR RESEARCH &amp; TECHNOLOGY - HELLAS, All rights reserved.
         <div class="footer-images">
-            <a href="https://www.ics.forth.gr/isl/"><img src="/resources/isl_logo.png" height="30"></a>
-            <a href="https://www.ics.forth.gr/"><img src="/resources/ics_logo.png" height="30"></a>
+            <a href="https://www.ics.forth.gr/isl/"><img src="/elas4rdf/resources/isl_logo.png" height="30"></a>
+            <a href="https://www.ics.forth.gr/"><img src="/elas4rdf/resources/ics_logo.png" height="30"></a>
         </div>
     </div>
 </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="/js/script.js"></script>
+<script src="/elas4rdf/js/script.js"></script>
 </body>
 </html>

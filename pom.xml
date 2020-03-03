@@ -58,7 +58,7 @@
 
 		<!-- WordNet -->
 		<dependency>
-			<groupId>edu.mit</groupId>
+			<groupId>edu.mit </groupId>
 			<artifactId>jwi</artifactId>
 			<version>2.2.3</version>
 		</dependency>
