@@ -26,7 +26,7 @@ $(".tab").on('click',function(){
 $(".entity-result").each(function(index){
     var idString = $(this).data("id");
     var element = $(this);
-    $.get( "/loadimage", { id: idString} )
+    $.get( "/elas4rdf/loadimage", { id: idString} )
       .done(function( data ) {
         if(data != ""){
             element.prepend('<img src="'+data+'">');
