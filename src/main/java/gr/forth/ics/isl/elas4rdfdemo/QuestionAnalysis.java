@@ -101,24 +101,6 @@ public class QuestionAnalysis {
 
         String question = document.text().toLowerCase();
 
-        ArrayList<String> definition_words = new ArrayList<>(Arrays.asList("mean", "meaning", "definition"));
-        ArrayList<String> definition_starting_words = new ArrayList<>(Arrays.asList("what is"));
-
-        Set<String> question_words = getCleanTokens(document);
-        question_words.removeIf(s -> s.length() == 1);
-
-        for (String d_s_word : definition_starting_words) {
-            if (question.startsWith(d_s_word) && question_words.isEmpty()) {
-                return "definition";
-            }
-        }
-
-        for (String d_word : definition_words) {
-            if (question_words.contains(d_word)) {
-                return "definition";
-            }
-        }
-
         ArrayList<String> factoid_words = new ArrayList<>(Arrays.asList("when", "who", "where", "what", "which",
                 "in which", "to which", "on which", "how many", "how much", "show me", "give me", "show", "how", "whom", "in what",
                 "of what", "name a", "for which"));
@@ -137,7 +119,7 @@ public class QuestionAnalysis {
             }
         }
 
-        return "none";
+        return "factoid";//default
     }
 
     /**
@@ -174,9 +156,10 @@ public class QuestionAnalysis {
     public boolean isListQuestion(CoreDocument document, String subject){
 
         List<CoreLabel> tokens = document.tokens();
+        String qString = document.text();
 
         ArrayList<String> list_words = new ArrayList<>(Arrays.asList("all", "list"));
-        ArrayList<String> starting_list_words = new ArrayList<>(Arrays.asList("what", "which", "give"));
+        ArrayList<String> starting_list_words = new ArrayList<>(Arrays.asList("what", "which", "list"));
 
         for (CoreLabel tok : tokens) {
             if (list_words.contains(tok.word().toLowerCase())) {
@@ -185,20 +168,9 @@ public class QuestionAnalysis {
 
         }
 
-        for(int i=0; i<tokens.size(); i++){
-            if (starting_list_words.contains(tokens.get(i).word().toLowerCase())){
-                if(isPlural(tokens.get(i+1))){
-                    return true;
-                }
-                if(isPlural(tokens.get(i+2))){
-                    return true;
-                }
-            }
-        }
-
-        for (CoreLabel tok : tokens) {
-            if (tok.word().toLowerCase().startsWith("wh")) {
-                if(subject.toLowerCase().endsWith("s")) return true;
+        for (String slw : starting_list_words) {
+            if (qString.toLowerCase().startsWith(slw)) {
+                if(isPlural(subject)) return true;
             }
         }
 
@@ -208,20 +180,28 @@ public class QuestionAnalysis {
     /**
      * Function which attempts to detect if a word is plural by comparing the lemma of the word with the original word
      *
-     * @param token
+     * @param s
      * @return
      */
-    public boolean isPlural(CoreLabel token){
+    public boolean isPlural(String s){
 
-        String wordLemma = token.lemma();
+        if(s != null && !s.isEmpty()){
+            CoreDocument doc = new CoreDocument(s);
+            simple_pipeline.annotate(doc);
+            CoreLabel token = doc.tokens().get(0);
 
-        String word = token.word();
+            //only works for nouns
+            if(doc.sentences().get(0).posTags().get(0).startsWith("N")) {
+                String wordLemma = token.lemma().toLowerCase();
 
-        if(wordLemma.equals(word)){
-            return false;
-        } else {
-            return true;
+                String word = token.word().toLowerCase();
+
+                if (!wordLemma.equals(word)) {
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     /**

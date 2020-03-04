@@ -56,6 +56,19 @@ public class ResultTriple {
         }else{
             clean = uri;
         }
+
+        if(clean.length() > 1){
+            clean = Character.toUpperCase(clean.charAt(0)) + clean.substring(1);
+
+            for (int i = 0; i < clean.length(); i++){
+                char c = clean.charAt(i);
+                if(c == '_'){
+                    clean = clean.substring(0,i) + "_" + Character.toUpperCase(clean.charAt(i+1)) + clean.substring(i+2);
+                }
+            }
+        }
+
+
         return clean.trim();
     }
 

@@ -26,13 +26,13 @@
 </div>
 <div class="tabs-container">
     <div class="tabs">
-        <a th:href="${'/elas4rdf/results/entities?query=' + query}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
-            <img src="/elas4rdf/resources/entitiesicon.png">
-            Entities
-        </a>
         <a th:href="${'/elas4rdf/results/triples?query=' + query}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">
             <img src="/elas4rdf/resources/rdficon.png">
             Triples
+        </a>
+        <a th:href="${'/elas4rdf/results/entities?query=' + query}" th:class="${type == 'entities'} ? 'tab active' : 'tab'">
+            <img src="/elas4rdf/resources/entitiesicon.png">
+            Entities
         </a>
         <a th:href="${'/elas4rdf/results/qa?query=' + query}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
             <img src="/elas4rdf/resources/qaicon.svg">

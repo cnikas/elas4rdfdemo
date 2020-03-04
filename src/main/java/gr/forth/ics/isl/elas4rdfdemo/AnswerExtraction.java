@@ -1,9 +1,6 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
-import gr.forth.ics.isl.elas4rdfdemo.models.Answer;
-import gr.forth.ics.isl.elas4rdfdemo.models.Keyword;
-import gr.forth.ics.isl.elas4rdfdemo.models.ParsedQuestion;
-import gr.forth.ics.isl.elas4rdfdemo.models.Query;
+import gr.forth.ics.isl.elas4rdfdemo.models.*;
 import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtilsSimple;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,7 +18,9 @@ public class AnswerExtraction {
         elas4RDF = new Elas4RDFRest();
     }
 
-    public ArrayList<Answer> extractAnswers(String query){
+    public AnswersContainer extractAnswers(String query){
+
+        AnswersContainer ac = new AnswersContainer();
 
         ParsedQuestion q = qa.analyzeQuestion(query);
 
@@ -36,7 +35,13 @@ public class AnswerExtraction {
         Comparator<Answer> ansComp = Comparator.comparingDouble(Answer::getScore).reversed();
         Collections.sort(answers,ansComp);
 
-        return answers;
+        if(!q.isList() && answers.size() > 0){
+            ac.setTopAnswer(answers.remove(0));
+        }
+        ac.setAnswers(answers);
+        ac.setType(q.getqType());
+        ac.setList(q.isList());
+        return ac;
     }
 
     public JSONObject extractAnswerJson(ParsedQuestion q){

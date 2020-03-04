@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -48,7 +47,7 @@ public class Elas4rdfDemoApplication {
 
 	public TriplesContainer triplesContainer;
 	public EntitiesContainer entitiesContainer;
-	public ArrayList<Answer> answers;
+	public AnswersContainer answersContainer;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Elas4rdfDemoApplication.class, args);
@@ -163,18 +162,24 @@ public class Elas4rdfDemoApplication {
 	@GetMapping("/results/qa")
 	public String handleQa(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page, Model model) {
 
-		answers = sar.getAnswers(query);
+		answersContainer = sar.getAnswers(query);
 
-		int maxPages = answers.size()/10;
+		int maxPages = answersContainer.getAnswers().size()/10;
 		int endIndex = 0;
 		int startIndex = (page-1)*10;
 
 		if(page==maxPages+1){
-			endIndex = answers.size();
+			endIndex = answersContainer.getAnswers().size();
 		} else {
 			endIndex = startIndex+10;
 		}
-		model.addAttribute("answers",answers.subList(startIndex,endIndex));
+
+		if(!answersContainer.isList()){
+			model.addAttribute("topAnswer",answersContainer.getTopAnswer());
+		}
+
+		model.addAttribute("answers",answersContainer.getAnswers().subList(startIndex,endIndex));
+		model.addAttribute("qType",answersContainer.getType());
 
 		ArrayList<Integer> pageList = new ArrayList<>();
 		if(maxPages == 0){
@@ -203,7 +208,7 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("maxPages",maxPages);
 		model.addAttribute("type","qa");
 		model.addAttribute("page",page);
-		return "results";
+		return "qa";
 	}
 
     @GetMapping("/results/graph")
@@ -229,7 +234,7 @@ public class Elas4rdfDemoApplication {
 
 	public String findImageUrl(String id){
 		String url="";
-		String baseURL = "https://en.wikipedia.org/w/api.php?action=query&titles="+id+"&prop=pageimages&format=json&pithumbsize=100";
+		String baseURL = "https://en.wikipedia.org/w/api.php?action=query&titles="+id+"&prop=pageimages&format=json&pithumbsize=200";
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
 			URIBuilder builder = new URIBuilder(baseURL);

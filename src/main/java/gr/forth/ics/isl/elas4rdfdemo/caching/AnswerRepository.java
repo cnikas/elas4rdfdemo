@@ -1,10 +1,8 @@
 package gr.forth.ics.isl.elas4rdfdemo.caching;
 
-import gr.forth.ics.isl.elas4rdfdemo.models.Answer;
-
-import java.util.ArrayList;
+import gr.forth.ics.isl.elas4rdfdemo.models.AnswersContainer;
 
 public interface AnswerRepository {
 
-    public ArrayList<Answer> getAnswers(String query);
+    public AnswersContainer getAnswers(String query);
 }

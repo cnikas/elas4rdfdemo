@@ -44,57 +44,51 @@
     </div>
 </div>
 <div class="results-info">
-    <span>You searched for "<span th:text="${param.query}"></span>" <span th:if="${type != 'qa'}" th:text="${'- found '+maxSize+' '+type}"></span></span>
+    <div class="answer-label" th:if="${topAnswer != null}">Best answer for "<span th:text="${param.query}"></span>"</div>
 </div>
-<div th:if="${type == 'triples'}" class="results-info">
-    <span>Download triples: </span><a th:href="${'/elas4rdf/file?query='+query+'&type=turtle'}">Turtle</a><a th:href="${'/elas4rdf/file?query='+query+'&type=ntriples'}">N-Triples</a><a th:href="${'/elas4rdf/file?query='+query+'&type=jsonld'}">JSON-LD</a>
-</div>
-<div th:if="${type == 'triples'}" class="triples-box">
-    <div th:each="triple : ${triples}">
-        <div class="result">
-            <div class="big-col" th:attr="data-id=${triple.uriToString(triple.subject)}">
-                <div>
-                    <div class="title"><a th:href="${triple.subject}" th:text="${triple.uriToString(triple.subject)}"></a> (dbpedia resource)</div>
-                    <div class="description" th:text="${triple.shorten(triple.subExt)}"></div>
-                    <div class="uri" th:text="${triple.subject}"></div>
-                </div>
-            </div>
-
-            <div class="small-col">
-                <div class="title"><a th:href="${triple.predicate}" th:text="${triple.uriToString(triple.predicate)}"></a> (dbpedia ontology)</div>
-                <div class="uri" th:text="${triple.predicate}"></div>
-            </div>
-
-            <div class="big-col" th:attr="data-id=${triple.uriToString(triple.optObjectUri())}">
-                <div>
-                    <div class="title">
-                        <span th:if="${triple.optObjectUri() != ''}"><a  th:href="${triple.optObjectUri()}" th:text="${triple.shorten(triple.object)}"></a> (dbpedia resource)</span>
-                        <span th:if="${triple.optObjectUri() == ''}" th:text="${triple.shorten(triple.object)}"></span>
-                    </div>
-                    <div class="description" th:text="${triple.shorten(triple.objExt)}"></div>
-                    <div class="uri" th:if="${triple.optObjectUri() != ''}" th:text="${triple.shorten(triple.object)}"></div>
-                </div>
-            </div>
+<div class="answers-box">
+    <div class="top-answer" th:if="${topAnswer != null}">
+        <div class="image-with-label" th:attr="data-id=${topAnswer.uriToString(topAnswer.getAnswerString())}">
+            <h2>
+                <span th:if="${topAnswer.optUri(topAnswer.getAnswerString()) != ''}"><a th:href="${topAnswer.getAnswerString()}" th:text="${topAnswer.uriToString(topAnswer.getAnswerString())}"></a> (dbpedia resource)</span>
+                <span th:if="${topAnswer.optUri(topAnswer.getAnswerString()) == ''}" th:text="${topAnswer.getAnswerString()}"></span>
+            </h2>
         </div>
         <hr>
+        <div>
+            <span>From triple: </span>
+            <span class="origin">
+                        <a th:href="${topAnswer.getTripleOrigin().getString('sub')}" th:text="${topAnswer.getTripleOrigin().getString('sub')}"></a> -
+                        <a th:href="${topAnswer.getTripleOrigin().getString('pre')}" th:text="${topAnswer.getTripleOrigin().getString('pre')}"></a> -
+                        <a th:href="${topAnswer.getTripleOrigin().getString('obj')}" th:text="${topAnswer.getTripleOrigin().getString('obj')}"></a>
+                    </span>
+        </div>
+        <div><span>Relevant keywords: </span> <span class="relevant-keywords" th:text="${topAnswer.relevantKeywordsPretty()}"></span></div>
     </div>
-</div>
-<div th:if="${type == 'entities'}" class="entities-box">
-    <span th:each="entity : ${entities}">
-        <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
+    <div class="answer-label" th:if="${topAnswer != null}">Other candidate answers<hr></div>
+    <div class="answer-label" th:if="${topAnswer == null}">List of answers<hr></div>
+    <span th:each="answer : ${answers}">
+        <div class="answer-result">
             <div>
-                <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (dbpedia resource)</div>
-                <div class="description" th:text="${entity.extClean()}"></div>
-                <div class="uri" th:text="${entity.entity}"></div>
+                <div class="title">
+                    <span th:if="${answer.optUri(answer.getAnswerString()) != ''}"><a th:href="${answer.getAnswerString()}" th:text="${answer.uriToString(answer.getAnswerString())}"></a> (dbpedia resource)</span>
+                    <span th:if="${answer.optUri(answer.getAnswerString()) == ''}" th:text="${answer.getAnswerString()}"></span>
+                    -
+                    <span th:text="${answer.getScore()}"></span>
+                </div>
+                <div>
+                    <span>From triple: </span>
+                    <span class="origin">
+                        <a th:href="${answer.getTripleOrigin().getString('sub')}" th:text="${answer.getTripleOrigin().getString('sub')}"></a> -
+                        <a th:href="${answer.getTripleOrigin().getString('pre')}" th:text="${answer.getTripleOrigin().getString('pre')}"></a> -
+                        <a th:href="${answer.getTripleOrigin().getString('obj')}" th:text="${answer.getTripleOrigin().getString('obj')}"></a>
+                    </span>
+                </div>
+                <div><span>Relevant keywords: </span> <span class="relevant-keywords" th:text="${answer.relevantKeywordsPretty()}"></span></div>
             </div>
         </div>
         <hr>
     </span>
-</div>
-<div class="pagination">
-    Page:
-    <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'/elas4rdf/results/'+type+'?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
-    <span th:if="${page < maxPages-2}">...</span>
 </div>
 <footer class="footer" id="footer">
     <div class="copyright">

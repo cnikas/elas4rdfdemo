@@ -33,3 +33,25 @@ $(".entity-result").each(function(index){
         }
       });
 });
+
+$(".image-with-label").each(function(index){
+    var idString = $(this).data("id");
+    var element = $(this);
+    $.get( "/elas4rdf/loadimage", { id: idString} )
+      .done(function( data ) {
+        if(data != ""){
+            element.prepend('<img src="'+data+'">');
+        }
+      });
+});
+
+$(".big-col").each(function(index){
+    var idString = $(this).data("id");
+    var element = $(this);
+    $.get( "/elas4rdf/loadimage", { id: idString} )
+      .done(function( data ) {
+        if(data != ""){
+            element.prepend('<img src="'+data+'">');
+        }
+      });
+});
