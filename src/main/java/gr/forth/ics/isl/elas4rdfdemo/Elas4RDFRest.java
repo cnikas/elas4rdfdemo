@@ -127,6 +127,11 @@ public class Elas4RDFRest {
             HttpResponse response = client.execute(request);
 
             String json_string = EntityUtils.toString(response.getEntity());
+            try{
+                new JSONObject(json_string);
+            } catch(JSONException ex){
+                return null;
+            }
             responseObject = new JSONObject(json_string);
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
