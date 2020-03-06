@@ -83,7 +83,7 @@
     <span th:each="entity : ${entities}">
         <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
             <div>
-                <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (dbpedia resource) - Score: <span th:text="${entity.getScoreClean()}"></span></div>
+                <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (DBpedia resource) - Score: <span th:text="${entity.getScoreClean()}"></span></div>
                 <div class="description" th:text="${entity.extClean()}"></div>
                 <div class="uri" th:text="${entity.entity}"></div>
             </div>

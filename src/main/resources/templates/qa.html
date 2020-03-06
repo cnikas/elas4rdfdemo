@@ -50,7 +50,7 @@
     <div class="top-answer" th:if="${topAnswer != null}">
         <div class="image-with-label" th:attr="data-id=${topAnswer.uriToString(topAnswer.getAnswerString())}">
             <h2>
-                <span th:if="${topAnswer.optUri(topAnswer.getAnswerString()) != ''}"><a th:href="${topAnswer.getAnswerString()}" th:text="${topAnswer.uriToString(topAnswer.getAnswerString())}"></a> (dbpedia resource)</span>
+                <span th:if="${topAnswer.optUri(topAnswer.getAnswerString()) != ''}"><a th:href="${topAnswer.getAnswerString()}" th:text="${topAnswer.uriToString(topAnswer.getAnswerString())}"></a> (DBpedia resource)</span>
                 <span th:if="${topAnswer.optUri(topAnswer.getAnswerString()) == ''}" th:text="${topAnswer.getAnswerString()}"></span>
                 -
                 Score: <span th:text="${topAnswer.getScoreClean()}"></span>
@@ -73,7 +73,7 @@
         <div class="answer-result">
             <div>
                 <div class="title">
-                    <span th:if="${answer.optUri(answer.getAnswerString()) != ''}"><a th:href="${answer.getAnswerString()}" th:text="${answer.uriToString(answer.getAnswerString())}"></a> (dbpedia resource)</span>
+                    <span th:if="${answer.optUri(answer.getAnswerString()) != ''}"><a th:href="${answer.getAnswerString()}" th:text="${answer.uriToString(answer.getAnswerString())}"></a> (DBpedia resource)</span>
                     <span th:if="${answer.optUri(answer.getAnswerString()) == ''}" th:text="${answer.getAnswerString()}"></span>
                     -
                     Score: <span th:text="${answer.getScoreClean()}"></span>
