@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class KeywordSearch {
     public Elas4RDFRest elas4RDFRest;
@@ -20,11 +21,17 @@ public class KeywordSearch {
     public TriplesContainer searchTriples(String query){
         TriplesContainer tc = new TriplesContainer();
         ArrayList<ResultTriple> triples = new ArrayList<>();
+        HashSet<String> uniqueTriples = new HashSet<>();
         JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"terms_eindex","triples");
         JSONArray ja = jo.getJSONObject("results").getJSONArray("triples");
         for(int i=0; i < ja.length(); i++){
             JSONObject object = ja.getJSONObject(i);
-            triples.add(new ResultTriple(object.getString("sub"),object.getString("pre"),object.getString("obj"),object.getString("sub_ext"),object.getString("obj_ext")));
+            //to remove duplicate triples with same subject after removal of -,_ characters and same predicate.
+            String uniqueConcatString = object.getString("sub").replaceAll("[-_]","")+object.getString("pre");
+            if(!uniqueTriples.contains(uniqueConcatString)){
+                triples.add(new ResultTriple(object.getString("sub"),object.getString("pre"),object.getString("obj"),object.getString("sub_ext"),object.getString("obj_ext")));
+                uniqueTriples.add(uniqueConcatString);
+            }
         }
         tc.setTriples(triples);
         tc.setMaxSize(jo.getJSONObject("results").getInt("total_triples"));
