@@ -54,21 +54,21 @@
         <div class="result">
             <div class="big-col" th:attr="data-id=${triple.uriToString(triple.subject)}">
                 <div>
-                    <div class="title"><a th:href="${triple.subject}" th:text="${triple.uriToString(triple.subject)}"></a> (dbpedia resource)</div>
+                    <div class="title"><a th:href="${triple.subject}" th:text="${triple.uriToString(triple.subject)}"></a> <span th:text="${triple.getNameSpace(triple.subject)}"></span></div>
                     <div class="description" th:text="${triple.shorten(triple.subExt)}"></div>
                     <div class="uri" th:text="${triple.subject}"></div>
                 </div>
             </div>
 
             <div class="small-col">
-                <div class="title"><a th:href="${triple.predicate}" th:text="${triple.uriToString(triple.predicate)}"></a> (dbpedia ontology)</div>
+                <div class="title"><a th:href="${triple.predicate}" th:text="${triple.uriToString(triple.predicate)}"></a> <span th:text="${triple.getNameSpace(triple.predicate)}"></span></div>
                 <div class="uri" th:text="${triple.predicate}"></div>
             </div>
 
             <div class="big-col" th:attr="data-id=${triple.uriToString(triple.optObjectUri())}">
                 <div>
                     <div class="title">
-                        <span th:if="${triple.optObjectUri() != ''}"><a  th:href="${triple.optObjectUri()}" th:text="${triple.uriToString(triple.object)}"></a> (dbpedia resource)</span>
+                        <span th:if="${triple.optObjectUri() != ''}"><a  th:href="${triple.optObjectUri()}" th:text="${triple.uriToString(triple.object)}"></a> <span th:text="${triple.getNameSpace(triple.object)}"></span></span>
                         <span th:if="${triple.optObjectUri() == ''}" th:text="${triple.shorten(triple.object)}"></span>
                     </div>
                     <div class="description" th:text="${triple.shorten(triple.objExt)}"></div>

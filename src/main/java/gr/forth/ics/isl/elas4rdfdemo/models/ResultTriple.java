@@ -98,4 +98,15 @@ public class ResultTriple {
         this.subExt = subExt;
         this.objExt = objExt;
     }
+
+    public String getNameSpace(String s){
+        if(s.startsWith("http://dbpedia.org/resource"))
+            return "(DBpedia resource)";
+        else if(s.startsWith("http://dbpedia.org/ontology"))
+            return "(DBpedia ontology)";
+        else if(s.startsWith("http://www.w3.org/2000/01/rdf-schema"))
+            return "(RDF Schema)";
+        else
+            return "";
+    }
 }
