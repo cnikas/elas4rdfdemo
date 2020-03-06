@@ -1,9 +1,8 @@
 package gr.forth.ics.isl.elas4rdfdemo.models;
 
-import edu.stanford.nlp.pipeline.CoreDocument;
-import gr.forth.ics.isl.elas4rdfdemo.Main;
-import gr.forth.ics.isl.elas4rdfdemo.Wordnet;
-
+/*
+* Model class for a keyword.
+ */
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -91,6 +90,7 @@ public class Keyword {
         return joined;
     }
 
+    //for elasticsearch query
     public String generateQueryTerm(){
         ArrayList<String> parsedMwes = new ArrayList<>();
         for(String word : this.setOfAllWords()){

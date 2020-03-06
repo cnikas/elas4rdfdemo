@@ -282,4 +282,9 @@ public class Elas4rdfDemoApplication {
 		out.close();
 	}
 
+	@GetMapping("/about")
+	public String aboutPage(){
+		return "about";
+	}
+
 }

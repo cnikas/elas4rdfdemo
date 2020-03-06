@@ -77,7 +77,7 @@ public class AnswerExtraction {
 
     /*
     *For each Keyword, check if a uri exists, then find the relevant triples from the results, and
-    *add their object to the set of answers. Also, if the sub_ext (rdfs:comment) of the uri is relevant, add it to the set of answers.
+    *add their object to the set of answers.
      */
     public ArrayList<Answer> extractAnswerWithEntity(ParsedQuestion q){
 

@@ -1,8 +1,22 @@
 package gr.forth.ics.isl.elas4rdfdemo.models;
 
+import java.text.DecimalFormat;
+
 public class ResultEntity {
     public String ext;
     public String entity;
+    public double score;
+
+    public String getScoreClean() {
+
+        DecimalFormat df = new DecimalFormat("0.000");
+        String angleFormated = df.format(this.score);
+        return angleFormated;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
 
     public String getImageUrl() {
         return imageUrl;
@@ -14,9 +28,10 @@ public class ResultEntity {
 
     public String imageUrl;
 
-    public ResultEntity(String ext, String entity){
+    public ResultEntity(String ext, String entity, double score){
         this.ext = ext;
         this.entity = entity;
+        this.score= score;
     }
 
     public String uriToString(String uri){

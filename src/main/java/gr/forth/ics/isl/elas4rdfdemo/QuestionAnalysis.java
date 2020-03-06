@@ -16,6 +16,9 @@ import static gr.forth.ics.isl.elas4rdfdemo.Main.syntax_pipeline;
 
 import java.util.*;
 
+/*
+* This class contains methods to analyze a question and create a ParsedQuestion
+ */
 public class QuestionAnalysis {
 
     public QuestionAnalysis() {

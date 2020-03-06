@@ -2,6 +2,9 @@ package gr.forth.ics.isl.elas4rdfdemo.models;
 
 import java.util.ArrayList;
 
+/*
+* Container class for all answers returned by a query
+ */
 public class AnswersContainer {
     private Answer topAnswer;
     private ArrayList<Answer> answers;

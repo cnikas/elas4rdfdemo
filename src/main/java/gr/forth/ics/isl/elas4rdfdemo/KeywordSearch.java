@@ -38,7 +38,7 @@ public class KeywordSearch {
         JSONArray ja = jo.getJSONObject("results").getJSONArray("entities");
         for(int i=0; i < ja.length(); i++){
             JSONObject object = ja.getJSONObject(i);
-            entities.add(new ResultEntity(object.getString("ext"),object.getString("entity")));
+            entities.add(new ResultEntity(object.getString("ext"),object.getString("entity"),object.getDouble("score")));
         }
         ec.setEntities(entities);
         ec.setMaxSize(jo.getJSONObject("results").getInt("total_entities"));

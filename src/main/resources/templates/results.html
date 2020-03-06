@@ -33,13 +33,13 @@
             <img src="/elas4rdf/resources/entitiesicon.png">
             Entities
         </a>
-        <a th:href="${'/elas4rdf/results/qa?query=' + query}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
-            <img src="/elas4rdf/resources/qaicon.svg">
-            QA
-        </a>
         <a th:href="${'/elas4rdf/results/graph?query=' + query}" th:class="${type == 'graph'} ? 'tab active' : 'tab'">
             <img src="/elas4rdf/resources/graphicon.svg">
             Graph
+        </a>
+        <a th:href="${'/elas4rdf/results/qa?query=' + query}" th:class="${type == 'qa'} ? 'tab active' : 'tab'">
+            <img src="/elas4rdf/resources/qaicon.svg">
+            QA
         </a>
     </div>
 </div>
@@ -68,7 +68,7 @@
             <div class="big-col" th:attr="data-id=${triple.uriToString(triple.optObjectUri())}">
                 <div>
                     <div class="title">
-                        <span th:if="${triple.optObjectUri() != ''}"><a  th:href="${triple.optObjectUri()}" th:text="${triple.shorten(triple.object)}"></a> (dbpedia resource)</span>
+                        <span th:if="${triple.optObjectUri() != ''}"><a  th:href="${triple.optObjectUri()}" th:text="${triple.uriToString(triple.object)}"></a> (dbpedia resource)</span>
                         <span th:if="${triple.optObjectUri() == ''}" th:text="${triple.shorten(triple.object)}"></span>
                     </div>
                     <div class="description" th:text="${triple.shorten(triple.objExt)}"></div>
@@ -83,7 +83,7 @@
     <span th:each="entity : ${entities}">
         <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
             <div>
-                <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (dbpedia resource)</div>
+                <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> (dbpedia resource) - Score: <span th:text="${entity.getScoreClean()}"></span></div>
                 <div class="description" th:text="${entity.extClean()}"></div>
                 <div class="uri" th:text="${entity.entity}"></div>
             </div>
@@ -96,18 +96,17 @@
     <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'/elas4rdf/results/'+type+'?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
     <span th:if="${page < maxPages-2}">...</span>
 </div>
-<footer class="footer" id="footer">
-    <div class="copyright">
-        <a href="http://www.ics.forth.gr/isl/sar/privacy/TermsOfUse-ISL_EN.pdf" target="_blank">Terms of Use</a>
-        |
-        <a href="http://www.ics.forth.gr/isl/sar/privacy/PrivacyPolicy-ISL_EN.pdf" style="padding-left:0px!important;" target="_blank">Privacy Policy</a>
-        | © Copyright 2020 FOUNDATION FOR RESEARCH &amp; TECHNOLOGY - HELLAS, All rights reserved.
-        <div class="footer-images">
-            <a href="https://www.ics.forth.gr/isl/"><img src="/elas4rdf/resources/isl_logo.png" height="30"></a>
-            <a href="https://www.ics.forth.gr/"><img src="/elas4rdf/resources/ics_logo.png" height="30"></a>
-        </div>
+<div class="copyright">
+    <a class="about-link" href="/elas4rdf/about">About</a>
+    <a href="http://www.ics.forth.gr/isl/sar/privacy/TermsOfUse-ISL_EN.pdf" target="_blank">Terms of Use</a>
+    |
+    <a href="http://www.ics.forth.gr/isl/sar/privacy/PrivacyPolicy-ISL_EN.pdf" style="padding-left:0px!important;" target="_blank">Privacy Policy</a>
+    | © Copyright 2020 FOUNDATION FOR RESEARCH &amp; TECHNOLOGY - HELLAS, All rights reserved.
+    <div class="footer-images">
+        <a href="https://www.ics.forth.gr/isl/"><img src="/elas4rdf/resources/isl_logo.png" height="30"></a>
+        <a href="https://www.ics.forth.gr/"><img src="/elas4rdf/resources/ics_logo.png" height="30"></a>
     </div>
-</footer>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="/elas4rdf/js/script.js"></script>
 </body>

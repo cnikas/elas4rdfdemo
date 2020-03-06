@@ -3,8 +3,12 @@ package gr.forth.ics.isl.elas4rdfdemo.models;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+/*
+*Model class for an answer retrieved by the system
+ */
 public class Answer {
     private String answerString;
     private JSONObject tripleOrigin;
@@ -64,6 +68,9 @@ public class Answer {
         return jo;
     }
 
+    /*
+    * Returns a string if it is a uri.
+     */
     public String optUri(String s){
         if(s.startsWith("http"))
             return s;
@@ -71,6 +78,9 @@ public class Answer {
             return "";
     }
 
+    /*
+    * Converts a uri or literal to a human-readable string
+     */
     public String uriToString(String uri){
         String clean = "";
         if(uri.startsWith("http")){
@@ -83,11 +93,24 @@ public class Answer {
         return clean.trim();
     }
 
+    /*
+    * Returns the origin triple in html.
+     */
     public String originPretty(){
         return "<a href=\""+tripleOrigin.getString("sub")+"\">"+tripleOrigin.getString("sub")+"</a>" + " - " + "<a href=\""+tripleOrigin.getString("pre")+"\">"+tripleOrigin.getString("pre")+"</a>" + " - " + "<a href=\""+tripleOrigin.getString("pre")+"\">"+tripleOrigin.getString("pre")+"</a>";
     }
 
+    /*
+    * The list of relevant keywords
+     */
     public String relevantKeywordsPretty(){
         return String.join(", ",relevantKeywords);
+    }
+
+    public String getScoreClean() {
+
+        DecimalFormat df = new DecimalFormat("0.000");
+        String angleFormated = df.format(this.score);
+        return angleFormated;
     }
 }

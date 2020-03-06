@@ -55,3 +55,10 @@ $(".big-col").each(function(index){
         }
       });
 });
+
+$("#searchForm").submit(function(e){
+    if($(this).find('input[name="query"]').val() == ''){
+        e.preventDefault();
+    }
+
+});

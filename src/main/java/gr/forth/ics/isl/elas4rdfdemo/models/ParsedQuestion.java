@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+/*
+* Model class for a question after analysis.
+ */
 public class ParsedQuestion {
     private String question;
     private boolean isList;
