@@ -1,14 +1,14 @@
 package gr.forth.ics.isl.elas4rdfdemo.caching;
 
 import gr.forth.ics.isl.elas4rdfdemo.AnswerExtraction;
-import gr.forth.ics.isl.elas4rdfdemo.models.Answer;
 import gr.forth.ics.isl.elas4rdfdemo.models.AnswersContainer;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
-import java.util.ArrayList;
 
 @Component
+@SessionScope
 public class SimpleAnswerRepository implements AnswerRepository{
 
     @Override

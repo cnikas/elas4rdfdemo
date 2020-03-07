@@ -35,7 +35,6 @@ import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
 @SpringBootApplication
 @Controller
-@EnableCaching(proxyTargetClass=true)
 public class Elas4rdfDemoApplication {
 
 	@Autowired
@@ -217,7 +216,7 @@ public class Elas4rdfDemoApplication {
 		triplesContainer = str.searchTriples(query);
 		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),size);
 
-		String jsonGraph = ae.createModelFromTriples().toString();
+		String jsonGraph = ae.createModelFromTriples();
 
 		model.addAttribute("query",query);
         model.addAttribute("type","graph");

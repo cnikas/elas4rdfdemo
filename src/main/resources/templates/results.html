@@ -45,8 +45,9 @@
 </div>
 <div class="results-info">
     <span>You searched for "<span th:text="${param.query}"></span>" <span th:if="${type != 'qa'}" th:text="${'- found '+maxSize+' '+type}"></span></span>
+    <div th:if="${maxSize == 0}">No results.</div>
 </div>
-<div th:if="${type == 'triples'}" class="results-info">
+<div th:if="${type == 'triples' && maxSize != 0}" class="results-info">
     <span>Download triples: </span><a th:href="${'/elas4rdf/file?query='+query+'&type=turtle'}">Turtle</a><a th:href="${'/elas4rdf/file?query='+query+'&type=ntriples'}">N-Triples</a><a th:href="${'/elas4rdf/file?query='+query+'&type=jsonld'}">JSON-LD</a>
 </div>
 <div th:if="${type == 'triples'}" class="triples-box">
@@ -91,7 +92,7 @@
         <hr>
     </span>
 </div>
-<div class="pagination">
+<div th:if="${maxSize != 0}" class="pagination">
     Page:
     <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'/elas4rdf/results/'+type+'?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
     <span th:if="${page < maxPages-2}">...</span>

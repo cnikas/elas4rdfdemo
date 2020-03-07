@@ -16,17 +16,6 @@ var labelType, useGradients, nativeTextSupport, animate;
 
 })();
 
-/*var Log = {
-  elem: false,
-  write: function(text){
-    if (!this.elem) 
-      this.elem = document.getElementById('log');
-    this.elem.innerHTML = text;
-    this.elem.style.left = (500 - this.elem.offsetWidth / 2) + 'px';
-  }
-};*/
-
-
 function init(){
   var jsonGraph = JSON.parse(json);
   // init data
@@ -57,25 +46,19 @@ function init(){
     Edge: {
       overridable: true,
       color: '#999',
-      lineWidth: 1
+      lineWidth: 1,
     },
     //Native canvas text styling
     Label: {
+      overridable: true,
       type: labelType, //Native or HTML
-      size: 10,
-      style: 'bold',
-      color: "#05419b"
+      size: 11,
+      style: 'bold'
     },
     //Add Tips
     Tips: {
-      enable: true,
+      enable: false,
       onShow: function(tip, node) {
-        //count connections
-        var count = 0;
-        node.eachAdjacency(function() { count++; });
-        //display node info in tooltip
-        tip.innerHTML = "<div class=\"tip-title\">" + node.name + "</div>"
-          + "<div class=\"tip-text\"><b>connections:</b> " + count + "</div>";
       }
     },
     // Add node events
@@ -103,15 +86,10 @@ function init(){
       //Add also a click handler to nodes
       onClick: function(node) {
         if(!node) return;
-        // Build the right column relations list.
-        // This is done by traversing the clicked node connections.
-        var html = "<h4>" + node.name + "</h4><b> connections:</b><ul><li>",
-            list = [];
-        node.eachAdjacency(function(adj){
-          list.push(adj.nodeTo.name);
-        });
-        //append connections information
-        $jit.id('inner-details').innerHTML = html + list.join("</li><li>") + "</li></ul>";
+        console.log(node);
+        if(node.data.isResource){
+            window.open(node.data.link,'_blank');
+        }
       }
     },
     //Number of iterations for the FD algorithm
@@ -120,23 +98,23 @@ function init(){
     levelDistance: 130,
     // Add text to the labels. This method is only triggered
     // on label creation and only for DOM labels (not native canvas ones).
-    onCreateLabel: function(domElement, node){
-      domElement.innerHTML = node.name;
-      var style = domElement.style;
-      style.fontSize = "0.8em";
-      style.color = "#ddd";
-    },
-    // Change node styles when DOM labels are placed
-    // or moved.
-    onPlaceLabel: function(domElement, node){
-      var style = domElement.style;
-      var left = parseInt(style.left);
-      var top = parseInt(style.top);
-      var w = domElement.offsetWidth;
-      style.left = (left - w / 2) + 'px';
-      style.top = (top + 10) + 'px';
-      style.display = '';
-    }
+     onCreateLabel: function(domElement, node){
+          domElement.innerHTML = node.name;
+          var style = domElement.style;
+          style.fontSize = "0.8em";
+          style.color = "#ddd";
+        },
+        // Change node styles when DOM labels are placed
+        // or moved.
+        onPlaceLabel: function(domElement, node){
+          var style = domElement.style;
+          var left = parseInt(style.left);
+          var top = parseInt(style.top);
+          var w = domElement.offsetWidth;
+          style.left = (left - w / 2) + 'px';
+          style.top = (top + 10) + 'px';
+          style.display = '';
+      }
   });
   // load JSON data.
   fd.loadJSON(jsonGraph);
@@ -144,11 +122,8 @@ function init(){
   fd.computeIncremental({
     iter: 40,
     property: 'end',
-    onStep: function(perc){
-      //Log.write(perc + '% loaded...');
-    },
+    onStep: function(perc){},
     onComplete: function(){
-      //Log.write('done');
       fd.animate({
         modes: ['linear'],
         transition: $jit.Trans.Elastic.easeOut,
@@ -156,7 +131,6 @@ function init(){
       });
     }
   });
-  // end
 }
 
 $(document).on('load',init());

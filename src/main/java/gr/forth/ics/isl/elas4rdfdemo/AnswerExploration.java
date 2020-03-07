@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.apache.jena.riot.RDFFormat.*;
 
@@ -69,12 +70,13 @@ public class AnswerExploration {
         return jsonGraph;
     }
 
-    public JSONArray createModelFromTriples(){
+    public String createModelFromTriples(){
 
         if(model == null) return null;
 
         JSONArray jsonGraph = new JSONArray();
 
+        HashSet<String> nodeSet = new HashSet<>();
         ResIterator resi = model.listSubjects();
         while (resi.hasNext()){
             Resource res = resi.next();
@@ -86,15 +88,60 @@ public class AnswerExploration {
                 Statement stmt = stmti.next();
                 adjacencies.put(cleanUriOrLiteral(stmt.getObject().toString()));
             }
+
             nodeObject.put("adjacencies",adjacencies);
-            nodeObject.put("data",new JSONObject("{\"$color\": \"#000\",\"$type\": \"circle\",\"$dim\": 10}"));
+
+            JSONObject nodeData = new JSONObject();
+            nodeData.put("$color","#000");
+            nodeData.put("$type","circle");
+            nodeData.put("$dim",10);
+            nodeData.put("$label-color","#05419b");
+            nodeData.put("link",res.getURI());
+            nodeData.put("isResource",true);
+
+            nodeObject.put("data",nodeData);
             nodeObject.put("name",cleanUriOrLiteral(res.getURI()));
             nodeObject.put("id",cleanUriOrLiteral(res.getURI()));
+            nodeSet.add(cleanUriOrLiteral(res.getURI()));
 
             jsonGraph.put(nodeObject);
         }
 
-        return jsonGraph;
+        resi = model.listSubjects();
+        while (resi.hasNext()) {
+            Resource res = resi.next();
+
+            StmtIterator stmti = res.listProperties();
+
+
+            while (stmti.hasNext()){
+                Statement stmt = stmti.next();
+                if(!nodeSet.contains(cleanUriOrLiteral(stmt.getObject().toString()))){
+                    JSONObject nodeObject = new JSONObject();
+                    JSONObject nodeData = new JSONObject();
+                    nodeData.put("$color","#000");
+                    nodeData.put("$type","circle");
+                    nodeData.put("$dim",10);
+                    if(stmt.getObject().toString().startsWith("http")){
+                        nodeData.put("$label-color","#05419b");
+                        nodeData.put("link",stmt.getObject().toString());
+                        nodeData.put("isResource",true);
+                    } else{
+                        nodeData.put("$label-color","#385723");
+                        nodeData.put("isResource",false);
+                        nodeData.put("link","none");
+                    }
+
+                    nodeObject.put("data",nodeData);
+                    nodeObject.put("name",cleanUriOrLiteral(stmt.getObject().toString()));
+                    nodeObject.put("id",cleanUriOrLiteral(stmt.getObject().toString()));
+                    nodeSet.add(cleanUriOrLiteral(stmt.getObject().toString()));
+                    jsonGraph.put(nodeObject);
+                }
+            }
+        }
+
+        return jsonGraph.toString();
     }
 
     public String createFile(String type){
@@ -114,6 +161,9 @@ public class AnswerExploration {
      */
     public String cleanUriOrLiteral(String uri){
         String clean = "";
+        uri.replaceAll("\\\\","");
+        uri.replaceAll("\"","");
+
         if(uri.startsWith("http")){
             clean = uri.substring(uri.lastIndexOf("/")+1);
         }else if(clean.contains("@")){

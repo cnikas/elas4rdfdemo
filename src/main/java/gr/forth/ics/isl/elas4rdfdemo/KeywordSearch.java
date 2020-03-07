@@ -21,34 +21,62 @@ public class KeywordSearch {
     public TriplesContainer searchTriples(String query){
         TriplesContainer tc = new TriplesContainer();
         ArrayList<ResultTriple> triples = new ArrayList<>();
+        int maxSize = 0;
         HashSet<String> uniqueTriples = new HashSet<>();
         JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"terms_eindex","triples");
-        JSONArray ja = jo.getJSONObject("results").getJSONArray("triples");
-        for(int i=0; i < ja.length(); i++){
-            JSONObject object = ja.getJSONObject(i);
-            //to remove duplicate triples with same subject after removal of -,_ characters and same predicate.
-            String uniqueConcatString = object.getString("sub").replaceAll("[-_]","")+object.getString("pre");
-            if(!uniqueTriples.contains(uniqueConcatString)){
-                triples.add(new ResultTriple(object.getString("sub"),object.getString("pre"),object.getString("obj"),object.getString("sub_ext"),object.getString("obj_ext")));
-                uniqueTriples.add(uniqueConcatString);
+
+        JSONObject resultsObject = null;
+        if(jo != null){
+            resultsObject = jo.optJSONObject("results");
+        }
+        JSONArray ja = null;
+        if( resultsObject != null){
+            ja = resultsObject.optJSONArray("triples");
+            maxSize = resultsObject.optInt("total_triples");
+        }
+
+        if(ja != null){
+            for(int i=0; i < ja.length(); i++){
+                JSONObject object = ja.getJSONObject(i);
+                //to remove duplicate triples with same subject after removal of -,_ characters and same predicate.
+                String uniqueConcatString = object.getString("sub").replaceAll("[-_]","")+object.getString("pre");
+                if(!uniqueTriples.contains(uniqueConcatString)){
+                    triples.add(new ResultTriple(object.getString("sub"),object.getString("pre"),object.getString("obj"),object.getString("sub_ext"),object.getString("obj_ext")));
+                    uniqueTriples.add(uniqueConcatString);
+                }
             }
         }
+
         tc.setTriples(triples);
-        tc.setMaxSize(jo.getJSONObject("results").getInt("total_triples"));
+        tc.setMaxSize(maxSize);
         return tc;
     }
 
     public EntitiesContainer searchEntities(String query){
         EntitiesContainer ec = new EntitiesContainer();
         ArrayList<ResultEntity> entities = new ArrayList<>();
+        int maxSize = 0;
         JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"terms_eindex","entities");
-        JSONArray ja = jo.getJSONObject("results").getJSONArray("entities");
-        for(int i=0; i < ja.length(); i++){
-            JSONObject object = ja.getJSONObject(i);
-            entities.add(new ResultEntity(object.getString("ext"),object.getString("entity"),object.getDouble("score")));
+
+        JSONObject resultsObject = null;
+        if(jo != null){
+            resultsObject = jo.optJSONObject("results");
         }
+        JSONArray ja = null;
+        if( resultsObject != null){
+            ja = resultsObject.optJSONArray("entities");
+            maxSize = resultsObject.optInt("total_entities");
+        }
+
+        if(ja != null){
+            for(int i=0; i < ja.length(); i++){
+                JSONObject object = ja.getJSONObject(i);
+                entities.add(new ResultEntity(object.getString("ext"),object.getString("entity"),object.getDouble("score")));
+            }
+        }
+
         ec.setEntities(entities);
-        ec.setMaxSize(jo.getJSONObject("results").getInt("total_entities"));
+        ec.setMaxSize(maxSize);
         return ec;
     }
 }

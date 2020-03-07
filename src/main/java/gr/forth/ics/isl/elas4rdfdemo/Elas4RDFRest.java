@@ -14,7 +14,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -133,11 +132,11 @@ public class Elas4RDFRest {
                 return null;
             }
             responseObject = new JSONObject(json_string);
+            return responseObject;
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
+            return null;
         }
-
-        return responseObject;
     }
 
     public JSONObject generalRequestWithBody(String body, String index, int size){
@@ -166,11 +165,12 @@ public class Elas4RDFRest {
                 return null;
             }
             responseObject = new JSONObject(json_string);
+            return responseObject;
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
+            return null;
         }
 
-        return responseObject;
 }
 
 
