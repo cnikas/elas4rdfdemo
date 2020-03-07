@@ -41,7 +41,8 @@ function init(){
     // with dollar prefixed data-properties in the
     // JSON structure.
     Node: {
-      overridable: true
+      overridable: true,
+      color: '#999'
     },
     Edge: {
       overridable: true,
@@ -52,7 +53,7 @@ function init(){
     Label: {
       overridable: true,
       type: labelType, //Native or HTML
-      size: 11,
+      size: 12,
       style: 'bold'
     },
     //Add Tips
@@ -66,8 +67,10 @@ function init(){
       enable: true,
       type: 'Native',
       //Change cursor style when hovering a node
-      onMouseEnter: function() {
-        fd.canvas.getElement().style.cursor = 'move';
+      onMouseEnter: function(node) {
+        if(node.data.isResource){
+            fd.canvas.getElement().style.cursor = 'pointer';
+        }
       },
       onMouseLeave: function() {
         fd.canvas.getElement().style.cursor = '';

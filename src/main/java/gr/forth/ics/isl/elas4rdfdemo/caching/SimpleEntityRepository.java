@@ -11,8 +11,8 @@ import org.springframework.web.context.annotation.SessionScope;
 public class SimpleEntityRepository implements EntityRepository {
     @Override
     @Cacheable("entities")
-    public EntitiesContainer searchEntities(String query) {
+    public EntitiesContainer searchEntities(String query, int size) {
         KeywordSearch ks = new KeywordSearch();
-        return ks.searchEntities(query);
+        return ks.searchEntities(query, size);
     }
 }

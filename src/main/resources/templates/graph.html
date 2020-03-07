@@ -45,13 +45,15 @@
     </div>
 </div>
 <div class="results-info">
-    <span>You searched for "<span th:text="${param.query}"></span>" - <b th:text="${type}"></b></span>
+    <span>You searched for "<span th:text="${param.query}"></span>"</span>
 </div>
 <div class="results-info">
-    <form action="/elas4rdf/results/graph">
+    <form id="graphSizeForm" action="/elas4rdf/results/graph">
         <input name="query" type="hidden" th:value="${query}">
         <label for="triplesNumber">Number of triples used:</label>
         <input id="triplesNumber" type="text" th:value="${size}" name="size">
+        <button class="add-remove-btn" id="add10">+10</button>
+        <button class="add-remove-btn" id="remove10">-10</button>
     </form>
 </div>
 <div id="graph-container">

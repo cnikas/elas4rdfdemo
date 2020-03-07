@@ -92,7 +92,6 @@ public class AnswerExploration {
             nodeObject.put("adjacencies",adjacencies);
 
             JSONObject nodeData = new JSONObject();
-            nodeData.put("$color","#000");
             nodeData.put("$type","circle");
             nodeData.put("$dim",10);
             nodeData.put("$label-color","#05419b");
@@ -119,7 +118,6 @@ public class AnswerExploration {
                 if(!nodeSet.contains(cleanUriOrLiteral(stmt.getObject().toString()))){
                     JSONObject nodeObject = new JSONObject();
                     JSONObject nodeData = new JSONObject();
-                    nodeData.put("$color","#000");
                     nodeData.put("$type","circle");
                     nodeData.put("$dim",10);
                     if(stmt.getObject().toString().startsWith("http")){
@@ -161,16 +159,16 @@ public class AnswerExploration {
      */
     public String cleanUriOrLiteral(String uri){
         String clean = "";
-        uri.replaceAll("\\\\","");
-        uri.replaceAll("\"","");
 
         if(uri.startsWith("http")){
             clean = uri.substring(uri.lastIndexOf("/")+1);
         }else if(clean.contains("@")){
-            clean = clean.substring(0,clean.indexOf("@"));
+            clean = uri.substring(0,clean.indexOf("@"));
         }else{
             clean = uri;
         }
+        clean = clean.replaceAll("\\\\","");
+        clean = clean.replaceAll("\"","");
         return clean.trim();
     }
 }

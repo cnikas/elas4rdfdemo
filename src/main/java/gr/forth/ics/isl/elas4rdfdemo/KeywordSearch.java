@@ -52,11 +52,11 @@ public class KeywordSearch {
         return tc;
     }
 
-    public EntitiesContainer searchEntities(String query){
+    public EntitiesContainer searchEntities(String query, int size){
         EntitiesContainer ec = new EntitiesContainer();
         ArrayList<ResultEntity> entities = new ArrayList<>();
         int maxSize = 0;
-        JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"terms_eindex","entities");
+        JSONObject jo = elas4RDFRest.simpleSearch(query,size,"terms_eindex","entities");
 
         JSONObject resultsObject = null;
         if(jo != null){

@@ -119,15 +119,15 @@ public class AnswerExtraction {
         JSONObject results = elas4RDF.executeMultiMatchQuery(uri,term,"terms_bindex",Integer.parseInt(props.getProperty("multiMatchQuerySize")),type);
 
         JSONObject resultsObject = null;
-        if(results      != null){
-            resultsObject = results.optJSONObject("results");
-        }
-        JSONArray resultsArray = null;
-        if( resultsObject != null){
-            resultsArray = resultsObject.optJSONArray("triples");
-        }
+            if(results      != null){
+                resultsObject = results.optJSONObject("results");
+            }
+            JSONArray resultsArray = null;
+            if( resultsObject != null){
+                resultsArray = resultsObject.optJSONArray("triples");
+            }
 
-        if(resultsArray != null){
+            if(resultsArray != null){
             for(int i=0; i<resultsArray.length(); i++){
                 String foundPredicate = cleanUriOrLiteral(resultsArray.getJSONObject(i).getString("pre"));
                 boolean predicateRelevant = false;

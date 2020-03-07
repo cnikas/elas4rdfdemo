@@ -108,13 +108,13 @@ public class Elas4rdfDemoApplication {
 	}
 
 	@GetMapping("/results/entities")
-	public String handleEntities(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page, Model model) {
+	public String handleEntities(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page,  @RequestParam(name="size", required = true, defaultValue="1000") int size, Model model) {
 
 		int maxPages = 0;
 		int endIndex = 0;
 		int startIndex = (page-1)*10;
 
-		entitiesContainer = ser.searchEntities(query);
+		entitiesContainer = ser.searchEntities(query,size);
 
 		maxPages = entitiesContainer.getEntities().size()/10;
 		if(page==maxPages+1){
@@ -151,6 +151,7 @@ public class Elas4rdfDemoApplication {
 		//String jsonAnswer = ae.extractAnswerJson(qa.analyzeQuestion(query)).toString();
 		model.addAttribute("pages", pageList);
 		model.addAttribute("maxPages", maxPages);
+		model.addAttribute("size",size);
 		model.addAttribute("query",query);
 		model.addAttribute("type","entities");
 		model.addAttribute("page",page);

@@ -62,3 +62,15 @@ $("#searchForm").submit(function(e){
     }
 
 });
+
+$("#add10").click(function(){
+    $("#graphSizeForm").find('input[name="size"]').val(parseInt($("#graphSizeForm").find('input[name="size"]').val()) + 10);
+    $("#graphSizeForm").submit();
+});
+
+$("#remove10").click(function(){
+    if(parseInt($("#graphSizeForm").find('input[name="size"]').val()) > 10){
+        $("#graphSizeForm").find('input[name="size"]').val(parseInt($("#graphSizeForm").find('input[name="size"]').val()) - 10);
+        $("#graphSizeForm").submit();
+    }
+});

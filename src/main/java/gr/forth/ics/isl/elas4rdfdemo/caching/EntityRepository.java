@@ -4,5 +4,5 @@ import gr.forth.ics.isl.elas4rdfdemo.models.EntitiesContainer;
 
 public interface EntityRepository {
 
-    public EntitiesContainer searchEntities(String query);
+    public EntitiesContainer searchEntities(String query, int size);
 }
