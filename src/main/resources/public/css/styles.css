@@ -18,7 +18,7 @@ button, input[type="submit"], input[type="reset"] {
     margin: 0 auto;
     display:flex;
     flex-flow: column nowrap;
-
+    align-items: center;
 }
 .logo{
     height:96px;
@@ -80,9 +80,12 @@ footer{
     justify-content:center;
     flex-wrap: wrap;
     width: 100%;
-    background: #888;
+    background: #333;
     color:#fff;
     margin-top: auto;
+}
+.copyright a{
+    color: #fff;
 }
 .copyright img{
     padding-right: 5px;
@@ -341,8 +344,8 @@ a{
     }
 }
 .about-section{
-    text-align: center;
-    margin: 0 auto;
+    text-align: left;
+    margin-left:20px;
 }
 .about-section ul{
     text-align: left;
@@ -396,4 +399,12 @@ a{
     margin-left: 3px;
     display: flex;
     flex-direction: column;
+}
+#searchForm{
+    width:100%;
+}
+.home-description{
+    margin-top: 3px;
+    color: #999;
+    font-size:16px;
 }
