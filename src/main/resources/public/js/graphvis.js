@@ -48,6 +48,7 @@ function init(){
       overridable: true,
       color: '#999',
       lineWidth: 1,
+      type: 'labeled'
     },
     //Native canvas text styling
     Label: {
@@ -135,5 +136,21 @@ function init(){
     }
   });
 }
+
+ $jit.ForceDirected.Plot.EdgeTypes.implement({
+   'labeled': {
+     'render': function(adj, canvas) {
+     this.edgeTypes.line.render.call(this, adj, canvas);
+       var data = adj.data;
+       if(data.labeltext) {
+         var ctx = canvas.getCtx();
+         var posFr = adj.nodeFrom.pos.getc(true);
+         var posTo = adj.nodeTo.pos.getc(true);
+         ctx.fillStyle = "#333";
+         ctx.fillText(data.labeltext, (posFr.x + posTo.x)/2, (posFr.y + posTo.y)/2);
+       }// if data.labeltext
+     }
+   }
+ });
 
 $(document).on('load',init());

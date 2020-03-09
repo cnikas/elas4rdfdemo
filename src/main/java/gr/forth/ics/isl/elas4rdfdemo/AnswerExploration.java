@@ -33,42 +33,6 @@ public class AnswerExploration {
             }
         }
     }
-    public JSONArray createModel(ArrayList<Answer> allTriples){
-
-        if(allTriples == null){
-            return null;
-        }
-
-        // create an empty Model
-        Model model = ModelFactory.createDefaultModel();
-        for(Answer ans : allTriples){
-            Property pp = new PropertyImpl(ans.getTripleOrigin().getString("pre"));
-            model.createResource(ans.getTripleOrigin().getString("sub")).addProperty(pp,ans.getTripleOrigin().getString("obj"));
-        }
-
-        JSONArray jsonGraph = new JSONArray();
-
-        ResIterator resi = model.listSubjects();
-        while (resi.hasNext()){
-            Resource res = resi.next();
-            StmtIterator stmti = res.listProperties();
-
-            JSONObject nodeObject = new JSONObject();
-            JSONArray adjacencies = new JSONArray();
-            while (stmti.hasNext()){
-                Statement stmt = stmti.next();
-                adjacencies.put(cleanUriOrLiteral(stmt.getObject().toString()));
-            }
-            nodeObject.put("adjacencies",adjacencies);
-            nodeObject.put("data",new JSONObject("{\"$color\": \"#000\",\"$type\": \"circle\",\"$dim\": 10}"));
-            nodeObject.put("name",cleanUriOrLiteral(res.getURI()));
-            nodeObject.put("id",cleanUriOrLiteral(res.getURI()));
-
-            jsonGraph.put(nodeObject);
-        }
-        //RDFDataMgr.write(System.out, model, TURTLE_PRETTY);
-        return jsonGraph;
-    }
 
     public String createModelFromTriples(){
 
@@ -86,7 +50,10 @@ public class AnswerExploration {
             JSONArray adjacencies = new JSONArray();
             while (stmti.hasNext()){
                 Statement stmt = stmti.next();
-                adjacencies.put(cleanUriOrLiteral(stmt.getObject().toString()));
+                JSONObject adjObject = new JSONObject();
+                adjObject.put("nodeTo",cleanUriOrLiteral(stmt.getObject().toString()));
+                adjObject.put("data", new JSONObject("{\"labeltext\":\""+cleanUriOrLiteral(stmt.getPredicate().toString())+"\"}"));
+                adjacencies.put(adjObject);
             }
 
             nodeObject.put("adjacencies",adjacencies);
