@@ -104,8 +104,17 @@ public class ResultTriple {
         if(exc.startsWith("[") && exc.endsWith("]"))
             exc = exc.substring(1,exc.length()-1);
 
-        if(exc.length() > 280 && !exc.startsWith("http"))
-            exc = exc.substring(0,280)+"...";
+        if(exc.length() > 280 && !exc.startsWith("http")) {
+            int lastStrong = exc.indexOf("</strong>", 271);
+            if (lastStrong == -1) {
+                exc = exc.substring(0, 280) + "...";
+            } else {
+                exc = exc.substring(0,lastStrong+9)+"...";
+            }
+        }
+
+
+
 
         return exc;
     }

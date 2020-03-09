@@ -231,7 +231,7 @@ public class AnswerExtraction {
         if(resultArray != null){
             for(int i=0; i<resultArray.length();i++){
                 ArrayList<String> relevantTerms  = new ArrayList<>();
-                String resultString = resultArray.getJSONObject(i).getJSONObject(type+"_ext").optString("rdfs_comment").toLowerCase();
+                String resultString = resultArray.getJSONObject(i).getJSONObject(type+"_ext").optString("rdfs_comment_"+type).toLowerCase();
                 int cnt =0;
                 for(String term: terms){
                     if(resultString.contains(term.toLowerCase())){

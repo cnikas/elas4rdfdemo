@@ -56,7 +56,7 @@
             <div class="big-col" th:attr="data-id=${triple.uriToString(triple.subject)}">
                 <div>
                     <div class="title"><a th:href="${triple.subject}" th:utext="${triple.subHighlight}"></a></div>
-                    <div class="description" th:text="${triple.shorten(triple.subExt)}"></div>
+                    <div class="description" th:utext="${triple.shorten(triple.subExt)}"></div>
                     <div class="uri" th:text="${triple.subject}"></div>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                         <span th:if="${triple.optObjectUri() != ''}"><a  th:href="${triple.optObjectUri()}" th:utext="${triple.objHighlight}"></a></span>
                         <span th:if="${triple.optObjectUri() == ''}" th:text="${triple.shorten(triple.object)}"></span>
                     </div>
-                    <div class="description" th:text="${triple.shorten(triple.objExt)}"></div>
+                    <div class="description" th:utext="${triple.shorten(triple.objExt)}"></div>
                     <div class="uri" th:if="${triple.optObjectUri() != ''}" th:text="${triple.shorten(triple.object)}"></div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
         <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
             <div>
                 <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> <span class="entity-score" th:text="${'Score: '+entity.getScoreClean()}"></span></div>
-                <div class="description" th:text="${entity.extClean()}"></div>
+                <div class="description" th:utext="${entity.extClean()}"></div>
                 <div class="uri" th:text="${entity.entity}"></div>
             </div>
         </div>
