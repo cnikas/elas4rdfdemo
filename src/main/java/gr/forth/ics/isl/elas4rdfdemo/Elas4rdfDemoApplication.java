@@ -239,7 +239,8 @@ public class Elas4rdfDemoApplication {
 		String url="";
 		String baseURL = "https://en.wikipedia.org/w/api.php?action=query&titles="+id+"&prop=pageimages&format=json&pithumbsize=200";
 		try {
-			HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build();
+			//HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build();
+			HttpClient client = HttpClientBuilder.create().build();
 			URIBuilder builder = new URIBuilder(baseURL);
 
 			HttpGet request = new HttpGet(builder.build());
