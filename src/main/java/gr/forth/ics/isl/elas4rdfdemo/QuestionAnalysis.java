@@ -82,10 +82,9 @@ public class QuestionAnalysis {
             kw.setDerivations(getDerivedNouns(kw.getWord()));
         }
 
-        q.setKeyWords(keyWords);
+        System.out.println("keywords: "+keyWords.toString());
 
-        System.out.println("Set of keywords: ");
-        System.out.println(q.joinAllTerms());
+        q.setKeyWords(keyWords);
 
         return q;
     }
@@ -308,6 +307,7 @@ public class QuestionAnalysis {
         ArrayList<String> mwe_dependencies = new ArrayList<>(Arrays.asList("fixed", "flat", "compound"));
         for (SemanticGraphEdge sge : edges){
             if(mwe_dependencies.contains(sge.getRelation().toString())) {
+                //compound relations must be max 2 words
                 mwe = sge.getDependent().word().toLowerCase() + " " + mwe;
             }
         }
@@ -381,16 +381,6 @@ public class QuestionAnalysis {
             }
         }
         return nounPhrases;
-    }
-
-    public HashSet<String> getSingleWordTerms(HashSet<String> cleanWords, HashSet<String> multiWordTerms){
-        HashSet<String> swts = new HashSet<String>();
-        String mwesConcatenated = String.join(" ",multiWordTerms);
-        for(String word: cleanWords){
-            if(!mwesConcatenated.contains(word))
-                swts.add(word);
-        }
-        return swts;
     }
 
     public String findLemma(CoreDocument document, String targetWord){

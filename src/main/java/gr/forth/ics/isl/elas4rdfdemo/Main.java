@@ -40,7 +40,7 @@ public class Main {
             if(line.equals("exit")){
                 break;
             } else{
-                ae.extractAnswerJson(qa.analyzeQuestion(line));
+                System.out.println(ae.extractAnswerJson(qa.analyzeQuestion(line)).toString());
             }
         }
 

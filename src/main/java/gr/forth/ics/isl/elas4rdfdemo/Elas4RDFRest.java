@@ -108,7 +108,7 @@ public class Elas4RDFRest {
         return generalRequestWithBody(jsonString,"terms_bindex", size);
     }
 
-    public JSONObject simpleSearch(String query, int size, String index, String type){
+    public JSONObject simpleSearch(String query, int size, String index, String type, boolean highlight){
         JSONObject responseObject = null;
 
         try {
@@ -118,6 +118,7 @@ public class Elas4RDFRest {
             params.add(new BasicNameValuePair("size", String.valueOf(size)));
             params.add(new BasicNameValuePair("type", type));
             params.add(new BasicNameValuePair("query", query));
+            params.add(new BasicNameValuePair("highlightResults",Boolean.toString(highlight)));
             builder.setParameters(params);
 
             HttpGet request = new HttpGet(builder.build());

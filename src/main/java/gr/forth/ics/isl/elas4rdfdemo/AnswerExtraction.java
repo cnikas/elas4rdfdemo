@@ -130,7 +130,6 @@ public class AnswerExtraction {
             if(resultsArray != null){
             for(int i=0; i<resultsArray.length(); i++){
                 String foundPredicate = cleanUriOrLiteral(resultsArray.getJSONObject(i).getString("pre"));
-                boolean predicateRelevant = false;
                 for(String t : terms){
                     if(foundPredicate.toLowerCase().contains(t.toLowerCase().replace(" ",""))){
                         ArrayList<String> relevantTerms  = new ArrayList<>(Arrays.asList(term,t));
@@ -232,7 +231,7 @@ public class AnswerExtraction {
         if(resultArray != null){
             for(int i=0; i<resultArray.length();i++){
                 ArrayList<String> relevantTerms  = new ArrayList<>();
-                String resultString = resultArray.getJSONObject(i).getString(type+"_ext").toLowerCase();
+                String resultString = resultArray.getJSONObject(i).getJSONObject(type+"_ext").optString("rdfs_comment").toLowerCase();
                 int cnt =0;
                 for(String term: terms){
                     if(resultString.contains(term.toLowerCase())){

@@ -6,6 +6,25 @@ public class ResultTriple {
     public String object;
     public String objExt;
     public String subExt;
+    public String subHighlight;
+    public String objHighlight;
+    public String preHighlight;
+
+    public String getSubHighlight() {
+        return subHighlight;
+    }
+
+    public void setSubHighlight(String subHighlight) {
+        this.subHighlight = subHighlight;
+    }
+
+    public String getObjHighlight() {
+        return objHighlight;
+    }
+
+    public void setObjHighlight(String objHighlight) {
+        this.objHighlight = objHighlight;
+    }
 
     public String getSubject() {
         return subject;
@@ -91,22 +110,15 @@ public class ResultTriple {
         return exc;
     }
 
-    public ResultTriple(String subject, String predicate, String object, String subExt, String objExt){
+    public ResultTriple(String subject, String predicate, String object, String subExt, String objExt, String subHighlight, String preHighlight, String objHighlight){
         this.subject = subject;
         this.predicate = predicate;
         this.object = object;
         this.subExt = subExt;
         this.objExt = objExt;
+        this.subHighlight = subHighlight;
+        this.preHighlight = preHighlight;
+        this.objHighlight = objHighlight;
     }
 
-    public String getNameSpace(String s){
-        if(s.startsWith("http://dbpedia.org/resource"))
-            return "(DBpedia resource)";
-        else if(s.startsWith("http://dbpedia.org/ontology"))
-            return "(DBpedia ontology)";
-        else if(s.startsWith("http://www.w3.org/2000/01/rdf-schema"))
-            return "(RDF Schema)";
-        else
-            return "";
-    }
 }

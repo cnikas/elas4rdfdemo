@@ -6,6 +6,8 @@ import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleTripleRepository;
 import gr.forth.ics.isl.elas4rdfdemo.models.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -30,6 +32,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
@@ -236,7 +239,7 @@ public class Elas4rdfDemoApplication {
 		String url="";
 		String baseURL = "https://en.wikipedia.org/w/api.php?action=query&titles="+id+"&prop=pageimages&format=json&pithumbsize=200";
 		try {
-			HttpClient client = HttpClientBuilder.create().build();
+			HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build();
 			URIBuilder builder = new URIBuilder(baseURL);
 
 			HttpGet request = new HttpGet(builder.build());

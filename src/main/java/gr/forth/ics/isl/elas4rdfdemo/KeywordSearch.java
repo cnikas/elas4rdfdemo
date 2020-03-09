@@ -23,7 +23,7 @@ public class KeywordSearch {
         ArrayList<ResultTriple> triples = new ArrayList<>();
         int maxSize = 0;
         HashSet<String> uniqueTriples = new HashSet<>();
-        JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"terms_eindex","triples");
+        JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"terms_eindex","triples",true);
 
         JSONObject resultsObject = null;
         if(jo != null){
@@ -41,7 +41,7 @@ public class KeywordSearch {
                 //to remove duplicate triples with same subject after removal of -,_ characters and same predicate.
                 String uniqueConcatString = object.getString("sub").replaceAll("[-_]","")+object.getString("pre");
                 if(!uniqueTriples.contains(uniqueConcatString)){
-                    triples.add(new ResultTriple(object.getString("sub"),object.getString("pre"),object.getString("obj"),object.getString("sub_ext"),object.getString("obj_ext")));
+                    triples.add(new ResultTriple(object.getString("sub"),object.getString("pre"),object.getString("obj"),object.getJSONObject("sub_ext").optString("rdfs_comment"),object.getJSONObject("obj_ext").optString("rdfs_comment"),object.getString("sub_keywords"),object.getString("pre_keywords"),object.getString("obj_keywords")));
                     uniqueTriples.add(uniqueConcatString);
                 }
             }
@@ -56,7 +56,7 @@ public class KeywordSearch {
         EntitiesContainer ec = new EntitiesContainer();
         ArrayList<ResultEntity> entities = new ArrayList<>();
         int maxSize = 0;
-        JSONObject jo = elas4RDFRest.simpleSearch(query,size,"terms_eindex","entities");
+        JSONObject jo = elas4RDFRest.simpleSearch(query,size,"terms_eindex","entities",false);
 
         JSONObject resultsObject = null;
         if(jo != null){
@@ -71,7 +71,7 @@ public class KeywordSearch {
         if(ja != null){
             for(int i=0; i < ja.length(); i++){
                 JSONObject object = ja.getJSONObject(i);
-                entities.add(new ResultEntity(object.getString("ext"),object.getString("entity"),object.getDouble("score")));
+                entities.add(new ResultEntity(object.getJSONObject("ext").optString("rdfs_comment_sub"),object.getString("entity"),object.getDouble("score")));
             }
         }
 
