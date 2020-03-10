@@ -288,6 +288,7 @@ public class QuestionAnalysis {
 
         for(IndexedWord node : nodes){
             expressions.add(findMultiWordExpression(node,sg));
+            expressions.addAll(findCompoundExpressions(node,sg));
         }
 
         return expressions;
@@ -306,13 +307,26 @@ public class QuestionAnalysis {
         String mwe = id.word();
         ArrayList<String> mwe_dependencies = new ArrayList<>(Arrays.asList("fixed", "flat", "compound"));
         for (SemanticGraphEdge sge : edges){
-            if(mwe_dependencies.contains(sge.getRelation().toString())) {
-                //compound relations must be max 2 words
+            if(sge.getRelation().toString().equals("fixed") || sge.getRelation().toString().equals("fixed") || sge.getRelation().toString().equals("compound")) {
                 mwe = sge.getDependent().word().toLowerCase() + " " + mwe;
             }
         }
 
         return mwe.trim();
+    }
+
+    public ArrayList<String> findCompoundExpressions(IndexedWord id, SemanticGraph sg){
+        List<SemanticGraphEdge> edges = sg.getOutEdgesSorted(id);
+
+        ArrayList<String> ces = new ArrayList<>();
+        String mwe = id.word();
+        for (SemanticGraphEdge sge : edges){
+            if(sge.getRelation().toString().equals("compound")) {
+                ces.add(sge.getDependent().word().toLowerCase() + " " + mwe);
+            }
+        }
+
+        return ces;
     }
 
     public HashSet<String> getDerivedNouns(String word){

@@ -166,7 +166,7 @@ public class AnswerExtraction {
             for(int i=0; i<resultsArray.length(); i++){
                 String foundPredicate = cleanUriOrLiteral(resultsArray.getJSONObject(i).getString("pre"));
                 for(String term : predicateTerms){
-                    if(foundPredicate.toLowerCase().contains(term.toLowerCase().replace(" ",""))){
+                    if(foundPredicate.toLowerCase().equals(term.toLowerCase().replace(" ",""))){
                         ArrayList<String> relevantTerms  = new ArrayList<>(Arrays.asList(firstTerm,term));
                         candidates.add(new Answer(resultsArray.getJSONObject(i).getString("obj"),resultsArray.getJSONObject(i),relevantTerms,resultsArray.getJSONObject(i).getDouble("score")));
                     }
@@ -231,7 +231,7 @@ public class AnswerExtraction {
         if(resultArray != null){
             for(int i=0; i<resultArray.length();i++){
                 ArrayList<String> relevantTerms  = new ArrayList<>();
-                String resultString = resultArray.getJSONObject(i).getJSONObject(type+"_ext").optString("rdfs_comment_"+type).toLowerCase();
+                String resultString = resultArray.getJSONObject(i).getJSONObject(type+"_ext").optString("rdfs_comment").toLowerCase();
                 int cnt =0;
                 for(String term: terms){
                     if(resultString.contains(term.toLowerCase())){
@@ -316,7 +316,7 @@ public class AnswerExtraction {
 
         int cnt = 0;
         for(String kw : q.getFirstTermKeywords()){
-            if(firstTermString.equals(kw.toLowerCase())){
+            if(firstTermString.contains(kw.toLowerCase())){
                 cnt++;
                 relevantTerms.add(kw);
             }
@@ -328,7 +328,7 @@ public class AnswerExtraction {
         String predicateString = cleanUriOrLiteral(triple.getString("pre")).toLowerCase();
         boolean relevantPredicate = false;
         for(String kw : q.getPredicateKeywords()){
-            if(predicateString.contains(kw.toLowerCase().replaceAll(" ",""))){
+            if(predicateString.equals(kw.toLowerCase().replaceAll(" ",""))){
                 relevantPredicate = true;
                 relevantTerms.add(kw);
             }
