@@ -23,7 +23,7 @@ public class KeywordSearch {
         ArrayList<ResultTriple> triples = new ArrayList<>();
         int maxSize = 0;
         HashSet<String> uniqueTriples = new HashSet<>();
-        JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"terms_eindex","triples",true);
+        JSONObject jo = elas4RDFRest.simpleSearch(query,1000,"triples");
 
         JSONObject resultsObject = null;
         if(jo != null){
@@ -56,7 +56,7 @@ public class KeywordSearch {
         EntitiesContainer ec = new EntitiesContainer();
         ArrayList<ResultEntity> entities = new ArrayList<>();
         int maxSize = 0;
-        JSONObject jo = elas4RDFRest.simpleSearch(query,size,"terms_eindex","entities",false);
+        JSONObject jo = elas4RDFRest.simpleSearch(query,size,"entities");
 
         JSONObject resultsObject = null;
         if(jo != null){

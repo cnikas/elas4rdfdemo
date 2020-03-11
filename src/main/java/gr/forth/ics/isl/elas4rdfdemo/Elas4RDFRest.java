@@ -108,17 +108,17 @@ public class Elas4RDFRest {
         return generalRequestWithBody(jsonString,"terms_bindex", size);
     }
 
-    public JSONObject simpleSearch(String query, int size, String index, String type, boolean highlight){
+    public JSONObject simpleSearch(String query, int size, String type){
         JSONObject responseObject = null;
 
         try {
             URIBuilder builder = new URIBuilder(baseURL);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("index", index));
+            params.add(new BasicNameValuePair("id", "dbpedia"));
             params.add(new BasicNameValuePair("size", String.valueOf(size)));
             params.add(new BasicNameValuePair("type", type));
             params.add(new BasicNameValuePair("query", query));
-            params.add(new BasicNameValuePair("highlightResults",Boolean.toString(highlight)));
+            params.add(new BasicNameValuePair("highlightResults","false"));
             builder.setParameters(params);
 
             HttpGet request = new HttpGet(builder.build());
@@ -145,11 +145,12 @@ public class Elas4RDFRest {
         JSONObject responseObject = null;
 
         try {
-            URIBuilder builder = new URIBuilder(baseURL);
+            URIBuilder builder = new URIBuilder(baseURL+"low_level/");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("index", index));
+            params.add(new BasicNameValuePair("index", "terms_eindex"));
             params.add(new BasicNameValuePair("size", String.valueOf(size)));
             params.add(new BasicNameValuePair("type", "triples"));
+            params.add(new BasicNameValuePair("highlightResults","false"));
             builder.setParameters(params);
 
             HttpGetWithEntity termsRequest = new HttpGetWithEntity(builder.build());

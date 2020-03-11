@@ -209,7 +209,7 @@ hr{
     height:auto;
 }
 .tab:hover{
-    background-color: rgba(5, 65, 155, 0.3)
+    background-color: rgba(5, 65, 155, 0.3);
 }
 a.tab{
     text-decoration: none;
@@ -408,6 +408,36 @@ a{
     color: #999;
     font-size:16px;
 }
-.result strong, .entity-result strong{
+.highlighted{
     background: #e2efd9;
+}
+.settings-icon-container{
+    align-self: end;
+    flex-flow:column;
+    position: absolute;
+    margin-right: 10px;
+    display: flex;
+}
+.settings-icon{
+    align-self: end;
+    height: 24px;
+}
+.settings-icon:hover{
+    background: rgba(5, 65, 155, 0.3);
+    cursor: pointer;
+}
+.settings-container{
+    display:flex;
+    flex-direction:column;
+    flex-grow:1;
+}
+#settingsBox{
+    display:none;
+    position:relative;
+    top:2px;
+    padding: 3px;
+    background:#fff;
+    -webkit-box-shadow: 1px 1px 2px 1px rgba(153,153,153,1);
+    -moz-box-shadow: 1px 1px 2px 1px rgba(153,153,153,1);
+    box-shadow: 1px 1px 2px 1px rgba(153,153,153,1);
 }

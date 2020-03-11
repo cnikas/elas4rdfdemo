@@ -41,6 +41,15 @@
             <img src="/elas4rdf/resources/qaicon.svg">
             QA
         </a>
+        <span class="settings-container">
+            <div class="settings-icon-container">
+                <img class="settings-icon" src="/elas4rdf/resources/settings-24px.svg">
+                <div id="settingsBox">
+                    <input type="checkbox" id="highlightCheck" name="hc" value="highlight">
+                    <label for="highlightCheck">Highlight results</label>
+                </div>
+            </div>
+        </span>
     </div>
 </div>
 <div class="results-info">
@@ -69,7 +78,7 @@
             <div class="big-col" th:attr="data-id=${triple.uriToString(triple.optObjectUri())}">
                 <div>
                     <div class="title">
-                        <span th:if="${triple.optObjectUri() != ''}"><a  th:href="${triple.optObjectUri()}" th:utext="${triple.objHighlight}"></a></span>
+                        <a  th:if="${triple.optObjectUri() != ''}" th:href="${triple.optObjectUri()}" th:utext="${triple.objHighlight}"></a>
                         <span th:if="${triple.optObjectUri() == ''}" th:text="${triple.shorten(triple.object)}"></span>
                     </div>
                     <div class="description" th:utext="${triple.shorten(triple.objExt)}"></div>

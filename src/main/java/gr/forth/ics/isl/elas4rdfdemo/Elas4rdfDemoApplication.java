@@ -6,8 +6,6 @@ import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleTripleRepository;
 import gr.forth.ics.isl.elas4rdfdemo.models.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -17,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +29,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
@@ -44,6 +40,8 @@ public class Elas4rdfDemoApplication {
     private SimpleAnswerRepository sar;
 	@Autowired
 	private SimpleTripleRepository str;
+	@Autowired
+	private SimpleTripleRepository strWithoutAnnotations;
 	@Autowired
 	private SimpleEntityRepository ser;
 
@@ -217,7 +215,7 @@ public class Elas4rdfDemoApplication {
     @GetMapping("/results/graph")
     public String handleGraph(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="25") int size, Model model) {
 
-		triplesContainer = str.searchTriples(query);
+		triplesContainer = strWithoutAnnotations.searchTriples(query);
 		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),size);
 
 		String jsonGraph = ae.createModelFromTriples();
@@ -267,7 +265,7 @@ public class Elas4rdfDemoApplication {
 
 	@GetMapping("/file")
 	public void returnFile(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="100") int size, @RequestParam(name="type",  defaultValue="turtle") String type, HttpServletResponse response) throws IOException {
-		triplesContainer = str.searchTriples(query);
+		triplesContainer = strWithoutAnnotations.searchTriples(query);
 		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),triplesContainer.getTriples().size());
 		String myString = ae.createFile(type);
 		String extension = ".ttl";
