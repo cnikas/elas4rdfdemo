@@ -1,6 +1,7 @@
-package gr.forth.ics.isl.elas4rdfdemo;
+package gr.forth.ics.isl.elas4rdfdemo.qa;
 
-import gr.forth.ics.isl.elas4rdfdemo.models.*;
+import gr.forth.ics.isl.elas4rdfdemo.Elas4RDFRest;
+import gr.forth.ics.isl.elas4rdfdemo.qa.models.*;
 import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtilsSimple;
 import org.json.JSONArray;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package gr.forth.ics.isl.elas4rdfdemo;
+package gr.forth.ics.isl.elas4rdfdemo.qa;
 
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
@@ -7,9 +7,10 @@ import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.trees.Tree;
-import gr.forth.ics.isl.elas4rdfdemo.models.Keyword;
-import gr.forth.ics.isl.elas4rdfdemo.models.ParsedQuestion;
-import gr.forth.ics.isl.elas4rdfdemo.models.ParsedSyntax;
+import gr.forth.ics.isl.elas4rdfdemo.Main;
+import gr.forth.ics.isl.elas4rdfdemo.qa.models.Keyword;
+import gr.forth.ics.isl.elas4rdfdemo.qa.models.ParsedQuestion;
+import gr.forth.ics.isl.elas4rdfdemo.qa.models.ParsedSyntax;
 import gr.forth.ics.isl.elas4rdfdemo.utilities.StringUtilsSimple;
 import static gr.forth.ics.isl.elas4rdfdemo.Main.simple_pipeline;
 import static gr.forth.ics.isl.elas4rdfdemo.Main.syntax_pipeline;

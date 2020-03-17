@@ -1,6 +1,6 @@
 package gr.forth.ics.isl.elas4rdfdemo.caching;
 
-import gr.forth.ics.isl.elas4rdfdemo.models.AnswersContainer;
+import gr.forth.ics.isl.elas4rdfdemo.qa.models.AnswersContainer;
 
 public interface AnswerRepository {
 

@@ -16,7 +16,7 @@ var labelType, useGradients, nativeTextSupport, animate;
 
 })();
 
-function init(){
+function init(edgeType){
   var jsonGraph = JSON.parse(json);
   // init data
   // end
@@ -48,7 +48,7 @@ function init(){
       overridable: true,
       color: '#999',
       lineWidth: 1,
-      type: 'labeled'
+      type: edgeType
     },
     //Native canvas text styling
     Label: {
@@ -59,8 +59,9 @@ function init(){
     },
     //Add Tips
     Tips: {
-      enable: false,
+      enable: true,
       onShow: function(tip, node) {
+        tip.innerHTML = "<div class=\"tip-title\">" + node.data.fullName + "</div>";
       }
     },
     // Add node events
@@ -130,7 +131,7 @@ function init(){
     onComplete: function(){
       fd.animate({
         modes: ['linear'],
-        transition: $jit.Trans.Elastic.easeOut,
+        transition: $jit.Trans.Quad.easeOut,
         duration: 2500
       });
     }
@@ -140,7 +141,7 @@ function init(){
  $jit.ForceDirected.Plot.EdgeTypes.implement({
    'labeled': {
      'render': function(adj, canvas) {
-     this.edgeTypes.line.render.call(this, adj, canvas);
+     this.edgeTypes.arrow.render.call(this, adj, canvas);
        var data = adj.data;
        if(data.labeltext) {
          var ctx = canvas.getCtx();
@@ -148,9 +149,9 @@ function init(){
          var posTo = adj.nodeTo.pos.getc(true);
          ctx.fillStyle = "#333";
          ctx.fillText(data.labeltext, (posFr.x + posTo.x)/2, (posFr.y + posTo.y)/2);
-       }// if data.labeltext
+       }
      }
    }
  });
 
-$(document).on('load',init());
+$(document).on('load',init('labeled'));

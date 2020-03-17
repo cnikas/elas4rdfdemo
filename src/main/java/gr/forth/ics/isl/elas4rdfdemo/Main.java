@@ -5,9 +5,9 @@ import edu.stanford.nlp.pipeline.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
-import gr.forth.ics.isl.elas4rdfdemo.models.ParsedQuestion;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import gr.forth.ics.isl.elas4rdfdemo.qa.AnswerExtraction;
+import gr.forth.ics.isl.elas4rdfdemo.qa.QuestionAnalysis;
 
 public class Main {
 

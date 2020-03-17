@@ -4,6 +4,7 @@ import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleAnswerRepository;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleEntityRepository;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleTripleRepository;
 import gr.forth.ics.isl.elas4rdfdemo.models.*;
+import gr.forth.ics.isl.elas4rdfdemo.qa.models.AnswersContainer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;

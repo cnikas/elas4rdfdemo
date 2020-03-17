@@ -122,3 +122,11 @@ $('#highlightCheck').change(function() {
     }
 });
 
+$('#predicateLabelsCheck').change(function() {
+    $("#infovis").empty();
+    if (this.checked) {
+        init('labeled');
+    } else {
+        init('line');
+    }
+});

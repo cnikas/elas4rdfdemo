@@ -1,6 +1,5 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
-import gr.forth.ics.isl.elas4rdfdemo.models.Answer;
 import gr.forth.ics.isl.elas4rdfdemo.models.ResultTriple;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
@@ -56,6 +55,14 @@ public class AnswerExploration {
                 adjacencies.put(adjObject);
             }
 
+            String fullName = cleanUriOrLiteral(res.getURI());
+            String shortName = "";
+            if(fullName.length() >= 12){
+                shortName = fullName.substring(0,9)+"...";
+            } else {
+                shortName = fullName;
+            }
+
             nodeObject.put("adjacencies",adjacencies);
 
             JSONObject nodeData = new JSONObject();
@@ -64,9 +71,10 @@ public class AnswerExploration {
             nodeData.put("$label-color","#05419b");
             nodeData.put("link",res.getURI());
             nodeData.put("isResource",true);
+            nodeData.put("fullName",fullName);
 
             nodeObject.put("data",nodeData);
-            nodeObject.put("name",cleanUriOrLiteral(res.getURI()));
+            nodeObject.put("name",shortName);
             nodeObject.put("id",cleanUriOrLiteral(res.getURI()));
             nodeSet.add(cleanUriOrLiteral(res.getURI()));
 
@@ -79,14 +87,24 @@ public class AnswerExploration {
 
             StmtIterator stmti = res.listProperties();
 
-
+            //for object nodes that are not resources (literals)
             while (stmti.hasNext()){
                 Statement stmt = stmti.next();
                 if(!nodeSet.contains(cleanUriOrLiteral(stmt.getObject().toString()))){
+
+                    String fullName = cleanUriOrLiteral(res.getURI());
+                    String shortName = "";
+                    if(fullName.length() >= 12){
+                        shortName = fullName.substring(0,9)+"...";
+                    } else {
+                        shortName = fullName;
+                    }
+
                     JSONObject nodeObject = new JSONObject();
                     JSONObject nodeData = new JSONObject();
                     nodeData.put("$type","circle");
                     nodeData.put("$dim",10);
+                    nodeData.put("fullName",fullName);
                     if(stmt.getObject().toString().startsWith("http")){
                         nodeData.put("$label-color","#05419b");
                         nodeData.put("link",stmt.getObject().toString());
@@ -98,7 +116,7 @@ public class AnswerExploration {
                     }
 
                     nodeObject.put("data",nodeData);
-                    nodeObject.put("name",cleanUriOrLiteral(stmt.getObject().toString()));
+                    nodeObject.put("name",shortName);
                     nodeObject.put("id",cleanUriOrLiteral(stmt.getObject().toString()));
                     nodeSet.add(cleanUriOrLiteral(stmt.getObject().toString()));
                     jsonGraph.put(nodeObject);

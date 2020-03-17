@@ -1,4 +1,4 @@
-package gr.forth.ics.isl.elas4rdfdemo;
+package gr.forth.ics.isl.elas4rdfdemo.qa;
 
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.*;

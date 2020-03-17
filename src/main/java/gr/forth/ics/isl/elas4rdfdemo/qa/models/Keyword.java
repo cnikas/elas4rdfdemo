@@ -1,4 +1,4 @@
-package gr.forth.ics.isl.elas4rdfdemo.models;
+package gr.forth.ics.isl.elas4rdfdemo.qa.models;
 
 /*
 * Model class for a keyword.
