@@ -178,24 +178,6 @@ public class AnswerExtraction {
         return candidates;
     }
 
-    public String findTypeFromUri(String uri){
-        JSONObject result = elas4RDF.checkType(uri);
-        JSONArray resultArray = result.optJSONObject("results").optJSONArray("triples");
-
-        for(int i=0; i<resultArray.length(); i++){
-            JSONObject triple = resultArray.getJSONObject(i);
-            if(cleanUriOrLiteral(triple.getString("pre")).toLowerCase().equals("type")){
-                if(cleanUriOrLiteral(triple.getString("obj")).toLowerCase().equals("person")){
-                    return "Person";
-                }
-                if(cleanUriOrLiteral(triple.getString("obj")).toLowerCase().equals("place")){
-                    return "Place";
-                }
-            }
-        }
-        return "";
-    }
-
     /*
     *Searches for all keywords and returns subjects that have a relevant sub_ext and objects that
     * have a relevant obj_ext

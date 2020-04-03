@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/elas4rdf/css/styles.css">
-    <title>Elas4RDF Results</title>
+    <link type="text/css" href="/elas4rdf/css/ForceDirected.css" rel="stylesheet" />
+    <title>Elas4RDF</title>
 </head>
 <body>
 <div class="results-top">
@@ -16,7 +17,7 @@
         <div class="form-group">
             <div id="searchInputContainer" class="search-input-container-results">
                 <input th:value="${param.query}" type="text" class="search-input-results" id="searchInput" name="query">
-                <button type="submit" class="search-icon-container">
+                <button type="submit" class="search-icon-container" th:value="${size}">
                     <img src="/elas4rdf/resources/search_icon.png">
                 </button>
             </div>
@@ -49,73 +50,30 @@
             <div class="settings-icon-container">
                 <img class="settings-icon" src="/elas4rdf/resources/settings-24px.svg">
                 <div id="settingsBox">
-                    <input type="checkbox" id="highlightCheck" name="hc" value="highlight">
-                    <label for="highlightCheck">Highlight results</label>
+                    <input type="checkbox" id="predicateLabelsCheck">
+                    <label for="predicateLabelsCheck">Show predicate labels</label>
                 </div>
             </div>
         </span>
     </div>
 </div>
 <div class="results-info">
-    <span>You searched for "<span th:text="${param.query}"></span>" <span th:if="${type != 'qa'}" th:text="${'- found '+maxSize+' '+type}"></span></span>
-    <div th:if="${maxSize == 0}">No results.</div>
+    <span>You searched for "<span th:text="${param.query}"></span>"</span>
 </div>
-<div th:if="${type == 'triples' && maxSize != 0}" class="results-info">
-    <span>Download triples: </span><a th:href="${'/elas4rdf/file?query='+query+'&type=turtle'}">Turtle</a><a th:href="${'/elas4rdf/file?query='+query+'&type=ntriples'}">N-Triples</a><a th:href="${'/elas4rdf/file?query='+query+'&type=jsonld'}">JSON-LD</a>
-</div>
-<div th:if="${type == 'triples'}" class="triples-box">
-    <div th:each="triple : ${triples}">
-        <div class="result">
-            <div class="big-col" th:attr="data-id=${triple.uriToString(triple.subject)}">
-                <div>
-                    <div class="title"><a th:href="${triple.subject}" th:utext="${triple.subHighlight}"></a></div>
-                    <div class="description" th:utext="${triple.shorten(triple.subExt)}"></div>
-                    <div class="uri" th:text="${triple.subject}"></div>
-                </div>
-            </div>
-
-            <div class="small-col">
-                <div class="title"><a th:href="${triple.predicate}" th:utext="${triple.preHighlight}"></a></div>
-                <div class="uri" th:text="${triple.predicate}"></div>
-            </div>
-
-            <div class="big-col" th:attr="data-id=${triple.uriToString(triple.optObjectUri())}">
-                <div>
-                    <div class="title">
-                        <a  th:if="${triple.optObjectUri() != ''}" th:href="${triple.optObjectUri()}" th:utext="${triple.objHighlight}"></a>
-                        <span th:if="${triple.optObjectUri() == ''}" th:text="${triple.shorten(triple.object)}"></span>
-                    </div>
-                    <div class="description" th:utext="${triple.shorten(triple.objExt)}"></div>
-                    <div class="uri" th:if="${triple.optObjectUri() != ''}" th:text="${triple.shorten(triple.object)}"></div>
-                </div>
-            </div>
-        </div>
-        <hr>
-    </div>
-</div>
-<div th:if="${type == 'entities' && maxSize != 0}" class="results-info">
-    <form id="entitySizeForm" action="/elas4rdf/results/entities">
+<div class="results-info">
+    <form id="graphSizeForm" action="/elas4rdf/results/schema">
         <input name="query" type="hidden" th:value="${query}">
         <label for="triplesNumber">Number of triples used:</label>
         <input id="triplesNumber" type="text" th:value="${size}" name="size">
+        <button class="add-remove-btn" id="add10">+10</button>
+        <button class="add-remove-btn" id="remove10">-10</button>
     </form>
 </div>
-<div th:if="${type == 'entities'}" class="entities-box">
-    <span th:each="entity : ${entities}">
-        <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
-            <div>
-                <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> <span class="entity-score" th:text="${'Score: '+entity.getScoreClean()}"></span></div>
-                <div class="description" th:utext="${entity.extClean()}"></div>
-                <div class="uri" th:text="${entity.entity}"></div>
-            </div>
-        </div>
-        <hr>
-    </span>
-</div>
-<div th:if="${maxSize != 0}" class="pagination">
-    Page:
-    <a th:each="currPage : ${pages}" th:text="${currPage}" th:href="${'/elas4rdf/results/'+type+'?query=' + query + '&page=' + currPage}" th:class="${currPage == page} ? 'disabled'"></a>
-    <span th:if="${page < maxPages-2}">...</span>
+<div id="graph-container">
+    <div id="center-container">
+        <div id="infovisSchema"></div>
+    </div>
+    <div id="log"></div>
 </div>
 <div class="copyright">
     <a class="about-link" href="/elas4rdf/about">About</a>
@@ -128,7 +86,14 @@
         <a href="https://www.ics.forth.gr/"><img src="/elas4rdf/resources/ics_logo.png" height="30"></a>
     </div>
 </div>
+<script th:inline="javascript">
+var json = [[${jsonGraph}]];
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- JIT Library File -->
+<script language="javascript" type="text/javascript" src="/elas4rdf/js/jit.js"></script>
+<!-- Example File -->
+<script language="javascript" type="text/javascript" src="/elas4rdf/js/graphvis_schema.js"></script>
 <script src="/elas4rdf/js/script.js"></script>
 </body>
 </html>

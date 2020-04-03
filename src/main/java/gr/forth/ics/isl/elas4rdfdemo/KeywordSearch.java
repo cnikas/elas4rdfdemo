@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static gr.forth.ics.isl.elas4rdfdemo.Main.props;
+
 public class KeywordSearch {
     public Elas4RDFRest elas4RDFRest;
 
@@ -41,7 +43,7 @@ public class KeywordSearch {
                 //to remove duplicate triples with same subject after removal of -,_ characters and same predicate.
                 String uniqueConcatString = object.getString("sub").replaceAll("[-_]","")+object.getString("pre");
                 if(!uniqueTriples.contains(uniqueConcatString)){
-                    triples.add(new ResultTriple(object.getString("sub"),object.getString("pre"),object.getString("obj"),object.getJSONObject("sub_ext").optString("rdfs_comment"),object.getJSONObject("obj_ext").optString("rdfs_comment"),object.getString("sub_keywords"),object.getString("pre_keywords"),object.getString("obj_keywords")));
+                    triples.add(new ResultTriple(object.getString("sub"),object.getString("pre"),object.getString("obj"),object.getJSONObject("sub_ext").optString(props.getProperty("extField")),object.getJSONObject("obj_ext").optString(props.getProperty("extField")),object.getString("sub_keywords"),object.getString("pre_keywords"),object.getString("obj_keywords")));
                     uniqueTriples.add(uniqueConcatString);
                 }
             }
@@ -71,7 +73,7 @@ public class KeywordSearch {
         if(ja != null){
             for(int i=0; i < ja.length(); i++){
                 JSONObject object = ja.getJSONObject(i);
-                entities.add(new ResultEntity(object.getJSONObject("ext").optString("rdfs_comment"),object.getString("entity"),object.getDouble("score")));
+                entities.add(new ResultEntity(object.getJSONObject("ext").optString(props.getProperty("extField")),object.getString("entity"),object.getDouble("score")));
             }
         }
 

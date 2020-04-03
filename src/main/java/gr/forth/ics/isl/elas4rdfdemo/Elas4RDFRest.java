@@ -22,9 +22,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static gr.forth.ics.isl.elas4rdfdemo.Main.props;
+
 public class Elas4RDFRest {
 
-    private static final String baseURL = "http://139.91.183.46:8080/elas4rdf_rest/";
+    private static final String baseURL = props.getProperty("elas4rdfurl");
     private final HttpClient client;
 
     public Elas4RDFRest() {
@@ -62,39 +64,6 @@ public class Elas4RDFRest {
         return generalRequestWithBody(jsonString,index,size);
     }
 
-    public JSONObject checkType(String query){
-
-        String jsonString = "{\"query\": {\"query_string\" : {\"query\" : \"+subjectKeywords:("+query+") +predicateKeywords:(type)\"}}}";
-
-        JSONObject responseObject = null;
-
-        try {
-            URIBuilder builder = new URIBuilder(baseURL);
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("index", "terms_bindex"));
-            params.add(new BasicNameValuePair("size", String.valueOf(10)));
-            builder.setParameters(params);
-
-            HttpGetWithEntity termsRequest = new HttpGetWithEntity(builder.build());
-            termsRequest.addHeader(CONTENT_TYPE, "application/json");
-
-            termsRequest.setEntity(new StringEntity(jsonString));
-
-            HttpResponse response = client.execute(termsRequest);
-
-            String json_string = EntityUtils.toString(response.getEntity());
-            //System.out.println(json_string);
-            responseObject = new JSONObject(json_string);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return responseObject;
-    }
-
     public JSONObject queryExtFields(String query, String type, int size){
 
         String jsonString = "{\"query\": {\"match\" : {\"rdfs_comment_"+type+"\" : {\"query\" : \""+query+"\"}}}}";
@@ -108,13 +77,45 @@ public class Elas4RDFRest {
         return generalRequestWithBody(jsonString,"terms_bindex", size);
     }
 
+    public JSONObject exactSubjectTypeRequest(String subject){
+        String jsonString = "{\n" +
+                "   \"query\":{\n" +
+                "      \"bool\":{\n" +
+                "         \"must\":[\n" +
+                "            {\n" +
+                "               \"constant_score\":{\n" +
+                "                  \"filter\":{\n" +
+                "                     \"term\":{\n" +
+                "                        \"subjectTerms\":\""+subject+"\"\n" +
+                "                     }\n" +
+                "                  }\n" +
+                "               }\n" +
+                "            },\n" +
+                "            {\n" +
+                "               \"constant_score\":{\n" +
+                "                  \"filter\":{\n" +
+                "                     \"term\":{\n" +
+                "                        \"predicateTerms\":\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\"\n" +
+                "                     }\n" +
+                "                  }\n" +
+                "               }\n" +
+                "            }\n" +
+                "         ]\n" +
+                "      }\n" +
+                "   }\n" +
+                "}";
+
+        return generalRequestWithBody(jsonString,"terms_bindex_v2", 50);
+
+    }
+
     public JSONObject simpleSearch(String query, int size, String type){
         JSONObject responseObject = null;
 
         try {
             URIBuilder builder = new URIBuilder(baseURL);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("id", "dbpedia"));
+            params.add(new BasicNameValuePair("id", props.getProperty("datasetId")));
             params.add(new BasicNameValuePair("size", String.valueOf(size)));
             params.add(new BasicNameValuePair("type", type));
             params.add(new BasicNameValuePair("query", query));
@@ -147,7 +148,7 @@ public class Elas4RDFRest {
         try {
             URIBuilder builder = new URIBuilder(baseURL+"low_level/");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("index", "terms_eindex"));
+            params.add(new BasicNameValuePair("index", index));
             params.add(new BasicNameValuePair("size", String.valueOf(size)));
             params.add(new BasicNameValuePair("type", "triples"));
             params.add(new BasicNameValuePair("highlightResults","false"));
@@ -173,7 +174,6 @@ public class Elas4RDFRest {
             return null;
         }
 
-}
-
+    }
 
 }

@@ -129,4 +129,10 @@ $('#predicateLabelsCheck').change(function() {
     } else {
         init('line');
     }
+    $("#infovisSchema").empty();
+        if (this.checked) {
+            init('labeled');
+        } else {
+            init('line');
+        }
 });

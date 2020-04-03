@@ -228,6 +228,23 @@ public class Elas4rdfDemoApplication {
         return "graph";
     }
 
+	@GetMapping("/results/schema")
+	public String handleSchema(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="25") int size, Model model) {
+
+		triplesContainer = strWithoutAnnotations.searchTriples(query);
+
+		SchemaTab st = new SchemaTab();
+
+		String jsonGraph = st.createSchemaGraph(triplesContainer.getTriples(),size);
+
+		model.addAttribute("query",query);
+		model.addAttribute("type","schema");
+		model.addAttribute("size",size);
+		model.addAttribute("jsonGraph",jsonGraph);
+
+		return "schema";
+	}
+
 	@GetMapping("/loadimage")
 	@ResponseBody
 	public String loadImage(@RequestParam(name="id") String id) {

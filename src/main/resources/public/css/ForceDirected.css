@@ -28,7 +28,7 @@
     color:#23A4FF;
 }
 
-#infovis {
+#infovis, #infovisSchema {
     width:100%;
     height:100%;
     margin:auto;

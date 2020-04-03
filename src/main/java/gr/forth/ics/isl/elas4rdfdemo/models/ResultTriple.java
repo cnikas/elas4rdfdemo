@@ -10,6 +10,14 @@ public class ResultTriple {
     public String objHighlight;
     public String preHighlight;
 
+    public String getPreHighlight() {
+        return preHighlight;
+    }
+
+    public void setPreHighlight(String preHighlight) {
+        this.preHighlight = preHighlight;
+    }
+
     public String getSubHighlight() {
         return subHighlight;
     }

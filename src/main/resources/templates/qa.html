@@ -41,6 +41,10 @@
             <img src="/elas4rdf/resources/qaicon.svg">
             QA
         </a>
+        <a th:href="${'/elas4rdf/results/schema?query=' + query}" th:class="${type == 'schema'} ? 'tab active' : 'tab'">
+            <img src="/elas4rdf/resources/graphicon.svg">
+            Schema
+        </a>
     </div>
 </div>
 <div class="results-info">
