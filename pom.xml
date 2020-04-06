@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>gr.forth.ics.isl</groupId>
-	<artifactId>elas4rdf-demo</artifactId>
+	<artifactId>elas4rdfdemo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>elas4rdf-demo</name>
+	<name>elas4rdfdemo</name>
 	<description>Demo project for Spring Boot</description>
 	<packaging>war</packaging>
 	<properties>
@@ -74,8 +74,6 @@
 			<version>1.2</version>
 		</dependency>
 
-
-
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
@@ -126,6 +124,8 @@
 					<jvmArguments>
 						-Xmx4g
 					</jvmArguments>
+					<mainClass>gr.forth.ics.isl.elas4rdfdemo.Elas4rdfDemoApplication</mainClass>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -141,5 +141,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
