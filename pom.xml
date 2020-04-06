@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>elas4rdfdemo</name>
 	<description>Demo project for Spring Boot</description>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -126,17 +126,6 @@
 					</jvmArguments>
 					<mainClass>gr.forth.ics.isl.elas4rdfdemo.Elas4rdfDemoApplication</mainClass>
 					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<attachClasses>true</attachClasses>
-					<webResources>
-						<resource>
-							<directory>src/main/resources</directory>
-						</resource>
-					</webResources>
 				</configuration>
 			</plugin>
 		</plugins>
