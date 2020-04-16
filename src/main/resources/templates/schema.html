@@ -6,6 +6,8 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/elas4rdf/css/styles.css">
     <link type="text/css" href="/elas4rdf/css/ForceDirected.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="/elas4rdf/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/elas4rdf/favicon.ico" type="image/x-icon">
     <title>Elas4RDF</title>
 </head>
 <body>
@@ -69,11 +71,28 @@
         <button class="add-remove-btn" id="remove10">-10</button>
     </form>
 </div>
-<div id="graph-container">
-    <div id="center-container">
-        <div id="infovisSchema"></div>
+<div id="schemaTabContent" th:attr="data-query=${query}">
+    <div class="schema-left">
+        <div class="schema-frequent-info">
+            <p>Frequent Classes</p>
+            <span th:each="item : ${frequentClasses}" class="schema-frequent-class" th:attr="data-uris=${item.getUrisOfType()}, data-type=${item.getUri()}">
+                <span th:text="${item.getName()+'('+item.getCount()+')'}"></span>
+            </span>
+            <p>Frequent Properties</p>
+            <span th:each="item : ${frequentProperties}" class="schema-frequent-property" th:attr="data-predicate=${item.getUri()}">
+                <span th:text="${item.getName()+'('+item.getCount()+')'}"></span>
+            </span>
+        </div>
+        <div class="schema-graph">
+            <div id="graph-container">
+                <div id="infovisSchema"></div>
+            </div>
+        </div>
     </div>
-    <div id="log"></div>
+    <div class="schema-right">
+
+    </div>
+
 </div>
 <div class="copyright">
     <a class="about-link" href="/elas4rdf/about">About</a>

@@ -34,6 +34,35 @@ $(".entity-result").each(function(index){
       });
 });
 
+$(".schema-frequent-class").click(function(){
+    var dataToSend={};
+    dataToSend.uris = ($(this).data("uris"));
+    dataToSend.query = $("#schemaTabContent").data("query");
+    dataToSend.type = $(this).data("type");
+    $.ajax({
+      type: "POST",
+      contentType: "application/json",
+      url: "/elas4rdf/entitiesForSchema",
+      data: JSON.stringify(dataToSend),
+      success: function(data){
+        $(".schema-right").html("");
+        $(".schema-right").append(data);
+      }
+    });
+});
+
+$(".schema-frequent-property").click(function(){
+
+    var predicate = $(this).data("predicate");
+    var query = $("#schemaTabContent").data("query");
+
+    $.get("/elas4rdf/triplesForSchema", { query: query, predicate: predicate } )
+      .done(function( data ) {
+        $(".schema-right").html("");
+        $(".schema-right").append(data);
+    });
+});
+
 $(".image-with-label").each(function(index){
     var idString = $(this).data("id");
     var element = $(this);

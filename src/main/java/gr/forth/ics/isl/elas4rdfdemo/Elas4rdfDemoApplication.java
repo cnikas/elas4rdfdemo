@@ -11,6 +11,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.apache.jena.atlas.json.JSON;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -19,17 +21,13 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
@@ -235,12 +233,17 @@ public class Elas4rdfDemoApplication {
 
 		SchemaTab st = new SchemaTab();
 
-		String jsonGraph = st.createSchemaGraph(triplesContainer.getTriples(),size);
+		Object[] temp = st.createSchemaGraph(triplesContainer.getTriples(),size);
+		JSONArray jsonGraph = (JSONArray) temp[0];
+		ArrayList<String> frequentClasses = (ArrayList<String>)temp[1];
+		ArrayList<String> frequentProperties = (ArrayList<String>)temp[2];
 
 		model.addAttribute("query",query);
 		model.addAttribute("type","schema");
 		model.addAttribute("size",size);
-		model.addAttribute("jsonGraph",jsonGraph);
+		model.addAttribute("jsonGraph",jsonGraph.toString());
+		model.addAttribute("frequentClasses",frequentClasses);
+		model.addAttribute("frequentProperties",frequentProperties);
 
 		return "schema";
 	}
@@ -305,6 +308,44 @@ public class Elas4rdfDemoApplication {
 	@GetMapping("/about")
 	public String aboutPage(){
 		return "about";
+	}
+
+	@RequestMapping(value="/entitiesForSchema", method=RequestMethod.POST, consumes="application/json")
+	public String handleEntitiesForSchema(@RequestBody Map<String,Object> body, Model model) {
+
+		entitiesContainer = ser.searchEntities((String)body.get("query"),1000);
+
+		List<ResultEntity> subResults = new ArrayList<>();
+
+		List<String> uris = (List<String>)body.get("uris");
+
+		for(ResultEntity re:entitiesContainer.getEntities()){
+			if(uris.contains(re.entity.substring(re.entity.lastIndexOf("/")+1)))
+				subResults.add(re);
+		}
+
+		model.addAttribute("type",(String)body.get("type"));
+		model.addAttribute("frequentClasses",subResults);
+
+		return "fragments :: schemaEntities";
+	}
+
+	@GetMapping("/triplesForSchema")
+	public String handleTriplesForSchema(@RequestParam(name="query") String query,@RequestParam(name="predicate") String predicate, Model model) {
+
+		triplesContainer = strWithoutAnnotations.searchTriples(query);
+
+		List<ResultTriple> subResults = new ArrayList<>();
+
+		for(ResultTriple rt:triplesContainer.getTriples()){
+			if(rt.getPredicate().equals(predicate))
+				subResults.add(rt);
+		}
+
+		model.addAttribute("predicate",predicate);
+		model.addAttribute("frequentProperties",subResults);
+
+		return "fragments :: schemaTriples";
 	}
 
 }

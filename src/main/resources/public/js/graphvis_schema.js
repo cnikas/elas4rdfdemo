@@ -60,7 +60,7 @@ function init(edgeType){
     },
     //Add Tips
     Tips: {
-      enable: true,
+      enable: false,
       onShow: function() {}
     },
     // Add node events
@@ -97,9 +97,9 @@ function init(edgeType){
       }
     },
     //Number of iterations for the FD algorithm
-    iterations: 200,
+    iterations: 100,
     //Edge length
-    levelDistance: 130,
+    levelDistance: 100,
     // Add text to the labels. This method is only triggered
     // on label creation and only for DOM labels (not native canvas ones).
      onCreateLabel: function(domElement, node){
