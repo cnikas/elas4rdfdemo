@@ -7,11 +7,12 @@ import gr.forth.ics.isl.elas4rdfdemo.models.*;
 import gr.forth.ics.isl.elas4rdfdemo.qa.models.AnswersContainer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.apache.jena.atlas.json.JSON;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -59,7 +61,7 @@ public class Elas4rdfDemoApplication {
 	}
 
 	@GetMapping("/results/triples")
-	public String handleTriples(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page, Model model) {
+	public String handleTriples(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page, Model model, HttpServletRequest request) {
 
 		int maxPages = 0;
 		int endIndex = 0;
@@ -104,11 +106,14 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("type","triples");
 		model.addAttribute("page",page);
 		model.addAttribute("maxSize",triplesContainer.getMaxSize());
+
+		Logging.logRequest(request.getRemoteAddr(),"triples",query,page,triplesContainer.getMaxSize(),0);
+
 		return "results";
 	}
 
 	@GetMapping("/results/entities")
-	public String handleEntities(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page,  @RequestParam(name="size", required = true, defaultValue="1000") int size, Model model) {
+	public String handleEntities(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page,  @RequestParam(name="size", required = true, defaultValue="1000") int size, Model model, HttpServletRequest request) {
 
 		int maxPages = 0;
 		int endIndex = 0;
@@ -156,11 +161,14 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("type","entities");
 		model.addAttribute("page",page);
 		model.addAttribute("maxSize",entitiesContainer.getMaxSize());
+
+		Logging.logRequest(request.getRemoteAddr(),"entities",query,page,entitiesContainer.getMaxSize(),size);
+
 		return "results";
 	}
 
 	@GetMapping("/results/qa")
-	public String handleQa(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page, Model model) {
+	public String handleQa(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page, Model model, HttpServletRequest request) {
 
 		answersContainer = sar.getAnswers(query);
 
@@ -208,11 +216,14 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("maxPages",maxPages);
 		model.addAttribute("type","qa");
 		model.addAttribute("page",page);
+
+		Logging.logRequest(request.getRemoteAddr(),"qa",query,page,triplesContainer.getMaxSize(),0);
+
 		return "qa";
 	}
 
     @GetMapping("/results/graph")
-    public String handleGraph(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="25") int size, Model model) {
+    public String handleGraph(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="25") int size, Model model, HttpServletRequest request) {
 
 		triplesContainer = strWithoutAnnotations.searchTriples(query);
 		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),size);
@@ -223,11 +234,14 @@ public class Elas4rdfDemoApplication {
         model.addAttribute("type","graph");
 		model.addAttribute("size",size);
         model.addAttribute("jsonGraph",jsonGraph);
+
+		Logging.logRequest(request.getRemoteAddr(),"graph",query,0,triplesContainer.getMaxSize(),size);
+
         return "graph";
     }
 
 	@GetMapping("/results/schema")
-	public String handleSchema(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="25") int size, Model model) {
+	public String handleSchema(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="25") int size, Model model, HttpServletRequest request) {
 
 		triplesContainer = strWithoutAnnotations.searchTriples(query);
 
@@ -245,6 +259,8 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("frequentClasses",frequentClasses);
 		model.addAttribute("frequentProperties",frequentProperties);
 
+		Logging.logRequest(request.getRemoteAddr(),"schema",query,0,triplesContainer.getMaxSize(),size);
+
 		return "schema";
 	}
 
@@ -258,8 +274,8 @@ public class Elas4rdfDemoApplication {
 		String url="";
 		String baseURL = "https://en.wikipedia.org/w/api.php?action=query&titles="+id+"&prop=pageimages&format=json&pithumbsize=200";
 		try {
-			//HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build();
-			HttpClient client = HttpClientBuilder.create().build();
+			HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build();
+			//HttpClient client = HttpClientBuilder.create().build();
 			URIBuilder builder = new URIBuilder(baseURL);
 
 			HttpGet request = new HttpGet(builder.build());
@@ -285,7 +301,7 @@ public class Elas4rdfDemoApplication {
 	}
 
 	@GetMapping("/file")
-	public void returnFile(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="100") int size, @RequestParam(name="type",  defaultValue="turtle") String type, HttpServletResponse response) throws IOException {
+	public void returnFile(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="100") int size, @RequestParam(name="type",  defaultValue="turtle") String type, HttpServletResponse response, HttpServletRequest request) throws IOException {
 		triplesContainer = strWithoutAnnotations.searchTriples(query);
 		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),triplesContainer.getTriples().size());
 		String myString = ae.createFile(type);
@@ -299,6 +315,8 @@ public class Elas4rdfDemoApplication {
 		response.setHeader("Content-Disposition","attachment;filename=triples"+extension);
 		response.setCharacterEncoding("UTF-8");
 
+		Logging.logRequest(request.getRemoteAddr(),type,query,0,triplesContainer.getMaxSize(),0);
+
 		PrintWriter out = response.getWriter();
 		out.println(myString);
 		out.flush();
@@ -311,7 +329,7 @@ public class Elas4rdfDemoApplication {
 	}
 
 	@RequestMapping(value="/entitiesForSchema", method=RequestMethod.POST, consumes="application/json")
-	public String handleEntitiesForSchema(@RequestBody Map<String,Object> body, Model model) {
+	public String handleEntitiesForSchema(@RequestBody Map<String,Object> body, Model model, HttpServletRequest request) {
 
 		entitiesContainer = ser.searchEntities((String)body.get("query"),1000);
 
@@ -327,11 +345,13 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("type",(String)body.get("type"));
 		model.addAttribute("frequentClasses",subResults);
 
+		Logging.logRequest(request.getRemoteAddr(),"entitiesforschema",(String)body.get("type"),0,entitiesContainer.getMaxSize(),0);
+
 		return "fragments :: schemaEntities";
 	}
 
 	@GetMapping("/triplesForSchema")
-	public String handleTriplesForSchema(@RequestParam(name="query") String query,@RequestParam(name="predicate") String predicate, Model model) {
+	public String handleTriplesForSchema(@RequestParam(name="query") String query,@RequestParam(name="predicate") String predicate, Model model, HttpServletRequest request) {
 
 		triplesContainer = strWithoutAnnotations.searchTriples(query);
 
@@ -344,6 +364,8 @@ public class Elas4rdfDemoApplication {
 
 		model.addAttribute("predicate",predicate);
 		model.addAttribute("frequentProperties",subResults);
+
+		Logging.logRequest(request.getRemoteAddr(),"triplesforschema",predicate,0,triplesContainer.getMaxSize(),0);
 
 		return "fragments :: schemaTriples";
 	}
