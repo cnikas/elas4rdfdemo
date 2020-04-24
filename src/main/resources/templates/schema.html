@@ -75,12 +75,12 @@
     <div class="schema-left">
         <div class="schema-frequent-info">
             <p>Frequent Classes</p>
-            <span th:each="item,iterStat : ${frequentClasses}" th:attr="data-uris=${item.getUrisOfType()}, data-type=${item.getUri()}">
-                <span class="schema-frequent-class" th:text="${item.getName()+'('+item.getCount()+')'}"></span><span th:if="!${iterStat.last}">, </span>
+            <span th:each="item,iterStat : ${frequentClasses}">
+                <span class="schema-frequent-class" th:text="${item.getName()+'('+item.getCount()+')'}" th:attr="data-uris=${item.getUrisOfType()}, data-type=${item.getUri()}"></span><span th:if="!${iterStat.last}">, </span>
             </span>
             <p>Frequent Properties</p>
             <span th:each="item,iterStat : ${frequentProperties}" th:attr="data-predicate=${item.getUri()}">
-                <span class="schema-frequent-property" th:text="${item.getName()+'('+item.getCount()+')'}"></span><span th:if="!${iterStat.last}">, </span>
+                <span class="schema-frequent-property" th:text="${item.getName()+'('+item.getCount()+')'}" th:attr="data-uris=${item.getUrisOfType()}, data-type=${item.getUri()}"></span><span th:if="!${iterStat.last}">, </span>
             </span>
         </div>
         <div class="schema-graph">

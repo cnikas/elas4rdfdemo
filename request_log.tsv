@@ -1,1 +1,5 @@
 time    ip  type    query   maxsize page triplesused
+20:39:32 24/04/2020	0:0:0:0:0:0:0:1	schema	Give me the Apollo 14 astronauts.	10972476	0	25
+20:40:04 24/04/2020	0:0:0:0:0:0:0:1	schema	Give me the Apollo 14 astronauts.	10972476	0	25
+20:55:28 24/04/2020	0:0:0:0:0:0:0:1	schema	Give me the Apollo 14 astronauts.	10972476	0	25
+20:55:43 24/04/2020	0:0:0:0:0:0:0:1	entitiesforschema	http://dbpedia.org/ontology/Work	655	0	0
