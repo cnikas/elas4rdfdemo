@@ -471,7 +471,7 @@ a{
     height:600px;
     overflow: auto;
 }
-.schema-frequent-class span, .schema-frequent-property span{
+.schema-frequent-class, .schema-frequent-property{
     color: #000;
     text-decoration: underline;
 }

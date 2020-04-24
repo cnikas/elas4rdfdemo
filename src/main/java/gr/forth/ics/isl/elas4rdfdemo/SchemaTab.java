@@ -29,17 +29,13 @@ public class SchemaTab {
 
             //if the subject is new, find its types and add it to urisWithTypes
             if(!urisWithTypes.containsKey(rt.getSubHighlight())){
-                System.out.println("found new uri: " + rt.getSubHighlight());
                 HashSet<String> types = findTypes(rt.getSubHighlight());
-                System.out.println("found types: " + types.toString());
                 urisWithTypes.put(rt.getSubHighlight(), types);
             }
 
             //if the object is new, find its types and add it to urisWithTypes
             if(!urisWithTypes.containsKey(rt.getObjHighlight())) {
-                System.out.println("found new uri: " + rt.getSubHighlight());
                 HashSet<String> types = findTypes(rt.getSubHighlight());
-                System.out.println("found types: " + types.toString());
                 urisWithTypes.put(rt.getObjHighlight(), types);
             }
 
@@ -147,7 +143,7 @@ public class SchemaTab {
                     urisOfType.put(uwt.getKey());
                 }
             }
-            System.out.println(urisOfType.toString());
+
             fi.setUrisOfType(urisOfType.toString());
         }
 
