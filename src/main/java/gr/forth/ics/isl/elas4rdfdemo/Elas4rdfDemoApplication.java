@@ -107,7 +107,7 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("page",page);
 		model.addAttribute("maxSize",triplesContainer.getMaxSize());
 
-		Logging.logRequest(request.getRemoteAddr(),"triples",query,page,triplesContainer.getMaxSize(),0);
+		Logging.logRequest(getClientIpAddr(request),"triples",query,page,triplesContainer.getMaxSize(),0);
 
 		return "results";
 	}
@@ -162,7 +162,7 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("page",page);
 		model.addAttribute("maxSize",entitiesContainer.getMaxSize());
 
-		Logging.logRequest(request.getRemoteAddr(),"entities",query,page,entitiesContainer.getMaxSize(),size);
+		Logging.logRequest(getClientIpAddr(request),"entities",query,page,entitiesContainer.getMaxSize(),size);
 
 		return "results";
 	}
@@ -217,7 +217,7 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("type","qa");
 		model.addAttribute("page",page);
 
-		Logging.logRequest(request.getRemoteAddr(),"qa",query,page,triplesContainer.getMaxSize(),0);
+		Logging.logRequest(getClientIpAddr(request),"qa",query,page,triplesContainer.getMaxSize(),0);
 
 		return "qa";
 	}
@@ -235,7 +235,7 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("size",size);
         model.addAttribute("jsonGraph",jsonGraph);
 
-		Logging.logRequest(request.getRemoteAddr(),"graph",query,0,triplesContainer.getMaxSize(),size);
+		Logging.logRequest(getClientIpAddr(request),"graph",query,0,triplesContainer.getMaxSize(),size);
 
         return "graph";
     }
@@ -259,7 +259,7 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("frequentClasses",frequentClasses);
 		model.addAttribute("frequentProperties",frequentProperties);
 
-		Logging.logRequest(request.getRemoteAddr(),"schema",query,0,triplesContainer.getMaxSize(),size);
+		Logging.logRequest(getClientIpAddr(request),"schema",query,0,triplesContainer.getMaxSize(),size);
 
 		return "schema";
 	}
@@ -315,7 +315,7 @@ public class Elas4rdfDemoApplication {
 		response.setHeader("Content-Disposition","attachment;filename=triples"+extension);
 		response.setCharacterEncoding("UTF-8");
 
-		Logging.logRequest(request.getRemoteAddr(),type,query,0,triplesContainer.getMaxSize(),0);
+		Logging.logRequest(getClientIpAddr(request),type,query,0,triplesContainer.getMaxSize(),0);
 
 		PrintWriter out = response.getWriter();
 		out.println(myString);
@@ -345,7 +345,7 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("type",(String)body.get("type"));
 		model.addAttribute("frequentClasses",subResults);
 
-		Logging.logRequest(request.getRemoteAddr(),"entitiesforschema",(String)body.get("type"),0,entitiesContainer.getMaxSize(),0);
+		Logging.logRequest(getClientIpAddr(request),"entitiesforschema",(String)body.get("type"),0,entitiesContainer.getMaxSize(),0);
 
 		return "fragments :: schemaEntities";
 	}
@@ -365,9 +365,29 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("predicate",predicate);
 		model.addAttribute("frequentProperties",subResults);
 
-		Logging.logRequest(request.getRemoteAddr(),"triplesforschema",predicate,0,triplesContainer.getMaxSize(),0);
+		Logging.logRequest(getClientIpAddr(request),"triplesforschema",predicate,0,triplesContainer.getMaxSize(),0);
 
 		return "fragments :: schemaTriples";
+	}
+
+	public static String getClientIpAddr(HttpServletRequest request) {
+		String ip = request.getHeader("X-Forwarded-For");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("HTTP_CLIENT_IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		return ip;
 	}
 
 }
