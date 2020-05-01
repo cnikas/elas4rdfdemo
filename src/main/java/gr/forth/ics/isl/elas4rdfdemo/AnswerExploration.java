@@ -94,7 +94,7 @@ public class AnswerExploration {
                 Statement stmt = stmti.next();
                 if(!nodeSet.contains(cleanUriOrLiteral(stmt.getObject().toString()))){
 
-                    String fullName = cleanUriOrLiteral(res.getURI());
+                    String fullName = cleanUriOrLiteral(stmt.getObject().toString());
                     String shortName = "";
                     if(fullName.length() >= 12){
                         shortName = fullName.substring(0,9)+"...";

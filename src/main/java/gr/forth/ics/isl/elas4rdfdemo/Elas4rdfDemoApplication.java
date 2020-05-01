@@ -217,7 +217,7 @@ public class Elas4rdfDemoApplication {
 		model.addAttribute("type","qa");
 		model.addAttribute("page",page);
 
-		Logging.logRequest(getClientIpAddr(request),"qa",query,page,triplesContainer.getMaxSize(),0);
+		Logging.logRequest(getClientIpAddr(request),"qa",query,page,answersContainer.getAnswers().size(),0);
 
 		return "qa";
 	}

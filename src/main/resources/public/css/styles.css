@@ -482,3 +482,6 @@ a{
     width:100%;
     text-align:center;
 }
+#graphSizeForm, .add-remove-btn{
+    display: inline;
+}

@@ -167,7 +167,7 @@ public class AnswerExtraction {
             for(int i=0; i<resultsArray.length(); i++){
                 String foundPredicate = cleanUriOrLiteral(resultsArray.getJSONObject(i).getString("pre"));
                 for(String term : predicateTerms){
-                    if(foundPredicate.toLowerCase().equals(term.toLowerCase().replace(" ",""))){
+                    if(foundPredicate.toLowerCase().contains(term.toLowerCase().replace(" ",""))){
                         ArrayList<String> relevantTerms  = new ArrayList<>(Arrays.asList(firstTerm,term));
                         candidates.add(new Answer(resultsArray.getJSONObject(i).getString("obj"),resultsArray.getJSONObject(i),relevantTerms,resultsArray.getJSONObject(i).getDouble("score")));
                     }
@@ -225,7 +225,7 @@ public class AnswerExtraction {
                 double relevance = (double)cnt/(double)terms.size();
                 double threshold = Double.parseDouble(props.getProperty("extFieldsRelevanceThreshold"));
                 if(Double.compare(relevance,threshold)>=0){
-                    answers.add(new Answer(resultArray.getJSONObject(i).getString(otherType),resultArray.getJSONObject(i),relevantTerms,resultArray.getJSONObject(i).getDouble("score")));
+                    answers.add(new Answer(resultArray.getJSONObject(i).getString(type),resultArray.getJSONObject(i),relevantTerms,resultArray.getJSONObject(i).getDouble("score")));
                 }
             }
         }
@@ -270,6 +270,8 @@ public class AnswerExtraction {
             }
 
         }
+
+
         return answers;
     }
 
@@ -296,6 +298,7 @@ public class AnswerExtraction {
         ArrayList<String> relevantTerms  = new ArrayList<>();
 
         String firstTermString = cleanUriOrLiteral(triple.getString(type)).toLowerCase().replaceAll("_"," ").replaceAll("[\\(\\)]","");
+        String predicateString = cleanUriOrLiteral(triple.getString("pre")).toLowerCase();
 
         int cnt = 0;
         for(String kw : q.getFirstTermKeywords()){
@@ -304,21 +307,20 @@ public class AnswerExtraction {
                 relevantTerms.add(kw);
             }
         }
-        double relevance = (double)cnt/(double)q.getFirstTermKeywords().size();
-        double threshold = Double.parseDouble(props.getProperty("dslFirstTermRelevanceThreshold"));
-        boolean relevantFirstTerm = Double.compare(relevance,threshold) > 0;
 
-        String predicateString = cleanUriOrLiteral(triple.getString("pre")).toLowerCase();
-        boolean relevantPredicate = false;
         for(String kw : q.getPredicateKeywords()){
-            if(predicateString.equals(kw.toLowerCase().replaceAll(" ",""))){
-                relevantPredicate = true;
+            if(predicateString.contains(kw.toLowerCase().replaceAll(" ",""))){
+                cnt++;
                 relevantTerms.add(kw);
             }
-
         }
 
-        if(relevantFirstTerm&&relevantPredicate){
+        double relevance = ((double)cnt)/((double)(q.getFirstTermKeywords().size()+q.getPredicateKeywords().size()));
+        double threshold = Double.parseDouble(props.getProperty("dslRelevanceThreshold"));
+        boolean relevant = Double.compare(relevance,threshold) > 0;
+
+
+        if(relevant){
             return new Answer(triple.getString(otherType),triple,relevantTerms,triple.getDouble("score"));
         } else {
             return null;

@@ -113,4 +113,9 @@ public class Answer {
         String angleFormated = df.format(this.score);
         return angleFormated;
     }
+
+    @Override
+    public String toString() {
+        return getAnswerString();
+    }
 }
