@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Logging {
+
+    /*
+    * Log a request to the log file
+     */
     public static void logRequest(String remoteAddr,String type,String query,int page,int maxSize,int triplesUsed){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         LocalDateTime now = LocalDateTime.now();

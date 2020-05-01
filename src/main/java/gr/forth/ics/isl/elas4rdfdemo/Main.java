@@ -2,6 +2,7 @@ package gr.forth.ics.isl.elas4rdfdemo;
 
 import edu.stanford.nlp.pipeline.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
@@ -15,22 +16,13 @@ public class Main {
     public static StanfordCoreNLP simple_pipeline;
     public static StanfordCoreNLP syntax_pipeline;
 
+    //for running qa on the command line
     public static void main(String[] args){
 
         initializeTools();
 
         QuestionAnalysis qa = new QuestionAnalysis();
         AnswerExtraction ae = new AnswerExtraction();
-
-        /*ae.extractAnswer(qa.analyzeQuestion("Sean Parnell is the governor of which U.S. state?"));
-        ae.extractAnswer(qa.analyzeQuestion("Who was the successor of John F. Kennedy?"));
-        ae.extractAnswer(qa.analyzeQuestion("Give me all professional skateboarders from Sweden."));
-        ae.extractAnswer(qa.analyzeQuestion("Which cities does the Weser flow through?"));
-        ae.extractAnswer(qa.analyzeQuestion("Who is the mayor of Berlin?"));
-        ae.extractAnswer(qa.analyzeQuestion("To which countries does the Himalayan mountain system extend?"));
-        ae.extractAnswer(qa.analyzeQuestion("Give me a list of all trumpet players that were bandleaders."));
-        ae.extractAnswer(qa.analyzeQuestion("Who is the youngest player in the Premier League?"));
-        ae.extractAnswer(qa.analyzeQuestion("Give me all members of Prodigy."));*/
 
         Scanner scanner = new Scanner(System.in);
 
@@ -46,6 +38,7 @@ public class Main {
 
     }
 
+    //this is called after the application has started
     public static void initializeTools(){
 
         props = new Properties();
@@ -69,6 +62,14 @@ public class Main {
         syntax_props.setProperty("parse.maxlen", "100");
         // build pipeline
         syntax_pipeline = new StanfordCoreNLP(syntax_props);
+
+        //create log file if it does not exist
+        File file = new File("request_log.tsv");
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }

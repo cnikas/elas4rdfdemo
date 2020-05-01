@@ -10,9 +10,7 @@ import org.json.JSONObject;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import static org.apache.jena.riot.RDFFormat.*;
 
@@ -35,6 +33,10 @@ public class AnswerExploration {
         }
     }
 
+    /**
+     * Creates the json data used by InfoVis on the graph tab
+     * @return
+     */
     public String createModelFromTriples(){
 
         if(model == null) return null;

@@ -1,6 +1,5 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
-import gr.forth.ics.isl.elas4rdfdemo.caching.TripleRepository;
 import gr.forth.ics.isl.elas4rdfdemo.models.EntitiesContainer;
 import gr.forth.ics.isl.elas4rdfdemo.models.ResultEntity;
 import gr.forth.ics.isl.elas4rdfdemo.models.ResultTriple;
@@ -13,6 +12,9 @@ import java.util.HashSet;
 
 import static gr.forth.ics.isl.elas4rdfdemo.Main.props;
 
+/**
+ * Contains methods used to retrieve triples for the triples tab and entities for the enitities tab.
+ */
 public class KeywordSearch {
     public Elas4RDFRest elas4RDFRest;
 

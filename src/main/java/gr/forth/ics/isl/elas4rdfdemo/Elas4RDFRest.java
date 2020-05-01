@@ -6,7 +6,6 @@ import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 import gr.forth.ics.isl.elas4rdfdemo.utilities.HttpGetWithEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -24,6 +23,9 @@ import java.util.List;
 
 import static gr.forth.ics.isl.elas4rdfdemo.Main.props;
 
+/**
+ * This class contains methods to use the Elas4RDF Rest api
+ */
 public class Elas4RDFRest {
 
     private static final String baseURL = props.getProperty("elas4rdfurl");
