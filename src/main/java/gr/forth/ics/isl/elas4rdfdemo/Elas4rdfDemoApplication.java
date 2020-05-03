@@ -223,7 +223,7 @@ public class Elas4rdfDemoApplication {
 	}
 
     @GetMapping("/results/graph")
-    public String handleGraph(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="25") int size, Model model, HttpServletRequest request) {
+    public String handleGraph(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="15") int size, Model model, HttpServletRequest request) {
 
 		triplesContainer = strWithoutAnnotations.searchTriples(query);
 		AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(),size);
@@ -248,14 +248,14 @@ public class Elas4rdfDemoApplication {
 		SchemaTab st = new SchemaTab();
 
 		Object[] temp = st.createSchemaGraph(triplesContainer.getTriples(),size);
-		JSONArray jsonGraph = (JSONArray) temp[0];
+		String jsonGraph = (String) temp[0];
 		ArrayList<String> frequentClasses = (ArrayList<String>)temp[1];
 		ArrayList<String> frequentProperties = (ArrayList<String>)temp[2];
 
 		model.addAttribute("query",query);
 		model.addAttribute("type","schema");
 		model.addAttribute("size",size);
-		model.addAttribute("jsonGraph",jsonGraph.toString());
+		model.addAttribute("jsonGraph",jsonGraph);
 		model.addAttribute("frequentClasses",frequentClasses);
 		model.addAttribute("frequentProperties",frequentProperties);
 

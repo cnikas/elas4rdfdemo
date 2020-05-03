@@ -1,11 +1,13 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
+import com.sun.org.apache.bcel.internal.generic.ANEWARRAY;
 import gr.forth.ics.isl.elas4rdfdemo.models.FrequentItem;
 import gr.forth.ics.isl.elas4rdfdemo.models.ResultTriple;
 import gr.forth.ics.isl.elas4rdfdemo.models.SchemaAdjacency;
 import gr.forth.ics.isl.elas4rdfdemo.models.SchemaNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import sun.security.provider.certpath.AdjacencyList;
 
 import java.util.*;
 
@@ -17,148 +19,21 @@ public class SchemaTab {
         elas4RDF = new Elas4RDFRest();
     }
 
-    public Object[] createSchemaGraph(ArrayList<ResultTriple> allTriples, int size){
-
-        HashMap<String,HashSet<String>> urisWithTypes = new HashMap<>();
-        HashMap<String,FrequentItem> relationsWithCount = new HashMap<>();
-        HashMap<String,SchemaNode> nodeList = new HashMap<>();
-        if(size>allTriples.size()){
-            size = allTriples.size();
-        }
-        for(ResultTriple rt: allTriples.subList(0,size)){
-
-            //if the subject is new, find its types and add it to urisWithTypes
-            if(!urisWithTypes.containsKey(rt.getSubHighlight())){
-                HashSet<String> types = findTypes(rt.getSubHighlight());
-                urisWithTypes.put(rt.getSubHighlight(), types);
+    public ArrayList<FrequentItem> createTopList(ArrayList<FrequentItem> allFrequent, int k){
+        //sort frequent items in descending order
+        allFrequent.sort(new Comparator<FrequentItem>() {
+            @Override
+            public int compare(FrequentItem o1, FrequentItem o2) {
+                return o2.getCount() - o1.getCount();
             }
+        });
 
-            //if the object is new, find its types and add it to urisWithTypes
-            if(!urisWithTypes.containsKey(rt.getObjHighlight())) {
-                HashSet<String> types = findTypes(rt.getSubHighlight());
-                urisWithTypes.put(rt.getObjHighlight(), types);
-            }
-
-            //update the count for each type of current subject
-            for(String type:urisWithTypes.get(rt.getSubHighlight())){
-                SchemaNode sn;
-
-                if(nodeList.containsKey(type)){
-                    sn = nodeList.get(type);
-                } else{
-                    sn = new SchemaNode();
-                    sn.setName(type.substring(type.lastIndexOf("/")+1));
-                    sn.setUri(type);
-                }
-
-                int typeCount = sn.getCount();
-                sn.setCount(typeCount+1);
-
-                HashSet<SchemaAdjacency> adjacencies = sn.getAdjacencies();
-                adjacencies.add(new SchemaAdjacency(rt.getPreHighlight(),rt.getObjHighlight()));
-                sn.setAdjacencies(adjacencies);
-
-                nodeList.put(type,sn);
-            }
-
-            for(String type:urisWithTypes.get(rt.getObjHighlight())){
-                SchemaNode sn;
-
-                if(nodeList.containsKey(type)){
-                    sn = nodeList.get(type);
-                } else{
-                    sn = new SchemaNode();
-                    sn.setName(type.substring(type.lastIndexOf("/")+1));
-                    sn.setUri(type);
-                }
-
-                int typeCount = sn.getCount();
-                sn.setCount(typeCount+1);
-
-                nodeList.put(type,sn);
-            }
-
-            if(rt.getPredicate().startsWith("http://dbpedia.org/ontology/")){
-                int relationCount;
-                if(relationsWithCount.containsKey(rt.getPreHighlight())){
-                    relationCount = relationsWithCount.get(rt.getPreHighlight()).getCount();
-                } else {
-                    relationCount = 0;
-                }
-                relationsWithCount.put(rt.getPreHighlight(),new FrequentItem(rt.getPreHighlight(),relationCount+1,rt.getPredicate()));
-            }
-        }
-
-        //create json object
-        JSONArray nodesArray = new JSONArray();
-        TreeMap<Integer,FrequentItem> allFrequentProperties = new TreeMap<Integer,FrequentItem>(Comparator.reverseOrder());
-        TreeMap allFrequentClasses = new TreeMap(Comparator.reverseOrder());
-
-        for(Map.Entry<String,FrequentItem> entry : relationsWithCount.entrySet()){
-            allFrequentProperties.put(entry.getValue().getCount(),entry.getValue());
-        }
-
-        for(Map.Entry<String,SchemaNode> entry : nodeList.entrySet()){
-
-            allFrequentClasses.put(entry.getValue().getCount(),new FrequentItem(entry.getValue().getName(),entry.getValue().getCount(),entry.getValue().getUri()));
-
-            JSONObject typeObject = new JSONObject();
-            String nodeName = entry.getKey().substring(entry.getKey().lastIndexOf("/")+1);
-            typeObject.put("name",nodeName);
-            typeObject.put("id",nodeName);
-            typeObject.put("data",new JSONObject("{  \n" +
-                        "        \"$color\": \"#b1ee86\",  \n" +
-                    "        \"$type\": \"circle\",  \n" +
-                    "        \"$dim\": "+entry.getValue().getCount()+"  \n" +
-                    "      }"));
-
-            JSONArray objectAdjacenciesArray = new JSONArray();
-            for(SchemaAdjacency adjacency : entry.getValue().getAdjacencies()){
-                if(urisWithTypes.containsKey(adjacency.getNodeTo())){
-                    if(!urisWithTypes.get(adjacency.getNodeTo()).isEmpty()){
-                        for(String type : urisWithTypes.get(adjacency.getNodeTo())){
-                            if(!type.equals(entry.getKey())){
-                                JSONObject adjObject = new JSONObject();
-                                adjObject.put("nodeTo",type.substring(type.lastIndexOf("/")+1));
-                                adjObject.put("data", new JSONObject("{\"labeltext\":\""+adjacency.getLabel()+"\"}"));
-                                objectAdjacenciesArray.put(adjObject);
-                            }
-                        }
-                    }
-                }
-            }
-
-            typeObject.put("adjacencies",objectAdjacenciesArray);
-
-            nodesArray.put(typeObject);
-        }
-
-        ArrayList<FrequentItem> frequentClasses = createTopList(allFrequentClasses,5);
-
-        for(FrequentItem fi:frequentClasses){
-            JSONArray urisOfType = new JSONArray();
-            String currentType = fi.getUri();
-            for(Map.Entry<String,HashSet<String>> uwt:urisWithTypes.entrySet()){
-                if(uwt.getValue().contains(currentType)){
-                    urisOfType.put(uwt.getKey());
-                }
-            }
-
-            fi.setUrisOfType(urisOfType.toString());
-        }
-
-        ArrayList frequentProperties = createTopList(allFrequentProperties,5);
-
-        return new Object[]{nodesArray,frequentClasses,frequentProperties};
-    }
-
-    public ArrayList<FrequentItem> createTopList(TreeMap<Integer,FrequentItem> allFrequent, int limit){
+        //add the top k elements in a list
         ArrayList<FrequentItem> frequent = new ArrayList<>();
-        Set<Map.Entry<Integer,FrequentItem>> propertiesSet = allFrequent.entrySet();
-        Iterator<Map.Entry<Integer,FrequentItem>> psi = propertiesSet.iterator();
+        Iterator<FrequentItem> fi = allFrequent.iterator();
         int i=0;
-        while(psi.hasNext() && i<limit){
-            frequent.add(psi.next().getValue());
+        while(fi.hasNext() && i<k){
+            frequent.add(fi.next());
             i++;
         }
         return frequent;
@@ -180,11 +55,175 @@ public class SchemaTab {
         }
 
         for(int i=0;i<ja.length();i++){
-            if(ja.getJSONObject(i).getString("obj").startsWith("http://dbpedia.org/ontology/"))
-                types.add(ja.getJSONObject(i).getString("obj"));//obj_keywords
+            String type = ja.getJSONObject(i).getString("obj");
+            if(type.startsWith("http://www.w3.org") || type.startsWith("http://dbpedia.org") || type.startsWith("http://schema.org"))
+                types.add(type);//obj_keywords
             //types -> hashmap
         }
 
         return types;
+    }
+
+    public Object[] createSchemaGraph(ArrayList<ResultTriple> allTriples, int size){
+
+        if(size>allTriples.size()){
+            size = allTriples.size();
+        }
+
+        HashMap<String,Integer> urisWithFreqs = new HashMap<>();
+        HashMap<String,Integer> predicatesWithFreqs = new HashMap<>();
+        HashMap<String,HashSet<SchemaAdjacency>> urisWithAdjacencies = new HashMap<>();
+
+        for(ResultTriple rt: allTriples.subList(0,size)){
+
+            //increment count for each subject and object
+            int currentCountSub = 0;
+            if(urisWithFreqs.containsKey(rt.getSubject())) currentCountSub = urisWithFreqs.get(rt.getSubject());
+            urisWithFreqs.put(rt.getSubject(),currentCountSub+1);
+
+            if(rt.getObject().startsWith("http")){
+                int currentCountObj = 0;
+                if(urisWithFreqs.containsKey(rt.getObject())) currentCountObj = urisWithFreqs.get(rt.getObject());
+                urisWithFreqs.put(rt.getObject(),currentCountObj+1);
+            }
+
+            //increment count for predicates
+            int currentCountPre = 0;
+            if(predicatesWithFreqs.containsKey(rt.getPredicate())) currentCountPre = predicatesWithFreqs.get(rt.getPredicate());
+            predicatesWithFreqs.put(rt.getPredicate(),currentCountPre+1);
+
+            //add adjacency between subject and object
+            if(rt.getObject().startsWith("http")){
+                HashSet<SchemaAdjacency> tempAdjacencies;
+                if(urisWithAdjacencies.containsKey(rt.getSubject())){
+                    tempAdjacencies = urisWithAdjacencies.get(rt.getSubject());
+                } else {
+                    tempAdjacencies = new HashSet<>();
+                }
+                tempAdjacencies.add(new SchemaAdjacency(rt.getPredicate(),rt.getObject()));
+                urisWithAdjacencies.put(rt.getSubject(),tempAdjacencies);
+            }
+
+
+        }
+
+        for(Map.Entry<String,HashSet<SchemaAdjacency>> entry : urisWithAdjacencies.entrySet()){
+            System.out.println(entry.getKey());
+            for(SchemaAdjacency sa:entry.getValue()){
+                System.out.println("\t"+sa.getLabel()+" "+sa.getNodeTo());
+            }
+        }
+
+        //find set of types for each uri
+        HashMap<String,HashSet<String>> urisWithTypes = new HashMap<>();
+        for(String uri:urisWithFreqs.keySet()){
+            urisWithTypes.put(uri,findTypes(uriToString(uri)));
+        }
+
+        //find count for each type
+        HashMap<String,Integer> typesWithCounts = new HashMap<>();
+        for(Map.Entry<String,HashSet<String>> entry : urisWithTypes.entrySet()){
+            for(String type:entry.getValue()){
+                int typeCount=0;
+                if(typesWithCounts.containsKey(type)) typeCount = typesWithCounts.get(type);
+                typesWithCounts.put(type,typeCount+urisWithFreqs.get(entry.getKey()));
+            }
+        }
+
+
+        //find top K classes and properties
+        ArrayList<FrequentItem> allFrequentClasses = new ArrayList<>();
+        for(Map.Entry<String,Integer> entry : typesWithCounts.entrySet()){
+            allFrequentClasses.add(new FrequentItem(uriToString(entry.getKey()),entry.getValue(),entry.getKey()));
+        }
+        ArrayList<FrequentItem> topClasses = createTopList(allFrequentClasses,5);
+
+        ArrayList<FrequentItem> allFrequentPredicates = new ArrayList<>();
+        for(Map.Entry<String,Integer> entry : predicatesWithFreqs.entrySet()){
+            allFrequentPredicates.add(new FrequentItem(uriToString(entry.getKey()),entry.getValue(),entry.getKey()));
+        }
+        ArrayList<FrequentItem> topPredicates = createTopList(allFrequentPredicates,5);
+
+        //create nodes for the graph
+        HashMap<String,SchemaNode> nodesMap = new HashMap<>();
+        for(FrequentItem fi:allFrequentClasses){//can use sublist here to control size
+            nodesMap.put(fi.getUri(),new SchemaNode(fi));
+        }
+
+        //find adjacencies between types
+        //for each uri
+        for(Map.Entry<String,HashSet<SchemaAdjacency>> entry: urisWithAdjacencies.entrySet()){
+            //for each adjacency of the uri
+            for(SchemaAdjacency uriAdj:entry.getValue()){
+                //for each type of the uri
+                for(String type:urisWithTypes.get(entry.getKey())){
+                    SchemaNode currentNode = nodesMap.get(type);
+                    //add adjacency with each type of the object
+                    for(String objType:urisWithTypes.get(uriAdj.getNodeTo())){
+                       currentNode.addAdjacency(new SchemaAdjacency(uriAdj.getLabel(),uriToString(objType)));
+                    }
+                    //add updated node to nodesMap
+                    nodesMap.put(type,currentNode);
+                }
+            }
+        }
+
+        //convert nodesMap to infoVis format
+        String infoVisGraph = createInfoVisJSON(nodesMap);
+
+        System.out.println("info vis graph:");
+        System.out.println(infoVisGraph+"\n\n");
+
+        System.out.println("top classes:");
+        for(FrequentItem s:topClasses){
+            System.out.println(s.getName());
+        }
+
+        System.out.println("top predicates:");
+        for(FrequentItem s:topPredicates){
+            System.out.println(s.getName());
+        }
+
+        return new Object[]{infoVisGraph,topClasses,topPredicates};
+
+    }
+
+    public String createInfoVisJSON(HashMap<String,SchemaNode> nodesMap){
+
+        //create json object
+        JSONArray nodesArray = new JSONArray();
+
+        for(Map.Entry<String,SchemaNode> entry : nodesMap.entrySet()){
+
+            JSONObject typeObject = new JSONObject();
+            String nodeName = uriToString(entry.getKey());
+            typeObject.put("name",nodeName);
+            typeObject.put("id",nodeName);
+            typeObject.put("data",new JSONObject("{  \n" +
+                    "        \"$color\": \"#b1ee86\",  \n" +
+                    "        \"$type\": \"circle\",  \n" +
+                    "        \"$dim\": "+entry.getValue().getCount()+"  \n" +
+                    "      }"));
+
+            JSONArray objectAdjacenciesArray = new JSONArray();
+            for(SchemaAdjacency adjacency : entry.getValue().getAdjacencies()){
+                if(!entry.getKey().equals(adjacency.getNodeTo())){
+                    JSONObject adjObject = new JSONObject();
+                    adjObject.put("nodeTo",adjacency.getNodeTo());
+                    adjObject.put("data", new JSONObject("{\"labeltext\":\""+adjacency.getLabel()+"\"}"));
+                    objectAdjacenciesArray.put(adjObject);
+                }
+            }
+
+            typeObject.put("adjacencies",objectAdjacenciesArray);
+
+            nodesArray.put(typeObject);
+        }
+
+        return nodesArray.toString();
+    }
+    
+    public String uriToString(String u){
+        return u.substring(u.lastIndexOf("/")+1);
     }
 }

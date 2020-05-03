@@ -443,34 +443,25 @@ a{
 }
 #schemaTabContent{
     display: flex;
+    height: calc(100vh - 177px);
 }
 .schema-left,.schema-right{
     width: 50%;
+    height:100%;
 }
-.schema-frequent-info{
-    height:180px;
-    padding: 5px;
-    margin: 10px;
-}
+
 .schema-graph{
-    height:400px;
-    padding:5px;
-    margin: 10px;
+    height: calc(100% - 147px);
     border: 1px solid #999;
 }
 .schema-frequent-info{
     font-size:14px;
     color:#999;
     border: 1px solid #999;
+    height:95px;
+    overflow:auto;
 }
 
-.schema-right{
-    border: 1px solid #999;
-    padding:5px;
-    margin: 10px;
-    height:600px;
-    overflow: auto;
-}
 .schema-frequent-class, .schema-frequent-property{
     color: #000;
     text-decoration: underline;
@@ -484,4 +475,20 @@ a{
 }
 #graphSizeForm, .add-remove-btn{
     display: inline;
+}
+.schema-frequent-info p {
+    margin:3px;
+}
+.schema-right-top, .schema-right-bottom{
+    height: calc(50% - 26px);
+    border: 1px solid #999;
+    overflow: auto;
+}
+.schema-left>div{
+    padding: 5px;
+    margin: 10px 5px 10px 10px;
+}
+.schema-right>div{
+    padding: 5px;
+    margin: 10px 10px 10px 5px;
 }

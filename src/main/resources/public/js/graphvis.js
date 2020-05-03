@@ -98,9 +98,9 @@ function init(edgeType){
       }
     },
     //Number of iterations for the FD algorithm
-    iterations: 200,
+    iterations: 10,
     //Edge length
-    levelDistance: 130,
+    levelDistance: 150,
     // Add text to the labels. This method is only triggered
     // on label creation and only for DOM labels (not native canvas ones).
      onCreateLabel: function(domElement, node){

@@ -33,7 +33,7 @@ function init(edgeType){
       //Enable panning events only if we're dragging the empty
       //canvas (and not a node).
       panning: 'avoid nodes',
-      zooming: 10 //zoom speed. higher is more sensible
+      zooming: 8 //zoom speed. higher is more sensible
     },
     // Change node and edge styles such as
     // color and width.
@@ -97,9 +97,9 @@ function init(edgeType){
       }
     },
     //Number of iterations for the FD algorithm
-    iterations: 100,
+    iterations: 5,
     //Edge length
-    levelDistance: 100,
+    levelDistance: 150,
     // Add text to the labels. This method is only triggered
     // on label creation and only for DOM labels (not native canvas ones).
      onCreateLabel: function(domElement, node){
