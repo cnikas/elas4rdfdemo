@@ -107,13 +107,6 @@ public class SchemaTab {
 
         }
 
-        for(Map.Entry<String,HashSet<SchemaAdjacency>> entry : urisWithAdjacencies.entrySet()){
-            System.out.println(entry.getKey());
-            for(SchemaAdjacency sa:entry.getValue()){
-                System.out.println("\t"+sa.getLabel()+" "+sa.getNodeTo());
-            }
-        }
-
         //find set of types for each uri
         HashMap<String,HashSet<String>> urisWithTypes = new HashMap<>();
         for(String uri:urisWithFreqs.keySet()){
@@ -170,19 +163,6 @@ public class SchemaTab {
 
         //convert nodesMap to infoVis format
         String infoVisGraph = createInfoVisJSON(nodesMap);
-
-        System.out.println("info vis graph:");
-        System.out.println(infoVisGraph+"\n\n");
-
-        System.out.println("top classes:");
-        for(FrequentItem s:topClasses){
-            System.out.println(s.getName());
-        }
-
-        System.out.println("top predicates:");
-        for(FrequentItem s:topPredicates){
-            System.out.println(s.getName());
-        }
 
         return new Object[]{infoVisGraph,topClasses,topPredicates};
 
