@@ -33,13 +33,19 @@ public class AnswerExtraction {
 
         answers.addAll(extractAnswerWithExtFields(q));
 
-        Comparator<Answer> ansComp = Comparator.comparingDouble(Answer::getScore).reversed();
-        Collections.sort(answers,ansComp);
+        TreeSet<Answer> answersMap = new TreeSet<Answer>(new Comparator<Answer>() {
+            @Override
+            public int compare(Answer o1, Answer o2) {
+                return Double.compare(o2.getScore(),o1.getScore());
+            }
+        });
+
+        answersMap.addAll(answers);
 
         if(!q.isList() && answers.size() > 0){
-            ac.setTopAnswer(answers.remove(0));
+            ac.setTopAnswer(answersMap.pollFirst());
         }
-        ac.setAnswers(answers);
+        ac.setAnswers(new ArrayList<Answer>(answersMap));
         ac.setType(q.getqType());
         ac.setList(q.isList());
         return ac;
@@ -93,13 +99,10 @@ public class AnswerExtraction {
                 for(int j=i+1; j<terms.size(); j++){
                     candidateAnswers.addAll(multiMatch(uri,terms.get(j),terms));
                 }
-
             }
-
         }
 
         return candidateAnswers;
-
     }
 
     public ArrayList<Answer> multiMatch(String uri, String term, ArrayList<String> terms){
@@ -386,7 +389,5 @@ public class AnswerExtraction {
         }
         return queries;
     }
-
-
 
 }

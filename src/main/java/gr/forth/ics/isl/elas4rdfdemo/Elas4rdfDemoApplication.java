@@ -169,56 +169,20 @@ public class Elas4rdfDemoApplication {
 	}
 
 	@GetMapping("/results/qa")
-	public String handleQa(@RequestParam(name="query") String query, @RequestParam(name="page", required = true, defaultValue="1") int page, Model model, HttpServletRequest request) {
+	public String handleQa(@RequestParam(name="query") String query, Model model, HttpServletRequest request) {
 
 		answersContainer = sar.getAnswers(query);
-
-		int maxPages = answersContainer.getAnswers().size()/10;
-		int endIndex = 0;
-		int startIndex = (page-1)*10;
-
-		if(page==maxPages+1){
-			endIndex = answersContainer.getAnswers().size();
-		} else {
-			endIndex = startIndex+10;
-		}
 
 		if(!answersContainer.isList()){
 			model.addAttribute("topAnswer",answersContainer.getTopAnswer());
 		}
 
-		model.addAttribute("answers",answersContainer.getAnswers().subList(startIndex,endIndex));
+		model.addAttribute("answers",answersContainer.getAnswers());
 		model.addAttribute("qType",answersContainer.getType());
-
-		ArrayList<Integer> pageList = new ArrayList<>();
-		if(maxPages == 0){
-			pageList.add(0,1);
-		} else if(maxPages==1){
-			pageList.add(0,1);
-			pageList.add(1,2);
-		} else {
-			if(page == 1){
-				pageList.add(0,1);
-				pageList.add(1,2);
-				pageList.add(2,3);
-			} else if(page == maxPages){
-				pageList.add(0,page-2);
-				pageList.add(1,page-1);
-				pageList.add(2,page);
-			} else {
-				pageList.add(0,page-1);
-				pageList.add(1,page);
-				pageList.add(2,page+1);
-			}
-		}
-
-		model.addAttribute("pages", pageList);
 		model.addAttribute("query",query);
-		model.addAttribute("maxPages",maxPages);
 		model.addAttribute("type","qa");
-		model.addAttribute("page",page);
 
-		Logging.logRequest(getClientIpAddr(request),"qa",query,page,answersContainer.getAnswers().size(),0);
+		Logging.logRequest(getClientIpAddr(request),"qa",query,0,answersContainer.getAnswers().size(),0);
 
 		return "qa";
 	}

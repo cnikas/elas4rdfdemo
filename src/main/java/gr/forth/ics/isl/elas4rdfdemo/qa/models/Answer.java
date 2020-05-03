@@ -1,5 +1,6 @@
 package gr.forth.ics.isl.elas4rdfdemo.qa.models;
 
+import gr.forth.ics.isl.elas4rdfdemo.models.SchemaAdjacency;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -118,4 +119,12 @@ public class Answer {
     public String toString() {
         return getAnswerString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Answer)) return false;
+        Answer other = (Answer) o;
+        return this.getAnswerString().equals(other.getAnswerString());
+    }
+
 }
