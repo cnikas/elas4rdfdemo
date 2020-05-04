@@ -12,7 +12,7 @@ import org.springframework.web.context.annotation.SessionScope;
 public class SimpleAnswerRepository implements AnswerRepository{
 
     @Override
-    @Cacheable("answers")
+    @Cacheable(value="answers", key="#query")
     public AnswersContainer getAnswers(String query) {
         AnswerExtraction ae = new AnswerExtraction();
         return ae.extractAnswers(query);
