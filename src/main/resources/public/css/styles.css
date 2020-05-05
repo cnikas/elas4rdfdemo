@@ -479,9 +479,6 @@ a{
 #graphSizeForm, .add-remove-btn{
     display: inline;
 }
-.schema-frequent-info p {
-    margin:3px;
-}
 .schema-right-top, .schema-right-bottom{
     height: calc(50% - 26px);
     border: 1px solid #999;
@@ -497,4 +494,10 @@ a{
 }
 #moreClasses:hover, #moreProperties:hover{
     cursor:pointer;
+}
+.schema-left-label{
+    color:#000;
+    font-weight:600;
+    display: block;
+    font-size:16px;
 }
