@@ -49,26 +49,6 @@ public class SchemaTab {
         elas4RDF = new Elas4RDFRest();
     }
 
-    public ArrayList<FrequentItem> createTopList(ArrayList<FrequentItem> allFrequent, int k){
-        //sort frequent items in descending order
-        allFrequent.sort(new Comparator<FrequentItem>() {
-            @Override
-            public int compare(FrequentItem o1, FrequentItem o2) {
-                return o2.getCount() - o1.getCount();
-            }
-        });
-
-        //add the top k elements in a list
-        ArrayList<FrequentItem> frequent = new ArrayList<>();
-        Iterator<FrequentItem> fi = allFrequent.iterator();
-        int i=0;
-        while(fi.hasNext() && i<k){
-            frequent.add(fi.next());
-            i++;
-        }
-        return frequent;
-    }
-
     public HashSet<String> findTypes(String resource){
 
         HashSet<String> types = new HashSet<>();
@@ -158,19 +138,32 @@ public class SchemaTab {
             }
         }
 
-
         //find top K classes and properties
         ArrayList<FrequentItem> allFrequentClasses = new ArrayList<>();
         for(Map.Entry<String,Integer> entry : typesWithCounts.entrySet()){
             allFrequentClasses.add(new FrequentItem(uriToString(entry.getKey()),entry.getValue(),entry.getKey()));
         }
-        this.topClasses = createTopList(allFrequentClasses,5);
+        //sort frequent items in descending order
+        allFrequentClasses.sort(new Comparator<FrequentItem>() {
+            @Override
+            public int compare(FrequentItem o1, FrequentItem o2) {
+                return o2.getCount() - o1.getCount();
+            }
+        });
+        this.topClasses = allFrequentClasses;
 
         ArrayList<FrequentItem> allFrequentPredicates = new ArrayList<>();
         for(Map.Entry<String,Integer> entry : predicatesWithFreqs.entrySet()){
             allFrequentPredicates.add(new FrequentItem(uriToString(entry.getKey()),entry.getValue(),entry.getKey()));
         }
-        this.topPredicates = createTopList(allFrequentPredicates,5);
+        //sort frequent items in descending order
+        allFrequentPredicates.sort(new Comparator<FrequentItem>() {
+            @Override
+            public int compare(FrequentItem o1, FrequentItem o2) {
+                return o2.getCount() - o1.getCount();
+            }
+        });
+        this.topPredicates = allFrequentPredicates;
 
         //create nodes for the graph
         HashMap<String,SchemaNode> nodesMap = new HashMap<>();

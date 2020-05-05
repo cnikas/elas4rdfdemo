@@ -167,3 +167,67 @@ $('#predicateLabelsCheck').change(function() {
             init('line');
         }
 });
+
+$(document).ready(function(){
+
+    $fc = $(".schema-frequent-class");
+
+    var limit = 5;
+    if($fc.length < 5)
+        limit = $fc.length;
+
+    for(var j=0;j<limit-1;j++){
+       $($fc.get(j)).after('<span class="c-comma">, </span>');
+    }
+
+    $fc.slice(0,5).css('display', 'inline-block');
+    $(".c-comma").css('display', 'inline-block');
+
+    if($fc.length > 5)
+        $($fc.get(limit-1)).after('<span id="moreClasses"> more...</span>');
+
+
+    $fp = $(".schema-frequent-property");
+
+        var plimit = 5;
+        if($fp.length < 5)
+            plimit = $fp.length;
+
+        for(var j=0;j<plimit-1;j++){
+           $($fp.get(j)).after('<span class="p-comma">, </span>');
+        }
+
+        $fp.slice(0,5).css('display', 'inline-block');
+        $(".p-comma").css('display', 'inline-block');
+
+        if($fp.length > 5)
+            $($fp.get(plimit-1)).after('<span id="moreProperties"> more...</span>');
+
+});
+
+$(".all-frequent-classes").on("click","#moreClasses",function(){
+    $fc = $(".schema-frequent-class");
+    $fc.hide();
+    $(".c-comma").remove();
+    for(var j=0;j<$fc.length-1;j++){
+        $($fc.get(j)).after('<span class="c-comma">, </span>');
+    }
+
+    $fc.css('display', 'inline-block');
+    $(".c-comma").css('display', 'inline-block');
+    $("#moreClasses").remove();
+});
+
+$(".all-frequent-properties").on("click","#moreProperties",function(){
+    $fp = $(".schema-frequent-property");
+    $fp.hide();
+    $(".p-comma").remove();
+    for(var j=0;j<$fp.length-1;j++){
+        $($fp.get(j)).after('<span class="p-comma">, </span>');
+    }
+
+    $fp.css('display', 'inline-block');
+    $(".p-comma").css('display', 'inline-block');
+    $("#moreProperties").remove();
+});
+

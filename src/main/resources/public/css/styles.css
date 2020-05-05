@@ -465,9 +465,13 @@ a{
 .schema-frequent-class, .schema-frequent-property{
     color: #000;
     text-decoration: underline;
+    display:none;
 }
 .schema-frequent-class:hover, .schema-frequent-property:hover{
     cursor:pointer;
+}
+.c-comma, .p-comma{
+    display:none;
 }
 .schema-right-label{
     font-weight: 600;
@@ -490,4 +494,7 @@ a{
 .schema-right>div{
     padding: 5px;
     margin: 10px 10px 10px 5px;
+}
+#moreClasses:hover, #moreProperties:hover{
+    cursor:pointer;
 }
