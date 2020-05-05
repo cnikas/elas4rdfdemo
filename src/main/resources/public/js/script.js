@@ -35,32 +35,34 @@ $(".entity-result").each(function(index){
 });
 
 $(".schema-frequent-class").click(function(){
-    var dataToSend={};
-    dataToSend.uris = ($(this).data("uris"));
-    dataToSend.query = $("#schemaTabContent").data("query");
-    dataToSend.type = $(this).data("type");
-    $.ajax({
-      type: "POST",
-      contentType: "application/json",
-      url: "/elas4rdf/entitiesForSchema",
-      data: JSON.stringify(dataToSend),
-      success: function(data){
-        $(".schema-right").html("");
-        $(".schema-right").append(data);
-      }
+
+    $.get("/elas4rdf/triplesForSchemaClass", { typeOfUris : $(this).data("type") } )
+          .done(function( data ) {
+            $(".schema-right-top").html("");
+            $(".schema-right-top").append(data);
     });
+
+    $.get("/elas4rdf/entitiesForSchemaClass", { typeOfUris : $(this).data("type") } )
+              .done(function( data ) {
+                $(".schema-right-bottom").html("");
+                $(".schema-right-bottom").append(data);
+    });
+
 });
 
 $(".schema-frequent-property").click(function(){
 
-    var predicate = $(this).data("predicate");
-    var query = $("#schemaTabContent").data("query");
+    $.get("/elas4rdf/triplesForSchemaPredicate", { predicate : $(this).data("predicate") } )
+              .done(function( data ) {
+                $(".schema-right-top").html("");
+                $(".schema-right-top").append(data);
+        });
 
-    $.get("/elas4rdf/triplesForSchema", { query: query, predicate: predicate } )
-      .done(function( data ) {
-        $(".schema-right").html("");
-        $(".schema-right").append(data);
-    });
+        $.get("/elas4rdf/entitiesForSchemaPredicate", { predicate : $(this).data("predicate") } )
+                  .done(function( data ) {
+                    $(".schema-right-bottom").html("");
+                    $(".schema-right-bottom").append(data);
+        });
 });
 
 $(".image-with-label").each(function(index){

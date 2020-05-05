@@ -6,6 +6,15 @@ public class ResultEntity {
     public String ext;
     public String entity;
     public double score;
+    private int frequency;
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
 
     public String getScoreClean() {
 
@@ -32,6 +41,14 @@ public class ResultEntity {
         this.ext = ext;
         this.entity = entity;
         this.score= score;
+        this.frequency = 0;
+    }
+
+    public ResultEntity(String ext, String entity, double score,int frequency){
+        this.ext = ext;
+        this.entity = entity;
+        this.score= score;
+        this.frequency = frequency;
     }
 
     public String uriToString(String uri){

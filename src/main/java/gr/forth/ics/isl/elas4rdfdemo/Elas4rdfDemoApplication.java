@@ -53,6 +53,8 @@ public class Elas4rdfDemoApplication {
 	public EntitiesContainer entitiesContainer;
 	public AnswersContainer answersContainer;
 
+	private SchemaTab st;
+
 	public static void main(String[] args) {
 		SpringApplication.run(Elas4rdfDemoApplication.class, args);
 
@@ -212,12 +214,11 @@ public class Elas4rdfDemoApplication {
 
 		triplesContainer = strWithoutAnnotations.searchTriples(query);
 
-		SchemaTab st = new SchemaTab();
+		st = new SchemaTab(triplesContainer.getTriples(),size);
 
-		Object[] temp = st.createSchemaGraph(triplesContainer.getTriples(),size);
-		String jsonGraph = (String) temp[0];
-		ArrayList<String> frequentClasses = (ArrayList<String>)temp[1];
-		ArrayList<String> frequentProperties = (ArrayList<String>)temp[2];
+		String jsonGraph = st.getInfoVisGraph();
+		ArrayList<FrequentItem> frequentClasses = st.getTopClasses();
+		ArrayList<FrequentItem> frequentProperties = st.getTopPredicates();
 
 		model.addAttribute("query",query);
 		model.addAttribute("type","schema");
@@ -295,46 +296,64 @@ public class Elas4rdfDemoApplication {
 		return "about";
 	}
 
-	@RequestMapping(value="/entitiesForSchema", method=RequestMethod.POST, consumes="application/json")
-	public String handleEntitiesForSchema(@RequestBody Map<String,Object> body, Model model, HttpServletRequest request) {
+	@GetMapping("/triplesForSchemaClass")
+	public String handleTriplesForSchemaClass(@RequestParam(name="typeOfUris") String typeOfUris, Model model, HttpServletRequest request) {
 
-		entitiesContainer = ser.searchEntities((String)body.get("query"),1000);
+		if(st == null) return "";
 
-		List<ResultEntity> subResults = new ArrayList<>();
+		List<ResultTriple> subResults = st.triplesForClass(typeOfUris);
 
-		List<String> uris = (List<String>)body.get("uris");
+		model.addAttribute("typeOfUris",typeOfUris);
+		model.addAttribute("triples",subResults);
 
-		for(ResultEntity re:entitiesContainer.getEntities()){
-			if(uris.contains(re.entity.substring(re.entity.lastIndexOf("/")+1)))
-				subResults.add(re);
-		}
+		Logging.logRequest(getClientIpAddr(request),"triplesforschemaClass",typeOfUris,0,triplesContainer.getMaxSize(),0);
 
-		model.addAttribute("type",(String)body.get("type"));
-		model.addAttribute("frequentClasses",subResults);
+		return "fragments :: schemaTriples";
+	}
 
-		Logging.logRequest(getClientIpAddr(request),"entitiesforschema",(String)body.get("type"),0,entitiesContainer.getMaxSize(),0);
+	@GetMapping("/entitiesForSchemaClass")
+	public String handleEntitiesForSchemaClass(@RequestParam(name="typeOfUris") String typeOfUris, Model model, HttpServletRequest request) {
+
+		if(st == null) return "";
+
+		List<ResultEntity> subResults = st.entitiesForClass(typeOfUris);
+
+		model.addAttribute("typeOfUris",typeOfUris);
+		model.addAttribute("entities",subResults);
+
+		Logging.logRequest(getClientIpAddr(request),"triplesforschemaClass",typeOfUris,0,triplesContainer.getMaxSize(),0);
 
 		return "fragments :: schemaEntities";
 	}
 
-	@GetMapping("/triplesForSchema")
-	public String handleTriplesForSchema(@RequestParam(name="query") String query,@RequestParam(name="predicate") String predicate, Model model, HttpServletRequest request) {
+	@GetMapping("/triplesForSchemaPredicate")
+	public String handleTriplesForSchemaPredicate(@RequestParam(name="predicate") String predicate, Model model, HttpServletRequest request) {
 
-		triplesContainer = strWithoutAnnotations.searchTriples(query);
+		if(st == null) return "";
 
-		List<ResultTriple> subResults = new ArrayList<>();
-
-		for(ResultTriple rt:triplesContainer.getTriples()){
-			if(rt.getPredicate().equals(predicate))
-				subResults.add(rt);
-		}
+		List<ResultTriple> subResults = st.triplesForPredicate(predicate);
 
 		model.addAttribute("predicate",predicate);
-		model.addAttribute("frequentProperties",subResults);
+		model.addAttribute("triples",subResults);
 
-		Logging.logRequest(getClientIpAddr(request),"triplesforschema",predicate,0,triplesContainer.getMaxSize(),0);
+		Logging.logRequest(getClientIpAddr(request),"triplesforschemaPredicate",predicate,0,triplesContainer.getMaxSize(),0);
 
 		return "fragments :: schemaTriples";
+	}
+
+	@GetMapping("/entitiesForSchemaPredicate")
+	public String handleEntitiesForSchemaPredicate(@RequestParam(name="predicate") String predicate, Model model, HttpServletRequest request) {
+
+		if(st == null) return "";
+
+		List<ResultEntity> subResults = st.entitiesForPredicate(predicate);
+
+		model.addAttribute("typeOfUris",predicate);
+		model.addAttribute("entities",subResults);
+
+		Logging.logRequest(getClientIpAddr(request),"triplesforschemaPredicate",predicate,0,triplesContainer.getMaxSize(),0);
+
+		return "fragments :: schemaEntities";
 	}
 
 	public static String getClientIpAddr(HttpServletRequest request) {

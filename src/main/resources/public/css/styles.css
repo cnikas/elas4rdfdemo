@@ -470,8 +470,7 @@ a{
     cursor:pointer;
 }
 .schema-right-label{
-    width:100%;
-    text-align:center;
+    font-weight: 600;
 }
 #graphSizeForm, .add-remove-btn{
     display: inline;

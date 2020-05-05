@@ -11,22 +11,9 @@
     <title>Elas4RDF</title>
 </head>
 <body>
-<div th:fragment="schemaEntities">
-    <div class="schema-right-label">Entities of type: <a th:href="${type}" th:text="${type}"></a></div>
-    <span th:each="entity : ${frequentClasses}">
-    <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
-        <div>
-            <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> <span class="entity-score" th:text="${'Score: '+entity.getScoreClean()}"></span></div>
-            <div class="description" th:utext="${entity.extClean()}"></div>
-            <div class="uri" th:text="${entity.entity}"></div>
-        </div>
-    </div>
-    <hr>
-    </span>
-</div>
 <div th:fragment="schemaTriples">
-    <div class="schema-right-label">Triples with predicate: <a th:href="${predicate}" th:text="${predicate}"></a></div>
-    <div th:each="triple : ${frequentProperties}">
+    <div class="schema-right-label">Triples with s or o of type: <a th:href="${typeOfUris}" th:text="${typeOfUris}"></a></div>
+    <div th:each="triple : ${triples}">
         <div class="result">
             <div class="big-col" th:attr="data-id=${triple.uriToString(triple.subject)}">
                 <div>
@@ -54,6 +41,19 @@
         </div>
         <hr>
     </div>
+</div>
+<div th:fragment="schemaEntities">
+    <div class="schema-right-label">Entities of type: <a th:href="${typeOfUris}" th:text="${typeOfUris}"></a></div>
+    <span th:each="entity : ${entities}">
+    <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
+        <div>
+            <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> <span class="entity-score" th:text="${'in '+entity.getFrequency()+' triples'}"></span></div>
+            <div class="description" th:utext="${entity.extClean()}"></div>
+            <div class="uri" th:text="${entity.entity}"></div>
+        </div>
+    </div>
+    <hr>
+    </span>
 </div>
 <div th:fragment="tabLinks">
     <a th:href="${'/elas4rdf/results/triples?query=' + query}" th:class="${type == 'triples'} ? 'tab active' : 'tab'">

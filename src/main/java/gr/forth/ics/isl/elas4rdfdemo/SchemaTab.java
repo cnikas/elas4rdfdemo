@@ -1,10 +1,8 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
 import com.sun.org.apache.bcel.internal.generic.ANEWARRAY;
-import gr.forth.ics.isl.elas4rdfdemo.models.FrequentItem;
-import gr.forth.ics.isl.elas4rdfdemo.models.ResultTriple;
-import gr.forth.ics.isl.elas4rdfdemo.models.SchemaAdjacency;
-import gr.forth.ics.isl.elas4rdfdemo.models.SchemaNode;
+import gr.forth.ics.isl.elas4rdfdemo.models.*;
+import org.apache.jena.tdb.store.Hash;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sun.security.provider.certpath.AdjacencyList;
@@ -14,6 +12,38 @@ import java.util.*;
 public class SchemaTab {
 
     public Elas4RDFRest elas4RDF;
+
+    private String infoVisGraph;
+    private ArrayList<FrequentItem> topPredicates;
+    private ArrayList<FrequentItem> topClasses;
+    private int size;
+    private ArrayList<ResultTriple> allTriples;
+    private HashMap<String,HashSet<String>> urisWithTypes;
+    private HashMap<String,Integer> urisWithFreqs;
+
+    public String getInfoVisGraph() {
+        return infoVisGraph;
+    }
+
+    public void setInfoVisGraph(String infoVisGraph) {
+        this.infoVisGraph = infoVisGraph;
+    }
+
+    public ArrayList<FrequentItem> getTopPredicates() {
+        return topPredicates;
+    }
+
+    public void setTopPredicates(ArrayList<FrequentItem> topPredicates) {
+        this.topPredicates = topPredicates;
+    }
+
+    public ArrayList<FrequentItem> getTopClasses() {
+        return topClasses;
+    }
+
+    public void setTopClasses(ArrayList<FrequentItem> topClasses) {
+        this.topClasses = topClasses;
+    }
 
     public SchemaTab(){
         elas4RDF = new Elas4RDFRest();
@@ -56,15 +86,19 @@ public class SchemaTab {
 
         for(int i=0;i<ja.length();i++){
             String type = ja.getJSONObject(i).getString("obj");
-            if(type.startsWith("http://www.w3.org") || type.startsWith("http://dbpedia.org") || type.startsWith("http://schema.org"))
+            if(type.startsWith("http://dbpedia.org"))
                 types.add(type);//obj_keywords
-            //types -> hashmap
         }
 
         return types;
     }
 
-    public Object[] createSchemaGraph(ArrayList<ResultTriple> allTriples, int size){
+    public SchemaTab(ArrayList<ResultTriple> allTriples, int size){
+
+        this.elas4RDF = new Elas4RDFRest();
+
+        this.allTriples = allTriples;
+        this.size = size;
 
         if(size>allTriples.size()){
             size = allTriples.size();
@@ -104,14 +138,15 @@ public class SchemaTab {
                 urisWithAdjacencies.put(rt.getSubject(),tempAdjacencies);
             }
 
-
         }
+        this.urisWithFreqs = urisWithFreqs;
 
         //find set of types for each uri
         HashMap<String,HashSet<String>> urisWithTypes = new HashMap<>();
         for(String uri:urisWithFreqs.keySet()){
             urisWithTypes.put(uri,findTypes(uriToString(uri)));
         }
+        this.urisWithTypes = urisWithTypes;
 
         //find count for each type
         HashMap<String,Integer> typesWithCounts = new HashMap<>();
@@ -129,13 +164,13 @@ public class SchemaTab {
         for(Map.Entry<String,Integer> entry : typesWithCounts.entrySet()){
             allFrequentClasses.add(new FrequentItem(uriToString(entry.getKey()),entry.getValue(),entry.getKey()));
         }
-        ArrayList<FrequentItem> topClasses = createTopList(allFrequentClasses,5);
+        this.topClasses = createTopList(allFrequentClasses,5);
 
         ArrayList<FrequentItem> allFrequentPredicates = new ArrayList<>();
         for(Map.Entry<String,Integer> entry : predicatesWithFreqs.entrySet()){
             allFrequentPredicates.add(new FrequentItem(uriToString(entry.getKey()),entry.getValue(),entry.getKey()));
         }
-        ArrayList<FrequentItem> topPredicates = createTopList(allFrequentPredicates,5);
+        this.topPredicates = createTopList(allFrequentPredicates,5);
 
         //create nodes for the graph
         HashMap<String,SchemaNode> nodesMap = new HashMap<>();
@@ -162,10 +197,7 @@ public class SchemaTab {
         }
 
         //convert nodesMap to infoVis format
-        String infoVisGraph = createInfoVisJSON(nodesMap);
-
-        return new Object[]{infoVisGraph,topClasses,topPredicates};
-
+        this.infoVisGraph = createInfoVisJSON(nodesMap);
     }
 
     public String createInfoVisJSON(HashMap<String,SchemaNode> nodesMap){
@@ -205,5 +237,81 @@ public class SchemaTab {
     
     public String uriToString(String u){
         return u.substring(u.lastIndexOf("/")+1);
+    }
+
+    public ArrayList<ResultTriple> triplesForClass(String type){
+        ArrayList<ResultTriple> result = new ArrayList<>();
+        for(ResultTriple rt: allTriples.subList(0,size)){
+            if(urisWithTypes.containsKey(rt.getSubject())){
+                if(urisWithTypes.get(rt.getSubject()).contains(type)){
+                    result.add(rt);
+                }
+            }
+            if(urisWithTypes.containsKey(rt.getObject())){
+                if(urisWithTypes.get(rt.getObject()).contains(type)){
+                    result.add(rt);
+                }
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<ResultEntity> entitiesForClass(String type){
+        ArrayList<ResultEntity> result = new ArrayList<>();
+        HashMap<String,Integer> entitiesWithCounts = new HashMap<>(this.urisWithFreqs);
+
+        //find ext field, use frequency as score
+        for(ResultTriple rt: allTriples.subList(0,size)){
+            if(entitiesWithCounts.containsKey(rt.getSubject())){
+                if(urisWithTypes.get(rt.getSubject()).contains(type))
+                    result.add(new ResultEntity(rt.getSubExt(),rt.getSubject(),0.0,entitiesWithCounts.remove(rt.getSubject())));
+            }
+            if(entitiesWithCounts.containsKey(rt.getObject())){
+                if(urisWithTypes.get(rt.getObject()).contains(type))
+                    result.add(new ResultEntity(rt.getObjExt(),rt.getObject(),0.0,entitiesWithCounts.remove(rt.getObject())));
+            }
+        }
+        result.sort(new Comparator<ResultEntity>() {
+            @Override
+            public int compare(ResultEntity o1, ResultEntity o2) {
+                return Double.compare(o2.getFrequency(),o1.getFrequency());
+            }
+        });
+        return result;
+    }
+
+    public ArrayList<ResultTriple> triplesForPredicate(String predicate){
+        ArrayList<ResultTriple> result = new ArrayList<>();
+        for(ResultTriple rt: allTriples.subList(0,size)){
+            if(rt.getPredicate().equals(predicate)){
+                result.add(rt);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<ResultEntity> entitiesForPredicate(String predicate){
+        ArrayList<ResultEntity> result = new ArrayList<>();
+        HashMap<String,Integer> entitiesWithCounts = new HashMap<>(this.urisWithFreqs);
+
+        //find ext field, use frequency as score
+        for(ResultTriple rt: allTriples.subList(0,size)){
+            if (rt.getPredicate().equals(predicate)) {
+                if(entitiesWithCounts.containsKey(rt.getSubject())){
+                    result.add(new ResultEntity(rt.getSubExt(),rt.getSubject(),0.0,entitiesWithCounts.remove(rt.getSubject())));
+                }
+                if(entitiesWithCounts.containsKey(rt.getObject())){
+                    result.add(new ResultEntity(rt.getObjExt(),rt.getObject(),0.0,entitiesWithCounts.remove(rt.getObject())));
+                }
+            }
+
+        }
+        result.sort(new Comparator<ResultEntity>() {
+            @Override
+            public int compare(ResultEntity o1, ResultEntity o2) {
+                return Double.compare(o2.getFrequency(),o1.getFrequency());
+            }
+        });
+        return result;
     }
 }
