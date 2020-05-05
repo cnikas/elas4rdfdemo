@@ -305,6 +305,7 @@ public class Elas4rdfDemoApplication {
 
 		model.addAttribute("typeOfUris",typeOfUris);
 		model.addAttribute("triples",subResults);
+		model.addAttribute("labelText","Triples with s or o of type: ");
 
 		Logging.logRequest(getClientIpAddr(request),"triplesforschemaClass",typeOfUris,0,triplesContainer.getMaxSize(),0);
 
@@ -320,6 +321,7 @@ public class Elas4rdfDemoApplication {
 
 		model.addAttribute("typeOfUris",typeOfUris);
 		model.addAttribute("entities",subResults);
+		model.addAttribute("labelText","Entities of type: ");
 
 		Logging.logRequest(getClientIpAddr(request),"triplesforschemaClass",typeOfUris,0,triplesContainer.getMaxSize(),0);
 
@@ -335,6 +337,7 @@ public class Elas4rdfDemoApplication {
 
 		model.addAttribute("predicate",predicate);
 		model.addAttribute("triples",subResults);
+		model.addAttribute("labelText","Triples with predicate: ");
 
 		Logging.logRequest(getClientIpAddr(request),"triplesforschemaPredicate",predicate,0,triplesContainer.getMaxSize(),0);
 
@@ -350,6 +353,7 @@ public class Elas4rdfDemoApplication {
 
 		model.addAttribute("typeOfUris",predicate);
 		model.addAttribute("entities",subResults);
+		model.addAttribute("labelText","Entities on triples with predicate: ");
 
 		Logging.logRequest(getClientIpAddr(request),"triplesforschemaPredicate",predicate,0,triplesContainer.getMaxSize(),0);
 

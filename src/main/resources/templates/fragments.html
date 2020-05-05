@@ -12,7 +12,7 @@
 </head>
 <body>
 <div th:fragment="schemaTriples">
-    <div class="schema-right-label">Triples with s or o of type: <a th:href="${typeOfUris}" th:text="${typeOfUris}"></a></div>
+    <div class="schema-right-label"><span th:text="${labelText}"></span><a th:href="${typeOfUris}" th:text="${typeOfUris}"></a></div>
     <div th:each="triple : ${triples}">
         <div class="result">
             <div class="big-col" th:attr="data-id=${triple.uriToString(triple.subject)}">
@@ -43,7 +43,7 @@
     </div>
 </div>
 <div th:fragment="schemaEntities">
-    <div class="schema-right-label">Entities of type: <a th:href="${typeOfUris}" th:text="${typeOfUris}"></a></div>
+    <div class="schema-right-label"><span th:text="${labelText}"></span><a th:href="${typeOfUris}" th:text="${typeOfUris}"></a></div>
     <span th:each="entity : ${entities}">
     <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
         <div>
