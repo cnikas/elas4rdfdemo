@@ -90,10 +90,7 @@ function init(edgeType){
       //Add also a click handler to nodes
       onClick: function(node) {
         if(!node) return;
-        console.log(node);
-        if(node.data.isResource){
-            window.open(node.data.link,'_blank');
-        }
+        clickOnClass(node.data.link);
       }
     },
     //Number of iterations for the FD algorithm

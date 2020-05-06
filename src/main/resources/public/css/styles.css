@@ -473,9 +473,7 @@ a{
 .c-comma, .p-comma{
     display:none;
 }
-.schema-right-label{
-    font-weight: 600;
-}
+
 #graphSizeForm, .add-remove-btn{
     display: inline;
 }

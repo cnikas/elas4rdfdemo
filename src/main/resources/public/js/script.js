@@ -22,6 +22,18 @@ $(".tab").on('click',function(){
    $(this).removeClass('active');
 });
 
+function updateEntityImages(){
+    $(".entity-result").each(function(index){
+        var idString = $(this).data("id");
+        var element = $(this);
+        $.get( "/elas4rdf/loadimage", { id: idString} )
+        .done(function( data ) {
+            if(data != ""){
+                element.prepend('<img src="'+data+'">');
+            }
+        });
+    });
+}
 
 $(".entity-result").each(function(index){
     var idString = $(this).data("id");
@@ -35,35 +47,43 @@ $(".entity-result").each(function(index){
 });
 
 $(".schema-frequent-class").click(function(){
+    clickOnClass($(this).data("type"));
+});
 
-    $.get("/elas4rdf/triplesForSchemaClass", { typeOfUris : $(this).data("type") } )
+function clickOnClass(type){
+    $.get("/elas4rdf/triplesForSchemaClass", { typeOfUris : type } )
           .done(function( data ) {
             $(".schema-right-top").html("");
             $(".schema-right-top").append(data);
     });
 
-    $.get("/elas4rdf/entitiesForSchemaClass", { typeOfUris : $(this).data("type") } )
+    $.get("/elas4rdf/entitiesForSchemaClass", { typeOfUris : type } )
               .done(function( data ) {
                 $(".schema-right-bottom").html("");
                 $(".schema-right-bottom").append(data);
+                updateEntityImages();
     });
 
-});
+}
 
 $(".schema-frequent-property").click(function(){
+    clickOnProperty($(this).data("predicate"));
+});
 
-    $.get("/elas4rdf/triplesForSchemaPredicate", { predicate : $(this).data("predicate") } )
+function clickOnProperty(property){
+    $.get("/elas4rdf/triplesForSchemaPredicate", { predicate : property } )
               .done(function( data ) {
                 $(".schema-right-top").html("");
                 $(".schema-right-top").append(data);
         });
 
-        $.get("/elas4rdf/entitiesForSchemaPredicate", { predicate : $(this).data("predicate") } )
+        $.get("/elas4rdf/entitiesForSchemaPredicate", { predicate : property } )
                   .done(function( data ) {
                     $(".schema-right-bottom").html("");
                     $(".schema-right-bottom").append(data);
+                    updateEntityImages();
         });
-});
+}
 
 $(".image-with-label").each(function(index){
     var idString = $(this).data("id");
@@ -230,4 +250,3 @@ $(".all-frequent-properties").on("click","#moreProperties",function(){
     $(".p-comma").css('display', 'inline-block');
     $("#moreProperties").remove();
 });
-

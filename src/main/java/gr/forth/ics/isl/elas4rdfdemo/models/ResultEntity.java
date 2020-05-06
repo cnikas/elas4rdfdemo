@@ -12,6 +12,14 @@ public class ResultEntity {
         return frequency;
     }
 
+    public String getFrequencyString() {
+        if(this.frequency == 1){
+            return "in 1 triple";
+        } else {
+            return "in "+this.frequency+" triples";
+        }
+    }
+
     public void setFrequency(int frequency) {
         this.frequency = frequency;
     }

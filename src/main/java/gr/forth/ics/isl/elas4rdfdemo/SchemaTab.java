@@ -207,7 +207,8 @@ public class SchemaTab {
             typeObject.put("data",new JSONObject("{  \n" +
                     "        \"$color\": \"#b1ee86\",  \n" +
                     "        \"$type\": \"circle\",  \n" +
-                    "        \"$dim\": "+entry.getValue().getCount()+"  \n" +
+                    "        \"$dim\": "+(entry.getValue().getCount()+3)+",  \n" +
+                    "\"link\": \""+entry.getValue().getUri()+"\"\n"+
                     "      }"));
 
             JSONArray objectAdjacenciesArray = new JSONArray();
