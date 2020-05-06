@@ -305,7 +305,7 @@ public class Elas4rdfDemoApplication {
 
 		model.addAttribute("typeOfUris",typeOfUris);
 		model.addAttribute("triples",subResults);
-		model.addAttribute("labelText","<bold>Triples</bold> with subj. or obj. of type: ");
+		model.addAttribute("labelText","<b>Triples</b> with subj. or obj. of type: ");
 
 		Logging.logRequest(getClientIpAddr(request),"triplesforschemaClass",typeOfUris,0,triplesContainer.getMaxSize(),0);
 
@@ -321,7 +321,7 @@ public class Elas4rdfDemoApplication {
 
 		model.addAttribute("typeOfUris",typeOfUris);
 		model.addAttribute("entities",subResults);
-		model.addAttribute("labelText","<bold>Entities</bold> of type: ");
+		model.addAttribute("labelText","<b>Entities</b> of type: ");
 
 		Logging.logRequest(getClientIpAddr(request),"triplesforschemaClass",typeOfUris,0,triplesContainer.getMaxSize(),0);
 
@@ -335,9 +335,9 @@ public class Elas4rdfDemoApplication {
 
 		List<ResultTriple> subResults = st.triplesForPredicate(predicate);
 
-		model.addAttribute("predicate",predicate);
+		model.addAttribute("typeOfUris",predicate);
 		model.addAttribute("triples",subResults);
-		model.addAttribute("labelText","<bold>Triples</bold> with predicate: ");
+		model.addAttribute("labelText","<b>Triples</b> with predicate: ");
 
 		Logging.logRequest(getClientIpAddr(request),"triplesforschemaPredicate",predicate,0,triplesContainer.getMaxSize(),0);
 
@@ -353,7 +353,7 @@ public class Elas4rdfDemoApplication {
 
 		model.addAttribute("typeOfUris",predicate);
 		model.addAttribute("entities",subResults);
-		model.addAttribute("labelText","<bold>Entities</bold on triples with predicate: ");
+		model.addAttribute("labelText","<b>Entities</b> on triples with predicate: ");
 
 		Logging.logRequest(getClientIpAddr(request),"triplesforschemaPredicate",predicate,0,triplesContainer.getMaxSize(),0);
 
