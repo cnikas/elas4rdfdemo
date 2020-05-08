@@ -409,7 +409,8 @@ a{
     font-size:16px;
 }
 .highlighted{
-    background: #e2efd9;
+    /*background: #e2efd9;*/
+    font-weight:600;
 }
 .settings-icon-container{
     align-self: end;

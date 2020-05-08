@@ -163,6 +163,10 @@ $(".settings-icon").click(function(){
     $('#settingsBox').toggle();
 });
 
+$(document).ready(function(){
+    highlight();
+});
+
 
 $('#highlightCheck').change(function() {
 

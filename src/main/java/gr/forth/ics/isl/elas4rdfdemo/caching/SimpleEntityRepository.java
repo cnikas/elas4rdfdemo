@@ -10,7 +10,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 @ApplicationScope
 public class SimpleEntityRepository implements EntityRepository {
     @Override
-    @Cacheable(value="entities",key="#query")
+    @Cacheable(value="entities",key="{#query, #size}")
     public EntitiesContainer searchEntities(String query, int size) {
         KeywordSearch ks = new KeywordSearch();
         return ks.searchEntities(query, size);

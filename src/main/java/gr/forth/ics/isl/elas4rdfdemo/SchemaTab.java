@@ -63,12 +63,14 @@ public class SchemaTab {
         if( resultsObject != null){
             ja = resultsObject.optJSONArray("triples");
         }
-
-        for(int i=0;i<ja.length();i++){
-            String type = ja.getJSONObject(i).getString("obj");
-            if(type.startsWith("http://dbpedia.org"))
-                types.add(type);//obj_keywords
+        if(ja !=null){
+            for(int i=0;i<ja.length();i++){
+                String type = ja.getJSONObject(i).getString("obj");
+                if(type.startsWith("http://dbpedia.org"))
+                    types.add(type);//obj_keywords
+            }
         }
+
 
         return types;
     }
