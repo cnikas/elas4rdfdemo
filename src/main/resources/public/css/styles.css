@@ -76,6 +76,7 @@ footer{
 }
 .copyright{
     display: flex;
+    display: -webkit-flexbox;
     align-items: center;
     justify-content:center;
     flex-wrap: wrap;
@@ -99,6 +100,7 @@ footer{
 }
 .results-top{
     display:flex;
+    disply: -webkit-flexbox;
     flex-flow: row nowrap;
 }
 .search-input-results{
