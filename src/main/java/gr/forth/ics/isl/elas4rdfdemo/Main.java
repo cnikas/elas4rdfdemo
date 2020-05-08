@@ -43,7 +43,7 @@ public class Main {
 
         props = new Properties();
         try {
-            props.load(new FileInputStream("./config.properties"));
+            props.load(new FileInputStream("./application.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }

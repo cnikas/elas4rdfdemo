@@ -120,7 +120,7 @@ public class AnswerExtraction {
             otherType = "sub";
         }
         ArrayList<Answer> candidateTriples =new ArrayList<>();
-        JSONObject results = elas4RDF.executeMultiMatchQuery(uri,term,"terms_bindex",Integer.parseInt(props.getProperty("multiMatchQuerySize")),type);
+        JSONObject results = elas4RDF.executeMultiMatchQuery(uri,term,"terms_bindex",Integer.parseInt(props.getProperty("qa.multiMatchQuerySize")),type);
 
         JSONObject resultsObject = null;
             if(results      != null){
@@ -155,7 +155,7 @@ public class AnswerExtraction {
 
         ArrayList<Answer> candidates = new ArrayList<>();
 
-        JSONObject results = elas4RDF.executeConstantScoreRequest(firstTerm,"terms_bindex",Integer.parseInt(props.getProperty("constantScoreQuerySize")));
+        JSONObject results = elas4RDF.executeConstantScoreRequest(firstTerm,"terms_bindex",Integer.parseInt(props.getProperty("qa.constantScoreQuerySize")));
 
         JSONObject resultsObject = null;
         if(results      != null){
@@ -205,7 +205,7 @@ public class AnswerExtraction {
         ArrayList<Answer> answers =new ArrayList<>();
         String joinedTerms = String.join(" ",terms);
 
-        JSONObject results = elas4RDF.queryExtFields(joinedTerms,type,Integer.parseInt(props.getProperty("extFieldsQuerySize")));
+        JSONObject results = elas4RDF.queryExtFields(joinedTerms,type,Integer.parseInt(props.getProperty("qa.extFieldsQuerySize")));
         JSONObject resultsObject = null;
         if(results      != null){
             resultsObject = results.optJSONObject("results");
@@ -226,7 +226,7 @@ public class AnswerExtraction {
                     }
                 }
                 double relevance = (double)cnt/(double)terms.size();
-                double threshold = Double.parseDouble(props.getProperty("extFieldsRelevanceThreshold"));
+                double threshold = Double.parseDouble(props.getProperty("qa.extFieldsRelevanceThreshold"));
                 if(Double.compare(relevance,threshold)>=0){
                     answers.add(new Answer(resultArray.getJSONObject(i).getString(type),resultArray.getJSONObject(i),relevantTerms,resultArray.getJSONObject(i).getDouble("score")));
                 }
@@ -253,7 +253,7 @@ public class AnswerExtraction {
         ArrayList<Query> subQueries = buildQueries(q,type);
 
         for(Query query : subQueries){
-            JSONObject results = elas4RDF.executeQuery(query.getQuery(),"terms_bindex",Integer.parseInt(props.getProperty("dslQuerySize")));
+            JSONObject results = elas4RDF.executeQuery(query.getQuery(),"terms_bindex",Integer.parseInt(props.getProperty("qa.dslQuerySize")));
             JSONObject resultsObject = null;
             if(results      != null){
                 resultsObject = results.optJSONObject("results");
@@ -319,7 +319,7 @@ public class AnswerExtraction {
         }
 
         double relevance = ((double)cnt)/((double)(q.getFirstTermKeywords().size()+q.getPredicateKeywords().size()));
-        double threshold = Double.parseDouble(props.getProperty("dslRelevanceThreshold"));
+        double threshold = Double.parseDouble(props.getProperty("qa.dslRelevanceThreshold"));
         boolean relevant = Double.compare(relevance,threshold) > 0;
 
 
@@ -335,7 +335,7 @@ public class AnswerExtraction {
     */
     public String checkUriForTerm(String term){
         String foundUri = "";
-        JSONObject results = elas4RDF.checkUriForTermRequest(term,"terms_bindex",Integer.parseInt(props.getProperty("checkUriQuerySize")));
+        JSONObject results = elas4RDF.checkUriForTermRequest(term,"terms_bindex",Integer.parseInt(props.getProperty("qa.checkUriQuerySize")));
         double maxJsim = 0.0;
         JSONObject resultsObject = null;
         if(results != null){
