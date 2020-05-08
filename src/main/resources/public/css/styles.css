@@ -1,7 +1,6 @@
 html, body{ height:100%; margin:0; }
 body{
     font-family: 'Open Sans', Arial, sans-serif;
-    display:flex;
     flex-direction: column;
 }
 button, input[type="submit"], input[type="reset"] {
@@ -76,7 +75,7 @@ footer{
 }
 .copyright{
     display: flex;
-    display: -webkit-flexbox;
+    height:40px;
     align-items: center;
     justify-content:center;
     flex-wrap: wrap;
@@ -100,7 +99,7 @@ footer{
 }
 .results-top{
     display:flex;
-    disply: -webkit-flexbox;
+    flex-grow:1;
     flex-flow: row nowrap;
 }
 .search-input-results{
@@ -146,6 +145,7 @@ footer{
 .results-info{
     font-size: 18px;
     color: #333;
+    margin-top:3px;
 }
 .triples-box{
     display:flex;
@@ -181,7 +181,7 @@ hr{
 }
 .pagination{
     margin-top: auto;
-    align-self: center;
+    text-align: center;
     margin-bottom: 5px;
 }
 .footer.home-footer{
@@ -307,6 +307,9 @@ a{
   .big-col img {
       max-height: 150px;
   }
+  .copyright {
+    height: 100px;
+  }
 }
 
 @media only screen and (min-width: 601px) {
@@ -341,9 +344,7 @@ a{
       position:absolute;
       right:5px;
   }
-    .copyright{
-       min-height:40px;
-    }
+
 }
 .about-section{
     text-align: left;
