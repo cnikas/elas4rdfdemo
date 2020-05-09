@@ -1,4 +1,4 @@
-html, body{ height:100%; margin:0; }
+html, body{ margin:0; }
 body{
     font-family: 'Open Sans', Arial, sans-serif;
     flex-direction: column;
@@ -13,11 +13,22 @@ button, input[type="submit"], input[type="reset"] {
 	outline: inherit;
 }
 .home-container{
-    padding-top: 100px;
     margin: 0 auto;
     display:flex;
     flex-flow: column nowrap;
     align-items: center;
+}
+.home-container {
+    height: calc(100vh - 40px);
+}
+.triples-box, .entities-box {
+    min-height: calc(100vh - 196px);
+}
+#graph-tab-container{
+    height: calc(100vh - 183px);
+}
+.answers-box{
+    min-height: calc(100vh - 147px);
 }
 .logo{
     height:96px;
@@ -28,6 +39,7 @@ button, input[type="submit"], input[type="reset"] {
 }
 .logo-container{
     align-self: center;
+    padding-top:100px;
 }
 .search-input-container{
     width:100%;
@@ -99,7 +111,6 @@ footer{
 }
 .results-top{
     display:flex;
-    flex-grow:1;
     flex-flow: row nowrap;
 }
 .search-input-results{
@@ -447,7 +458,7 @@ a{
 }
 #schemaTabContent{
     display: flex;
-    height: calc(100vh - 177px);
+    height: calc(100vh - 183px);
 }
 .schema-left,.schema-right{
     width: 50%;
