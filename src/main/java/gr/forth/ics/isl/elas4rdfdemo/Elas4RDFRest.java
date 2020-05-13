@@ -115,7 +115,7 @@ public class Elas4RDFRest {
         JSONObject responseObject = null;
 
         try {
-            URIBuilder builder = new URIBuilder(baseURL);
+            URIBuilder builder = new URIBuilder(baseURL+"high-level/");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("id", props.getProperty("datasetId")));
             params.add(new BasicNameValuePair("size", String.valueOf(size)));
