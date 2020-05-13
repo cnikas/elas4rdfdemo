@@ -148,7 +148,7 @@ public class Elas4RDFRest {
         JSONObject responseObject = null;
 
         try {
-            URIBuilder builder = new URIBuilder(baseURL+"low_level/");
+            URIBuilder builder = new URIBuilder(baseURL+"low-level/");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("index", index));
             params.add(new BasicNameValuePair("size", String.valueOf(size)));

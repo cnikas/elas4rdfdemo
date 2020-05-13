@@ -360,6 +360,7 @@ a{
 .about-section{
     text-align: left;
     margin-left:20px;
+    min-height: calc(100vh - 119px);
 }
 .about-section ul{
     text-align: left;
