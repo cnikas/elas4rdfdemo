@@ -3,10 +3,10 @@ package gr.forth.ics.isl.elas4rdfdemo.models;
 import java.text.DecimalFormat;
 
 public class ResultEntity {
-    public String ext;
-    public String entity;
-    public double score;
-    private int frequency;
+    public String ext; //extended information (from rdfs_comment)
+    public String entity; //the entity's URI
+    public double score; //score from elas4rdf
+    private int frequency; //used by schema tab
 
     public int getFrequency() {
         return frequency;

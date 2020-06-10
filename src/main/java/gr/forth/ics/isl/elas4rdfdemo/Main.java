@@ -48,21 +48,6 @@ public class Main {
             e.printStackTrace();
         }
 
-        // set up pipeline properties
-        Properties simple_props = new Properties();
-        // set the list of annotators to run
-        simple_props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
-        // build pipeline
-        simple_pipeline = new StanfordCoreNLP(simple_props);
-
-        // set up pipeline properties
-        Properties syntax_props = new Properties();
-        // set the list of annotators to run
-        syntax_props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse,depparse");
-        syntax_props.setProperty("parse.maxlen", "100");
-        // build pipeline
-        syntax_pipeline = new StanfordCoreNLP(syntax_props);
-
         //create log file if it does not exist
         File file = new File("request_log.tsv");
         try {

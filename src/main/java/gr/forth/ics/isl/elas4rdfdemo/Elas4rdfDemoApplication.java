@@ -104,7 +104,6 @@ public class Elas4rdfDemoApplication {
 			}
 		}
 
-		//String jsonAnswer = ae.extractAnswerJson(qa.analyzeQuestion(query)).toString();
 		model.addAttribute("pages", pageList);
 		model.addAttribute("maxPages", maxPages);
 		model.addAttribute("query",query);
@@ -158,7 +157,6 @@ public class Elas4rdfDemoApplication {
 			}
 		}
 
-		//String jsonAnswer = ae.extractAnswerJson(qa.analyzeQuestion(query)).toString();
 		model.addAttribute("pages", pageList);
 		model.addAttribute("maxPages", maxPages);
 		model.addAttribute("size",size);
@@ -170,25 +168,6 @@ public class Elas4rdfDemoApplication {
 		Logging.logRequest(getClientIpAddr(request),"entities",query,page,entitiesContainer.getMaxSize(),size);
 
 		return "results";
-	}
-
-	@GetMapping("/results/qa")
-	public String handleQa(@RequestParam(name="query") String query, Model model, HttpServletRequest request) {
-
-		answersContainer = sar.getAnswers(query);
-
-		if(!answersContainer.isList()){
-			model.addAttribute("topAnswer",answersContainer.getTopAnswer());
-		}
-
-		model.addAttribute("answers",answersContainer.getAnswers());
-		model.addAttribute("qType",answersContainer.getType());
-		model.addAttribute("query",query);
-		model.addAttribute("type","qa");
-
-		Logging.logRequest(getClientIpAddr(request),"qa",query,0,answersContainer.getAnswers().size(),0);
-
-		return "qa";
 	}
 
     @GetMapping("/results/graph")
@@ -358,6 +337,24 @@ public class Elas4rdfDemoApplication {
 		Logging.logRequest(getClientIpAddr(request),"triplesforschemaPredicate",predicate,0,triplesContainer.getMaxSize(),0);
 
 		return "fragments :: schemaEntities";
+	}
+
+	@GetMapping("/results/geo")
+	public String handleGeo(@RequestParam(name="query") String query, @RequestParam(name="size",  defaultValue="15") int size, Model model, HttpServletRequest request) {
+
+
+		entitiesContainer = ser.searchEntities(query,size);
+		/*
+		entitiesContainer.getEntities() // ayto einai ena ArrayList me ta entities pou pairneis apo to search (des to class models/ResultEntity)
+		 */
+
+		model.addAttribute("query",query);
+		model.addAttribute("type","geo");
+		model.addAttribute("size",size);
+
+		Logging.logRequest(getClientIpAddr(request),"geo",query,0,entitiesContainer.getMaxSize(),size);
+
+		return "geo";
 	}
 
 	public static String getClientIpAddr(HttpServletRequest request) {

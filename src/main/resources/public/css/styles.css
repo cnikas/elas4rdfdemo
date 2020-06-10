@@ -515,3 +515,6 @@ a{
     display: block;
     font-size:16px;
 }
+#geo-tab-container{
+    height: calc(100vh - 157px);
+}
