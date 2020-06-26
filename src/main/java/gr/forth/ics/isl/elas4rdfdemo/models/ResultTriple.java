@@ -94,8 +94,6 @@ public class ResultTriple {
                 }
             }
         }
-
-
         return clean.trim();
     }
 

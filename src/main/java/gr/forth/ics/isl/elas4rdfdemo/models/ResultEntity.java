@@ -8,6 +8,26 @@ public class ResultEntity {
     public double score;
     private int frequency;
 
+    public String getExt() {
+        return ext;
+    }
+
+    public void setExt(String ext) {
+        this.ext = ext;
+    }
+
+    public String getEntity() {
+        return entity;
+    }
+
+    public void setEntity(String entity) {
+        this.entity = entity;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
     public int getFrequency() {
         return frequency;
     }
@@ -68,7 +88,22 @@ public class ResultEntity {
         }else{
             clean = uri;
         }
+
+        if(clean.length() > 1){
+            clean = Character.toUpperCase(clean.charAt(0)) + clean.substring(1);
+
+            for (int i = 0; i < clean.length(); i++){
+                char c = clean.charAt(i);
+                if(c == '_'){
+                    clean = clean.substring(0,i) + "_" + Character.toUpperCase(clean.charAt(i+1)) + clean.substring(i+2);
+                }
+            }
+        }
         return clean.trim();
+    }
+
+    public String getUriLabel(){
+        return uriToString(this.entity);
     }
 
     public String shorten(String s){

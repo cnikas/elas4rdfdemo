@@ -1,11 +1,8 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
-import com.sun.org.apache.bcel.internal.generic.ANEWARRAY;
 import gr.forth.ics.isl.elas4rdfdemo.models.*;
-import org.apache.jena.tdb.store.Hash;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sun.security.provider.certpath.AdjacencyList;
 
 import java.util.*;
 
