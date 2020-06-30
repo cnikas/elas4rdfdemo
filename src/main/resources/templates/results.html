@@ -85,11 +85,11 @@
 </div>
 <div th:if="${type == 'entities'}" class="entities-box">
     <span th:each="entity : ${entities}">
-        <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.entity)}">
+        <div class="entity-result" th:attr="data-id=${entity.uriToString(entity.getUri())}">
             <div>
-                <div class="title"><a th:href="${entity.entity}" th:text="${entity.uriToString(entity.entity)}"></a> <span class="entity-score" th:text="${'Score: '+entity.getScoreClean()}"></span></div>
+                <div class="title"><a th:href="${entity.getUri()}" th:text="${entity.uriToString(entity.getUri())}"></a> <span class="entity-score" th:text="${'Score: '+entity.getScoreClean()}"></span></div>
                 <div class="description" th:utext="${entity.extClean()}"></div>
-                <div class="uri" th:text="${entity.entity}"></div>
+                <div class="uri" th:text="${entity.getUri()}"></div>
             </div>
         </div>
         <hr>
