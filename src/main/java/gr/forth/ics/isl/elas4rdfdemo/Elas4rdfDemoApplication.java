@@ -273,6 +273,7 @@ public class Elas4rdfDemoApplication {
         String extension = ".ttl";
         String contentType = "application/n-triples";
         if (type.equals("ntriples")) {
+            extension = ".ntriples";
         } else if (type.equals("jsonld")) {
             extension = ".jsonld";
             contentType = "application/json";
