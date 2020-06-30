@@ -279,7 +279,7 @@ public class Elas4rdfDemoApplication {
             contentType = "application/json";
         }
         response.setContentType("text/plain; charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment;filename=triples" + extension);
+        response.setHeader("Content-Length", String.valueOf(myString.getBytes("UTF-8").length));
         response.setHeader("Content-Type", contentType);
         response.setCharacterEncoding("UTF-8");
 
