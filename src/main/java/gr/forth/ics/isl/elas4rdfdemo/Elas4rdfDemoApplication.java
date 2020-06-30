@@ -45,8 +45,6 @@ public class Elas4rdfDemoApplication {
     @Autowired
     private SimpleTripleRepository str;
     @Autowired
-    private SimpleTripleRepository strWithoutAnnotations;
-    @Autowired
     private SimpleEntityRepository ser;
 
     public TriplesContainer triplesContainer;
@@ -54,6 +52,7 @@ public class Elas4rdfDemoApplication {
     public AnswersContainer answersContainer;
 
     private SchemaTab st;
+
 
     public static void main(String[] args) {
         SpringApplication.run(Elas4rdfDemoApplication.class, args);
@@ -176,14 +175,15 @@ public class Elas4rdfDemoApplication {
 
         entitiesContainer = ser.searchEntities(query, 1000);
         triplesContainer = str.searchTriples(query);
-        answersContainer = sar.getAnswers(query,entitiesContainer.getEntities().subList(0,200),triplesContainer.getTriples().subList(0,200));
+        answersContainer = sar.getAnswers(query,entitiesContainer.getEntities().subList(0,3),triplesContainer.getTriples());
 
         model.addAttribute("topAnswer", answersContainer.getTopAnswer());
         model.addAttribute("answers", answersContainer.getAnswers());
         model.addAttribute("query", query);
+        model.addAttribute("error", answersContainer.isError());
         model.addAttribute("type", "qa");
 
-        Logging.logRequest(getClientIpAddr(request), "qa", query, 0, answersContainer.getAnswers().size(), 0);
+        Logging.logRequest(getClientIpAddr(request), "qa", query, 0, triplesContainer.getTriples().size(), 0);
 
         return "qa";
     }
@@ -191,7 +191,7 @@ public class Elas4rdfDemoApplication {
     @GetMapping("/results/graph")
     public String handleGraph(@RequestParam(name = "query") String query, @RequestParam(name = "size", defaultValue = "15") int size, Model model, HttpServletRequest request) {
 
-        triplesContainer = strWithoutAnnotations.searchTriples(query);
+        triplesContainer = str.searchTriples(query);
         AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(), size);
 
         String jsonGraph = ae.createModelFromTriples();
@@ -209,7 +209,7 @@ public class Elas4rdfDemoApplication {
     @GetMapping("/results/schema")
     public String handleSchema(@RequestParam(name = "query") String query, @RequestParam(name = "size", defaultValue = "25") int size, Model model, HttpServletRequest request) {
 
-        triplesContainer = strWithoutAnnotations.searchTriples(query);
+        triplesContainer = str.searchTriples(query);
 
         st = new SchemaTab(triplesContainer.getTriples(), size);
 
@@ -266,18 +266,20 @@ public class Elas4rdfDemoApplication {
     }
 
     @GetMapping("/file")
-    public void returnFile(@RequestParam(name = "query") String query, @RequestParam(name = "size", defaultValue = "100") int size, @RequestParam(name = "type", defaultValue = "turtle") String type, HttpServletResponse response, HttpServletRequest request) throws IOException {
-        triplesContainer = strWithoutAnnotations.searchTriples(query);
+    public void returnFile(@RequestParam(name = "query") String query, @RequestParam(name = "type", defaultValue = "turtle") String type, HttpServletResponse response, HttpServletRequest request) throws IOException {
+        triplesContainer = str.searchTriples(query);
         AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(), triplesContainer.getTriples().size());
         String myString = ae.createFile(type);
         String extension = ".ttl";
+        String contentType = "application/n-triples";
         if (type.equals("ntriples")) {
-            extension = ".nt";
         } else if (type.equals("jsonld")) {
             extension = ".jsonld";
+            contentType = "application/json";
         }
         response.setContentType("text/plain; charset=UTF-8");
         response.setHeader("Content-Disposition", "attachment;filename=triples" + extension);
+        response.setHeader("Content-Type", contentType);
         response.setCharacterEncoding("UTF-8");
 
         Logging.logRequest(getClientIpAddr(request), type, query, 0, triplesContainer.getMaxSize(), 0);

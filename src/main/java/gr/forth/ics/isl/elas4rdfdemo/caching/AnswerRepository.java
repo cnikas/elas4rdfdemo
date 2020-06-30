@@ -2,6 +2,7 @@ package gr.forth.ics.isl.elas4rdfdemo.caching;
 
 import gr.forth.ics.isl.elas4rdfdemo.models.ResultEntity;
 import gr.forth.ics.isl.elas4rdfdemo.models.ResultTriple;
+import gr.forth.ics.isl.elas4rdfdemo.qa.AnswerExtraction;
 import gr.forth.ics.isl.elas4rdfdemo.qa.models.AnswersContainer;
 
 import java.util.List;

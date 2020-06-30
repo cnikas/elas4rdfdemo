@@ -15,8 +15,8 @@ public class SchemaTab {
     private ArrayList<FrequentItem> topClasses;
     private int size;
     private ArrayList<ResultTriple> allTriples;
-    private HashMap<String,HashSet<String>> urisWithTypes;
-    private HashMap<String,Integer> urisWithFreqs;
+    private HashMap<String, HashSet<String>> urisWithTypes;
+    private HashMap<String, Integer> urisWithFreqs;
 
     public String getInfoVisGraph() {
         return infoVisGraph;
@@ -83,9 +83,9 @@ public class SchemaTab {
             size = allTriples.size();
         }
 
-        HashMap<String,Integer> urisWithFreqs = new HashMap<>();
+        HashMap<String, Integer> urisWithFreqs = new HashMap<>();
         HashMap<String,Integer> predicatesWithFreqs = new HashMap<>();
-        HashMap<String,HashSet<SchemaAdjacency>> urisWithAdjacencies = new HashMap<>();
+        HashMap<String, HashSet<SchemaAdjacency>> urisWithAdjacencies = new HashMap<>();
 
         for(ResultTriple rt: allTriples.subList(0,size)){
 
@@ -121,7 +121,7 @@ public class SchemaTab {
         this.urisWithFreqs = urisWithFreqs;
 
         //find set of types for each uri
-        HashMap<String,HashSet<String>> urisWithTypes = new HashMap<>();
+        HashMap<String, HashSet<String>> urisWithTypes = new HashMap<>();
         for(String uri:urisWithFreqs.keySet()){
             urisWithTypes.put(uri,findTypes(uriToString(uri)));
         }
@@ -129,7 +129,7 @@ public class SchemaTab {
 
         //find count for each type
         HashMap<String,Integer> typesWithCounts = new HashMap<>();
-        for(Map.Entry<String,HashSet<String>> entry : urisWithTypes.entrySet()){
+        for(Map.Entry<String, HashSet<String>> entry : urisWithTypes.entrySet()){
             for(String type:entry.getValue()){
                 int typeCount=0;
                 if(typesWithCounts.containsKey(type)) typeCount = typesWithCounts.get(type);
@@ -172,7 +172,7 @@ public class SchemaTab {
 
         //find adjacencies between types
         //for each uri
-        for(Map.Entry<String,HashSet<SchemaAdjacency>> entry: urisWithAdjacencies.entrySet()){
+        for(Map.Entry<String, HashSet<SchemaAdjacency>> entry: urisWithAdjacencies.entrySet()){
             //for each adjacency of the uri
             for(SchemaAdjacency uriAdj:entry.getValue()){
                 //for each type of the uri

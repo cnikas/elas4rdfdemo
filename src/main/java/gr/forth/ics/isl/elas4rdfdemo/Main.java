@@ -6,12 +6,14 @@ import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
+import gr.forth.ics.isl.elas4rdfdemo.qa.AnswerExtraction;
 import gr.forth.ics.isl.elas4rdfdemo.qa.AnswerTypePrediction;
 
 public class Main {
 
     public static Properties props;
     public static AnswerTypePrediction atp;
+    public static AnswerExtraction answerExtraction;
     private static List<String> stopwords;
 
     //this is called after the application has started
@@ -25,6 +27,7 @@ public class Main {
         }
 
         atp = new AnswerTypePrediction();
+        answerExtraction = new AnswerExtraction();
 
         //create log file if it does not exist
         File file = new File("request_log.tsv");

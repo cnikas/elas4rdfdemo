@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 
 public class ResultEntity {
     public String ext;
-    public String entity;
+    public String uri;
     public double score;
     private int frequency;
 
@@ -16,12 +16,12 @@ public class ResultEntity {
         this.ext = ext;
     }
 
-    public String getEntity() {
-        return entity;
+    public String getUri() {
+        return uri;
     }
 
-    public void setEntity(String entity) {
-        this.entity = entity;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public double getScore() {
@@ -65,16 +65,16 @@ public class ResultEntity {
 
     public String imageUrl;
 
-    public ResultEntity(String ext, String entity, double score){
+    public ResultEntity(String ext, String uri, double score){
         this.ext = ext;
-        this.entity = entity;
+        this.uri = uri;
         this.score= score;
         this.frequency = 0;
     }
 
-    public ResultEntity(String ext, String entity, double score,int frequency){
+    public ResultEntity(String ext, String uri, double score, int frequency){
         this.ext = ext;
-        this.entity = entity;
+        this.uri = uri;
         this.score= score;
         this.frequency = frequency;
     }
@@ -103,7 +103,7 @@ public class ResultEntity {
     }
 
     public String getUriLabel(){
-        return uriToString(this.entity);
+        return uriToString(this.uri);
     }
 
     public String shorten(String s){

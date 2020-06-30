@@ -6,48 +6,27 @@ package gr.forth.ics.isl.elas4rdfdemo.qa.models;
 public class Answer {
     private String answerString;
     private String answerType;
-    private String originType;
-    private String originUri;
+    private String category;
+    private LabeledUri fromEntity;
+    private LabeledUri fromPredicate;
+    private int score;
+    private double similarity;
 
-    public Answer(String answerString, String answerType, String originType, String originUri) {
+    public double getSimilarity() {
+        return similarity;
+    }
+
+    public void setSimilarity(double similarity) {
+        this.similarity = similarity;
+    }
+
+    public Answer(String answerString, String answerType, String category, LabeledUri fromEntity, LabeledUri fromPredicate, int score) {
         this.answerString = answerString;
         this.answerType = answerType;
-        this.originType = originType;
-        this.originUri = originUri;
-    }
-
-    /*
-    * Converts a uri or literal to a human-readable string
-     */
-    public String uriToString(String uri){
-        String clean = "";
-        if(uri.startsWith("http")){
-            clean = uri.substring(uri.lastIndexOf("/")+1);
-        }else if(clean.contains("@")){
-            clean = clean.substring(0,clean.indexOf("@"));
-        }else{
-            clean = uri;
-        }
-        return clean.trim();
-    }
-
-    /*
-    * Returns the origin triple in html.
-     */
-    public String originPretty(){
-        return "From "+originType+" <a href="+originUri+">"+uriToString(originUri)+"</a>";
-    }
-
-    @Override
-    public String toString() {
-        return getAnswerString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Answer)) return false;
-        Answer other = (Answer) o;
-        return this.getAnswerString().equals(other.getAnswerString());
+        this.category = category;
+        this.fromEntity = fromEntity;
+        this.fromPredicate = fromPredicate;
+        this.score = score;
     }
 
     public String getAnswerString() {
@@ -66,19 +45,51 @@ public class Answer {
         this.answerType = answerType;
     }
 
-    public String getOriginType() {
-        return originType;
+    public String getCategory() {
+        return category;
     }
 
-    public void setOriginType(String originType) {
-        this.originType = originType;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getOriginUri() {
-        return originUri;
+    public LabeledUri getFromEntity() {
+        return fromEntity;
     }
 
-    public void setOriginUri(String originUri) {
-        this.originUri = originUri;
+    public void setFromEntity(LabeledUri fromEntity) {
+        this.fromEntity = fromEntity;
     }
+
+    public LabeledUri getFromPredicate() {
+        return fromPredicate;
+    }
+
+    public void setFromPredicate(LabeledUri fromPredicate) {
+        this.fromPredicate = fromPredicate;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    /*
+    * Converts a uri or literal to a human-readable string
+     */
+    public String uriToString(String uri){
+        String clean = "";
+        if(uri.startsWith("http")){
+            clean = uri.substring(uri.lastIndexOf("/")+1);
+        }else if(clean.contains("@")){
+            clean = clean.substring(0,clean.indexOf("@"));
+        }else{
+            clean = uri;
+        }
+        return clean.trim();
+    }
+
 }

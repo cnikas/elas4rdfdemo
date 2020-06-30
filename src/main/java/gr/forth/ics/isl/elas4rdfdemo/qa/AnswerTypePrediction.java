@@ -1,8 +1,5 @@
 package gr.forth.ics.isl.elas4rdfdemo.qa;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import gr.forth.ics.isl.elas4rdfdemo.qa.models.DBPediaOntologyUri;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -12,9 +9,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -29,6 +25,10 @@ public class AnswerTypePrediction {
         String q = question.toLowerCase();
         List<String> qTokens = Arrays.asList(q.split(" "));
         JSONObject bertResult = queryBert(q.replaceAll("[^A-Za-z0-9 ]", ""));
+
+        if(bertResult == null){
+            return "";
+        }
 
         category = bertResult.getString("category");
         type = bertResult.getString("class");
@@ -72,15 +72,13 @@ public class AnswerTypePrediction {
             type = "literal_string";
         }
 
-        System.out.println("category: "+category+" type: "+type);
-
         return type;
     }
 
     public static JSONObject queryBert(String query) {
 
         String result = "";
-        String baseURL = "http://127.0.0.1:5000/category";
+        String baseURL = "http://127.0.0.1:5000/classify";
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         try {
@@ -99,10 +97,16 @@ public class AnswerTypePrediction {
             response.close();
             httpClient.close();
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+        }
+        JSONObject resultObject;
+        try{
+            resultObject = new JSONObject(result);
+        } catch (JSONException e){
+            resultObject = null;
         }
 
-        return new JSONObject(result);
+        return resultObject;
     }
 
     public static String uriToString(String u){

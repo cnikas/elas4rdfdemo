@@ -20,7 +20,6 @@ public class SimpleAnswerRepository implements AnswerRepository{
     @Cacheable(value="answers", key="#query")
     public AnswersContainer getAnswers(String query, List<ResultEntity> entities, List<ResultTriple> triples) {
         String type = Main.atp.predictType(query);
-        AnswerExtraction ae = new AnswerExtraction();
-        return ae.extractAnswers(query,type,entities,triples);
+        return Main.answerExtraction.extractAnswers(query,type,entities,triples);
     }
 }
