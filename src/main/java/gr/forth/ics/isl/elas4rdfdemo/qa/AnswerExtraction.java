@@ -27,7 +27,12 @@ public class AnswerExtraction {
     public AnswersContainer extractAnswers(String question, String type, List<ResultEntity> entities, List<ResultTriple> triples){
 
         AnswersContainer ac = new AnswersContainer();
-        ac.setError(false);
+        if (type.equals("")){
+            ac.setError(true);
+        } else {
+            ac.setError(false);
+
+        }
         ArrayList<Answer> answers = new ArrayList<>();
         List<AnswerForUi> sortedAnswers = new ArrayList<>();
         if(type.equals("boolean")){
@@ -36,11 +41,9 @@ public class AnswerExtraction {
         } else if (type.startsWith("literal")){
             answers.addAll(answerLiteralWithTopEntities(type.substring(type.lastIndexOf('_')+1),entities));
             sortedAnswers = sortAnswers(question,answers);
-        } else if(type.equals("resource")){
+        } else {
             answers.addAll(answerResourceWithTopEntities(type,entities));
             sortedAnswers = sortAnswers(question,answers);
-        } else {
-            ac.setError(true);
         }
 
         if(sortedAnswers.size() == 0){

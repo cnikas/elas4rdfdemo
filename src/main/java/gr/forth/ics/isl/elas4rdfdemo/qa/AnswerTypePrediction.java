@@ -31,46 +31,9 @@ public class AnswerTypePrediction {
         }
 
         category = bertResult.getString("category");
-        type = bertResult.getString("class");
-        if(!type.equals(""))
+        type = bertResult.getString("type");
+        if(category.equals("resource"))
             type = "http://dbpedia.org/ontology/"+type.substring(type.lastIndexOf(":")+1);
-
-        if (category.equals("literal")) {
-            if (q.startsWith("when")) {
-                type = "literal_date";
-            }
-            List<String> numberLiteralKeys = Arrays.asList("score", "rate", "number", "profit", "distance", "mean", "count", "coefficient", "count", "amount", "population", "cost", "length", "unit", "percentage","total");
-            for (String token: qTokens) {
-                if (numberLiteralKeys.contains(token)) {
-                    type = "literal_number";
-                }
-            }
-            List<String> temporalLiteralKeys = Arrays.asList("year", "time", "date", "birthday", "birthdays");
-            for (String token:qTokens) {
-                if (temporalLiteralKeys.contains(token)) {
-                    type = "literal_date";
-                }
-            }
-        }
-
-        if (category.equals("literal") || category.equals("resource")) {
-            List<String> stringLiteralKeys = Arrays.asList("id", "prefix", "code", "nickname");
-            for (String token: qTokens) {
-                if (stringLiteralKeys.contains(token)) {
-                    type = "literal_string";
-                    category = "literal";
-                }
-            }
-
-            if (question.toLowerCase().contains("how many") || question.toLowerCase().contains("how much")) {
-                type = "literal_number";
-                category = "literal";
-            }
-        }
-
-        if (category.equals("literal") && type.equals("")) {
-            type = "literal_string";
-        }
 
         return type;
     }
@@ -78,7 +41,7 @@ public class AnswerTypePrediction {
     public static JSONObject queryBert(String query) {
 
         String result = "";
-        String baseURL = "http://127.0.0.1:5000/classify";
+        String baseURL = "http://83.212.115.125:80/classify";
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         try {
