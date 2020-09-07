@@ -2,6 +2,9 @@ html, body{ margin:0; }
 body{
     font-family: 'Open Sans', Arial, sans-serif;
     flex-direction: column;
+    display: flex;
+    min-height: 100vh;
+    min-width: 100vw;
 }
 button, input[type="submit"], input[type="reset"] {
 	background: none;
@@ -19,16 +22,20 @@ button, input[type="submit"], input[type="reset"] {
     align-items: center;
 }
 .home-container {
-    height: calc(100vh - 40px);
+    /*height: calc(100vh - 40px);*/
+    flex-grow:1;
 }
 .triples-box, .entities-box {
-    min-height: calc(100vh - 196px);
+    /*min-height: calc(100vh - 196px);*/
+    flex-grow:1;
 }
 #graph-tab-container{
     height: calc(100vh - 183px);
+    /*flex-grow:1;*/
 }
 .answers-box{
-    min-height: calc(100vh - 147px);
+    /*min-height: calc(100vh - 147px);*/
+    flex-grow:1;
 }
 .logo{
     height:96px;
@@ -348,7 +355,8 @@ a{
 .about-section{
     text-align: left;
     margin-left:20px;
-    min-height: calc(100vh - 119px);
+    /*min-height: calc(100vh - 119px);*/
+    flex-grow:1;
 }
 .about-section ul{
     text-align: left;
@@ -443,11 +451,12 @@ a{
 }
 #schemaTabContent{
     display: flex;
-    height: calc(100vh - 183px);
+    /*height: calc(100vh - 183px);*/
+    flex-grow:1;
 }
 .schema-left,.schema-right{
     width: 50%;
-    height:100%;
+    /*height:100%;*/
 }
 
 .schema-graph{
