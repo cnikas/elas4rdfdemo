@@ -206,6 +206,17 @@ public class Elas4rdfDemoApplication {
         return "graph";
     }
 
+    @GetMapping("/results/geo")
+    public String handleGeo(@RequestParam(name = "query") String query, @RequestParam(name = "size", defaultValue = "15") int size, Model model, HttpServletRequest request) {
+
+        model.addAttribute("query", query);
+        model.addAttribute("type", "geo");
+        model.addAttribute("size", size);
+        Logging.logRequest(getClientIpAddr(request), "geo", query, 0, 0, size);
+
+        return "geomap";
+    }
+
     @GetMapping("/results/schema")
     public String handleSchema(@RequestParam(name = "query") String query, @RequestParam(name = "size", defaultValue = "25") int size, Model model, HttpServletRequest request) {
 
@@ -266,9 +277,12 @@ public class Elas4rdfDemoApplication {
     }
 
     @GetMapping("/file")
-    public void returnFile(@RequestParam(name = "query") String query, @RequestParam(name = "type", defaultValue = "turtle") String type, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public void returnFile(@RequestParam(name = "query") String query, @RequestParam(name = "type", defaultValue = "turtle") String type, @RequestParam(name = "size", defaultValue = "0") int size, HttpServletResponse response, HttpServletRequest request) throws IOException {
+        if(size==0){
+            size = triplesContainer.getTriples().size();
+        }
         triplesContainer = str.searchTriples(query);
-        AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(), triplesContainer.getTriples().size());
+        AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(), size);
         String myString = ae.createFile(type);
         String extension = ".ttl";
         String contentType = "application/n-triples";
@@ -283,7 +297,7 @@ public class Elas4rdfDemoApplication {
         response.setHeader("Content-Type", contentType);
         response.setCharacterEncoding("UTF-8");
 
-        Logging.logRequest(getClientIpAddr(request), type, query, 0, triplesContainer.getMaxSize(), 0);
+        Logging.logRequest(getClientIpAddr(request), type, query, 0, size, 0);
 
         PrintWriter out = response.getWriter();
         out.println(myString);

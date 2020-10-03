@@ -56,4 +56,39 @@ public class SparqlMethods {
         return executeSPARQLQuery(queryString);
     }
 
+    public static ArrayList<String> adjacentEntities(String entity){
+        String queryString = "SELECT ?o WHERE {<" + entity + "> ?p ?o .\n" +
+                " ?o a owl:Thing}";
+
+        ArrayList<String> answers = new ArrayList<>();
+        Query query = QueryFactory.create(queryString);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService("http://139.91.183.46:8899/sparql", query, "http://dbpedia.org");
+        ResultSet results = qexec.execSelect();
+        while (results.hasNext()) {
+            QuerySolution qs = results.next();
+            RDFNode adjEntity = qs.get("o");
+            answers.add(adjEntity.toString());
+        }
+
+        return answers;
+    }
+
+    public static String thumbnail(String entity){
+        String queryString = "SELECT ?o WHERE {<" + entity + "> <http://dbpedia.org/ontology/thumbnail> ?o .}";
+
+        ArrayList<String> answers = new ArrayList<>();
+        Query query = QueryFactory.create(queryString);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService("http://139.91.183.46:8899/sparql", query, "http://dbpedia.org");
+        ResultSet results = qexec.execSelect();
+        while (results.hasNext()) {
+            QuerySolution qs = results.next();
+            RDFNode adjEntity = qs.get("o");
+            answers.add(adjEntity.toString());
+        }
+
+        return answers.get(0);
+    }
+
+
+
 }
