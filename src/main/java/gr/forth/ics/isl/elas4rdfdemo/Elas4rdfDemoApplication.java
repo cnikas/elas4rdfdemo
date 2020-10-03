@@ -278,10 +278,11 @@ public class Elas4rdfDemoApplication {
 
     @GetMapping("/file")
     public void returnFile(@RequestParam(name = "query") String query, @RequestParam(name = "type", defaultValue = "turtle") String type, @RequestParam(name = "size", defaultValue = "0") int size, HttpServletResponse response, HttpServletRequest request) throws IOException {
+        
+        triplesContainer = str.searchTriples(query);
         if(size==0){
             size = triplesContainer.getTriples().size();
         }
-        triplesContainer = str.searchTriples(query);
         AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(), size);
         String myString = ae.createFile(type);
         String extension = ".ttl";
