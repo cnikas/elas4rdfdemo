@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -21,6 +22,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -207,14 +209,14 @@ public class Elas4rdfDemoApplication {
     }
 
     @GetMapping("/results/geo")
-    public String handleGeo(@RequestParam(name = "query") String query, @RequestParam(name = "size", defaultValue = "15") int size, Model model, HttpServletRequest request) {
+    public String handleGeo(@RequestParam(name = "query") String query, @RequestParam(name = "size", defaultValue = "100") int size, Model model, HttpServletRequest request) {
 
         model.addAttribute("query", query);
         model.addAttribute("type", "geo");
         model.addAttribute("size", size);
         Logging.logRequest(getClientIpAddr(request), "geo", query, 0, 0, size);
 
-        return "geomap";
+        return "geo";
     }
 
     @GetMapping("/results/schema")
@@ -278,7 +280,7 @@ public class Elas4rdfDemoApplication {
 
     @GetMapping("/file")
     public void returnFile(@RequestParam(name = "query") String query, @RequestParam(name = "type", defaultValue = "turtle") String type, @RequestParam(name = "size", defaultValue = "0") int size, HttpServletResponse response, HttpServletRequest request) throws IOException {
-        
+
         triplesContainer = str.searchTriples(query);
         if(size==0){
             size = triplesContainer.getTriples().size();
@@ -373,6 +375,14 @@ public class Elas4rdfDemoApplication {
         Logging.logRequest(getClientIpAddr(request), "triplesforschemaPredicate", predicate, 0, triplesContainer.getMaxSize(), 0);
 
         return "fragments :: schemaEntities";
+    }
+
+    @RequestMapping(value = "/entities_json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String handleEntitiesJson(@RequestParam(name = "query") String query, @RequestParam(name = "size") int size) {
+        Elas4RDFRest er = new Elas4RDFRest();
+        JSONObject entitiesJson = er.simpleSearch(query,size,"entities");
+        return entitiesJson.toString();
     }
 
     public static String getClientIpAddr(HttpServletRequest request) {
