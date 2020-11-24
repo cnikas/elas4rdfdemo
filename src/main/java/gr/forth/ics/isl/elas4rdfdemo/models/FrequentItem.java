@@ -44,7 +44,7 @@ public class FrequentItem {
         this.uri = uri;
     }
 
-    public String buildRequest(){
-        return "/entitiesForSchema?query="+this.getUri()+"&urisOfType="+this.getUrisOfType();
+    public String buildRequest() {
+        return "/entitiesForSchema?query=" + this.getUri() + "&urisOfType=" + this.getUrisOfType();
     }
 }

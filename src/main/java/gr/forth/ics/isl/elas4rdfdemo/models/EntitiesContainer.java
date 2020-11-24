@@ -3,8 +3,8 @@ package gr.forth.ics.isl.elas4rdfdemo.models;
 import java.util.ArrayList;
 
 /*
-* Container class for the list of loaded entities and the total number of entities found.
-*
+ * Container class for the list of loaded entities and the total number of entities found.
+ *
  */
 public class EntitiesContainer {
     private int maxSize;

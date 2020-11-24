@@ -1,10 +1,8 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
-import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleAnswerRepository;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleEntityRepository;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleTripleRepository;
 import gr.forth.ics.isl.elas4rdfdemo.models.*;
-import gr.forth.ics.isl.elas4rdfdemo.qa.models.AnswersContainer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
@@ -43,18 +41,12 @@ import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 public class Elas4rdfDemoApplication {
 
     @Autowired
-    private SimpleAnswerRepository sar;
-    @Autowired
     private SimpleTripleRepository str;
     @Autowired
     private SimpleEntityRepository ser;
-
     public TriplesContainer triplesContainer;
     public EntitiesContainer entitiesContainer;
-    public AnswersContainer answersContainer;
-
     private SchemaTab st;
-
 
     public static void main(String[] args) {
         SpringApplication.run(Elas4rdfDemoApplication.class, args);
@@ -104,7 +96,6 @@ public class Elas4rdfDemoApplication {
             }
         }
 
-        //String jsonAnswer = ae.extractAnswerJson(qa.analyzeQuestion(query)).toString();
         model.addAttribute("pages", pageList);
         model.addAttribute("maxPages", maxPages);
         model.addAttribute("query", query);
@@ -158,7 +149,6 @@ public class Elas4rdfDemoApplication {
             }
         }
 
-        //String jsonAnswer = ae.extractAnswerJson(qa.analyzeQuestion(query)).toString();
         model.addAttribute("pages", pageList);
         model.addAttribute("maxPages", maxPages);
         model.addAttribute("size", size);
@@ -175,16 +165,8 @@ public class Elas4rdfDemoApplication {
     @GetMapping("/results/qa")
     public String handleQa(@RequestParam(name = "query") String query, Model model, HttpServletRequest request) {
 
-        entitiesContainer = ser.searchEntities(query, 1000);
-        triplesContainer = str.searchTriples(query);
-        answersContainer = sar.getAnswers(query,entitiesContainer.getEntities().subList(0,3),triplesContainer.getTriples());
-
-        model.addAttribute("topAnswer", answersContainer.getTopAnswer());
-        model.addAttribute("answers", answersContainer.getAnswers());
         model.addAttribute("query", query);
-        model.addAttribute("error", answersContainer.isError());
         model.addAttribute("type", "qa");
-
         Logging.logRequest(getClientIpAddr(request), "qa", query, 0, triplesContainer.getTriples().size(), 0);
 
         return "qa";
@@ -206,17 +188,6 @@ public class Elas4rdfDemoApplication {
         Logging.logRequest(getClientIpAddr(request), "graph", query, 0, triplesContainer.getMaxSize(), size);
 
         return "graph";
-    }
-
-    @GetMapping("/results/geo")
-    public String handleGeo(@RequestParam(name = "query") String query, @RequestParam(name = "size", defaultValue = "100") int size, Model model, HttpServletRequest request) {
-
-        model.addAttribute("query", query);
-        model.addAttribute("type", "geo");
-        model.addAttribute("size", size);
-        Logging.logRequest(getClientIpAddr(request), "geo", query, 0, 0, size);
-
-        return "geo";
     }
 
     @GetMapping("/results/schema")
@@ -245,10 +216,7 @@ public class Elas4rdfDemoApplication {
     @GetMapping("/loadimage")
     @ResponseBody
     public String loadImage(@RequestParam(name = "id") String id) {
-        return findImageUrl(id);
-    }
 
-    public String findImageUrl(String id) {
         String url = "";
         String baseURL = "https://en.wikipedia.org/w/api.php?action=query&titles=" + id + "&prop=pageimages&format=json&pithumbsize=200";
         try {
@@ -282,17 +250,15 @@ public class Elas4rdfDemoApplication {
     public void returnFile(@RequestParam(name = "query") String query, @RequestParam(name = "type", defaultValue = "turtle") String type, @RequestParam(name = "size", defaultValue = "0") int size, HttpServletResponse response, HttpServletRequest request) throws IOException {
 
         triplesContainer = str.searchTriples(query);
-        if(size==0){
+        if (size == 0) {
             size = triplesContainer.getTriples().size();
         }
         AnswerExploration ae = new AnswerExploration(triplesContainer.getTriples(), size);
         String myString = ae.createFile(type);
-        String extension = ".ttl";
-        String contentType = "application/n-triples";
+        String contentType = "text/turtle";
         if (type.equals("ntriples")) {
-            extension = ".ntriples";
+            contentType = "application/n-triples";
         } else if (type.equals("jsonld")) {
-            extension = ".jsonld";
             contentType = "application/json";
         }
         response.setContentType("text/plain; charset=UTF-8");
@@ -381,7 +347,7 @@ public class Elas4rdfDemoApplication {
     @ResponseBody
     public String handleEntitiesJson(@RequestParam(name = "query") String query, @RequestParam(name = "size") int size) {
         Elas4RDFRest er = new Elas4RDFRest();
-        JSONObject entitiesJson = er.simpleSearch(query,size,"entities");
+        JSONObject entitiesJson = er.simpleSearch(query, size, "entities");
         return entitiesJson.toString();
     }
 

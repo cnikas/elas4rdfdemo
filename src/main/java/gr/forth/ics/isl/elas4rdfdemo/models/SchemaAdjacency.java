@@ -18,7 +18,9 @@ public class SchemaAdjacency {
     }
 
     @Override
-    public int hashCode() { return label.hashCode() ^ nodeTo.hashCode(); }
+    public int hashCode() {
+        return label.hashCode() ^ nodeTo.hashCode();
+    }
 
     @Override
     public boolean equals(Object o) {

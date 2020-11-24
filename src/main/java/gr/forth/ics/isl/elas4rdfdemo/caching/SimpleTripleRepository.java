@@ -11,7 +11,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 public class SimpleTripleRepository implements TripleRepository {
 
     @Override
-    @Cacheable(value="triples",key="#query")
+    @Cacheable(value = "triples", key = "#query")
     public TriplesContainer searchTriples(String query) {
         KeywordSearch ks = new KeywordSearch();
         return ks.searchTriples(query);

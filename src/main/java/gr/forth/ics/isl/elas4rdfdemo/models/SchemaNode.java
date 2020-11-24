@@ -41,19 +41,19 @@ public class SchemaNode {
         this.adjacencies = adjacencies;
     }
 
-    public SchemaNode(){
+    public SchemaNode() {
         this.count = 0;
         this.adjacencies = new HashSet<SchemaAdjacency>();
     }
 
-    public SchemaNode(FrequentItem fi){
+    public SchemaNode(FrequentItem fi) {
         this.setUri(fi.getUri());
         this.setName(fi.getName());
         this.setCount(fi.getCount());
         this.setAdjacencies(new HashSet<SchemaAdjacency>());
     }
 
-    public void addAdjacency(SchemaAdjacency adj){
+    public void addAdjacency(SchemaAdjacency adj) {
         this.adjacencies.add(adj);
     }
 }

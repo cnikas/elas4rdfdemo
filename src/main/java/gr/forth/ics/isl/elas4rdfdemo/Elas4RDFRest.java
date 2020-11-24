@@ -35,51 +35,7 @@ public class Elas4RDFRest {
         client = HttpClientBuilder.create().build();
     }
 
-    public JSONObject executeConstantScoreRequest(String query, String index, int size){
-        String jsonString = "{\"query\" : {\"constant_score\" : {\"filter\" : {\"term\" : {\"subjectTerms\":\""+query+"\"}}}}}";
-
-        return generalRequestWithBody(jsonString,index,size);
-    }
-
-    public JSONObject executeQuery(String query, String index, int size){
-
-        String jsonString = "{\"query\":{\"query_string\":{\"query\" : \""+query+"\"}}}";
-
-        return generalRequestWithBody(jsonString,index,size);
-    }
-
-    public JSONObject executeMultiMatchQuery(String firstTerm, String secondTerm, String index, int size,String type){
-        String field = "subjectKeywords";
-        if(type.equals("obj")){
-            field = "objectKeywords";
-        }
-
-        String jsonString = "{\"query\": { \"multi_match\" : {\"query\": \""+firstTerm+" "+secondTerm+"\", \"fields\": [ \""+field+"\", \"predicateKeywords\"] ,\"type\" : \"cross_fields\"}}}";
-
-        return generalRequestWithBody(jsonString,index,size);
-    }
-
-    public JSONObject checkUriForTermRequest(String query, String index, int size){
-
-        String jsonString = "{\"query\": {\"match\" : {\"subjectKeywords\" : {\"query\" : \""+query+"\"}}}}";
-
-        return generalRequestWithBody(jsonString,index,size);
-    }
-
-    public JSONObject queryExtFields(String query, String type, int size){
-
-        String jsonString = "{\"query\": {\"match\" : {\"rdfs_comment_"+type+"\" : {\"query\" : \""+query+"\"}}}}";
-
-        return generalRequestWithBody(jsonString,"terms_eindex", size);
-    }
-
-    public JSONObject multiMatchQueryForType(String uri, int size){
-        String jsonString = "{\"query\": { \"multi_match\" : {\"query\": \""+uri+" type\", \"fields\": [ \"subjectKeywords\", \"predicateKeywords\"] ,\"type\" : \"cross_fields\"}}}";
-
-        return generalRequestWithBody(jsonString,"terms_bindex", size);
-    }
-
-    public JSONObject exactSubjectTypeRequest(String subject){
+    public JSONObject exactSubjectTypeRequest(String subject) {
         String jsonString = "{\n" +
                 "   \"query\":{\n" +
                 "      \"bool\":{\n" +
@@ -88,7 +44,7 @@ public class Elas4RDFRest {
                 "               \"constant_score\":{\n" +
                 "                  \"filter\":{\n" +
                 "                     \"term\":{\n" +
-                "                        \"subjectTerms\":\""+subject+"\"\n" +
+                "                        \"subjectTerms\":\"" + subject + "\"\n" +
                 "                     }\n" +
                 "                  }\n" +
                 "               }\n" +
@@ -107,21 +63,21 @@ public class Elas4RDFRest {
                 "   }\n" +
                 "}";
 
-        return generalRequestWithBody(jsonString,"terms_bindex_v2", 50);
+        return generalRequestWithBody(jsonString, "terms_bindex_v2", 50);
 
     }
 
-    public JSONObject simpleSearch(String query, int size, String type){
+    public JSONObject simpleSearch(String query, int size, String type) {
         JSONObject responseObject = null;
 
         try {
-            URIBuilder builder = new URIBuilder(baseURL+"high-level/");
+            URIBuilder builder = new URIBuilder(baseURL + "high-level/");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("id", props.getProperty("datasetId")));
             params.add(new BasicNameValuePair("size", String.valueOf(size)));
             params.add(new BasicNameValuePair("type", type));
             params.add(new BasicNameValuePair("query", query));
-            params.add(new BasicNameValuePair("highlightResults","false"));
+            params.add(new BasicNameValuePair("highlightResults", "false"));
             builder.setParameters(params);
 
             HttpGet request = new HttpGet(builder.build());
@@ -130,9 +86,9 @@ public class Elas4RDFRest {
             HttpResponse response = client.execute(request);
 
             String json_string = EntityUtils.toString(response.getEntity());
-            try{
+            try {
                 new JSONObject(json_string);
-            } catch(JSONException ex){
+            } catch (JSONException ex) {
                 return null;
             }
             responseObject = new JSONObject(json_string);
@@ -143,17 +99,17 @@ public class Elas4RDFRest {
         }
     }
 
-    public JSONObject generalRequestWithBody(String body, String index, int size){
+    public JSONObject generalRequestWithBody(String body, String index, int size) {
 
         JSONObject responseObject = null;
 
         try {
-            URIBuilder builder = new URIBuilder(baseURL+"low-level/");
+            URIBuilder builder = new URIBuilder(baseURL + "low-level/");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("index", index));
             params.add(new BasicNameValuePair("size", String.valueOf(size)));
             params.add(new BasicNameValuePair("type", "triples"));
-            params.add(new BasicNameValuePair("highlightResults","false"));
+            params.add(new BasicNameValuePair("highlightResults", "false"));
             builder.setParameters(params);
 
             HttpGetWithEntity termsRequest = new HttpGetWithEntity(builder.build());
@@ -164,9 +120,9 @@ public class Elas4RDFRest {
             HttpResponse response = client.execute(termsRequest);
 
             String json_string = EntityUtils.toString(response.getEntity());
-            try{
+            try {
                 new JSONObject(json_string);
-            } catch(JSONException ex){
+            } catch (JSONException ex) {
                 return null;
             }
             responseObject = new JSONObject(json_string);

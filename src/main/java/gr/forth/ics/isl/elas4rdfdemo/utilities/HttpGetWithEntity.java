@@ -5,7 +5,7 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import java.net.URI;
 
 /*
-* This class is used to create HTTP GET requests with a body.
+ * This class is used to create HTTP GET requests with a body.
  */
 public class HttpGetWithEntity extends HttpEntityEnclosingRequestBase {
     public final static String METHOD_NAME = "GET";

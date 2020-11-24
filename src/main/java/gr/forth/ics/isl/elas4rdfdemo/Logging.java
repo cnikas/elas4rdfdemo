@@ -9,17 +9,17 @@ import java.time.format.DateTimeFormatter;
 
 public class Logging {
 
-    /*
-    * Log a request to the log file
+    /**
+     * Log a request to the log file
      */
-    public static void logRequest(String remoteAddr,String type,String query,int page,int maxSize,int triplesUsed){
+    public static void logRequest(String remoteAddr, String type, String query, int page, int maxSize, int triplesUsed) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         LocalDateTime now = LocalDateTime.now();
 
-        try{
+        try {
             Writer output;
             output = new BufferedWriter(new FileWriter("request_log.tsv", true));
-            output.write(dtf.format(now)+"\t"+remoteAddr+"\t"+type+"\t"+query+"\t"+maxSize+"\t"+page+"\t"+triplesUsed+"\n");
+            output.write(dtf.format(now) + "\t" + remoteAddr + "\t" + type + "\t" + query + "\t" + maxSize + "\t" + page + "\t" + triplesUsed + "\n");
             output.close();
         } catch (IOException e) {
             e.printStackTrace();

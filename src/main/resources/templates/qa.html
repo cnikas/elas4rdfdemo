@@ -31,52 +31,7 @@
     </div>
 </div>
 <div class="results-info">
-    <div class="answer-label" th:if="${topAnswer != null}">Best answer for "<span th:text="${param.query}"></span>"
-    </div>
-</div>
-<div class="answers-box">
-    <div class="top-answer" th:if="${topAnswer == null && !error}">
-        No answer found
-    </div>
-    <div class="top-answer error" th:if="${error}">
-        Not connected to QA module
-    </div>
-    <div class="top-answer" th:if="${topAnswer != null}">
-        <div class="image-with-label" th:attr="data-id=${topAnswer.uriToString(topAnswer.getAnswerString())}">
-            <div class="answer-info">
-                <h2>
-                    <span th:utext="${topAnswer.spanOrLink(topAnswer.getAnswerString())}"></span></br>
-                    <span class="top-answer-score" th:text="${'Score: '+topAnswer.getScore()}"></span>
-                </h2>
-                <div class="provenance">
-                    <span th:utext="${'Answer category: '+topAnswer.spanOrLink(topAnswer.getCategory())}"></span>
-                    <span th:utext="${'Answer type: '+topAnswer.spanOrLink(topAnswer.getAnswerType())}"></span>
-                    <span th:utext="${'From entity: '+topAnswer.entitiesHtml()}"></span>
-                    <span th:utext="${'From property: '+topAnswer.predicatesHtml()}"></span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="answer-label" th:if="${answers != null}">Other candidate answers
-        <hr>
-    </div>
-    <div class="other-candidates" th:if="${answers != null}">
-        <div th:each="answer : ${answers}" class="answer-result">
-            <div class="image-with-label" th:attr="data-id=${answer.uriToString(answer.getAnswerString())}">
-                <div class="answer-info">
-                    <h3>
-                        <span th:utext="${answer.spanOrLink(answer.getAnswerString())}"></span></br>
-                        <span class="top-answer-score" th:text="${'Score: '+answer.getScore()}"></span></br>
-                    </h3>
-                    <div class="provenance">
-                        <span th:utext="${'From entity: '+answer.entitiesHtml()}"></span></br>
-                        <span th:utext="${'From property: '+answer.predicatesHtml()}"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    Under construction...
 </div>
 <div class="copyright">
     <a class="about-link" href="/elas4rdf/about">About</a>

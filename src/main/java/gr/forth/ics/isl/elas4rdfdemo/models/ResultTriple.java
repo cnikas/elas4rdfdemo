@@ -74,58 +74,56 @@ public class ResultTriple {
         this.subExt = subExt;
     }
 
-    public String uriToString(String uri){
+    public String uriToString(String uri) {
         String clean = "";
-        if(uri.startsWith("http")){
-            clean = uri.substring(uri.lastIndexOf("/")+1);
-        }else if(clean.contains("@")){
-            clean = clean.substring(0,clean.indexOf("@"));
-        }else{
+        if (uri.startsWith("http")) {
+            clean = uri.substring(uri.lastIndexOf("/") + 1);
+        } else if (clean.contains("@")) {
+            clean = clean.substring(0, clean.indexOf("@"));
+        } else {
             clean = uri;
         }
 
-        if(clean.length() > 1){
+        if (clean.length() > 1) {
             clean = Character.toUpperCase(clean.charAt(0)) + clean.substring(1);
 
-            for (int i = 0; i < clean.length(); i++){
+            for (int i = 0; i < clean.length(); i++) {
                 char c = clean.charAt(i);
-                if(c == '_'){
-                    clean = clean.substring(0,i) + "_" + Character.toUpperCase(clean.charAt(i+1)) + clean.substring(i+2);
+                if (c == '_') {
+                    clean = clean.substring(0, i) + "_" + Character.toUpperCase(clean.charAt(i + 1)) + clean.substring(i + 2);
                 }
             }
         }
         return clean.trim();
     }
 
-    public String optObjectUri(){
-        if(object.startsWith("http"))
+    public String optObjectUri() {
+        if (object.startsWith("http"))
             return object;
         else
             return "";
     }
 
-    public String shorten(String s){
+    public String shorten(String s) {
         String exc = s;
 
-        if(exc.startsWith("[") && exc.endsWith("]"))
-            exc = exc.substring(1,exc.length()-1);
+        if (exc.startsWith("[") && exc.endsWith("]"))
+            exc = exc.substring(1, exc.length() - 1);
 
-        if(exc.length() > 280 && !exc.startsWith("http")) {
+        if (exc.length() > 280 && !exc.startsWith("http")) {
             int lastStrong = exc.indexOf("</strong>", 271);
             if (lastStrong == -1) {
                 exc = exc.substring(0, 280) + "...";
             } else {
-                exc = exc.substring(0,lastStrong+9)+"...";
+                exc = exc.substring(0, lastStrong + 9) + "...";
             }
         }
-
-
 
 
         return exc;
     }
 
-    public ResultTriple(String subject, String predicate, String object, String subExt, String objExt, String subHighlight, String preHighlight, String objHighlight){
+    public ResultTriple(String subject, String predicate, String object, String subExt, String objExt, String subHighlight, String preHighlight, String objHighlight) {
         this.subject = subject;
         this.predicate = predicate;
         this.object = object;
