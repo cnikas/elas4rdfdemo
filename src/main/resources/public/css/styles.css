@@ -4,7 +4,7 @@ body{
     flex-direction: column;
     display: flex;
     min-height: 100vh;
-    min-width: 100vw;
+    max-width: 100vw;
 }
 button, input[type="submit"], input[type="reset"] {
 	background: none;
@@ -545,4 +545,44 @@ a{
     display:flex;
     flex-direction:column;
     margin: 3px;
+}
+.qa-container{
+    display:flex;
+    flex-grow:1;
+    flex-direction:column;
+}
+.qa-col-1, .qa-col-2{
+    height:100%;
+    margin: 0 1%;
+}
+.qa-col-1{
+    width:15%;
+}
+.qa-col-2{
+    width:80%;
+}
+.qa-atp-box{
+flex-direction:row;
+display:flex;
+}
+.qa-box{
+    background-color: #f1faee;
+    border: 1px solid #a8dadc;
+    border-radius: 3px;
+    margin: 5px 3px;
+    padding:3px;
+}
+.qa-box>h4{
+    margin:3px 0;
+}
+.qa-atp-box>div{
+    margin-right:5px;
+}
+.qa-bold{
+    font-weight: 600;
+}
+.stages-container{
+    display:flex;
+    flex-direction:row;
+    justify-content: space-between;
 }

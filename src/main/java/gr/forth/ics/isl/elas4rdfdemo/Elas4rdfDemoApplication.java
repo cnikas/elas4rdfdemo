@@ -1,5 +1,6 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
+import com.google.gson.Gson;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleEntityRepository;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleTripleRepository;
 import gr.forth.ics.isl.elas4rdfdemo.models.*;
@@ -115,7 +116,7 @@ public class Elas4rdfDemoApplication {
         int endIndex = 0;
         int startIndex = (page - 1) * 10;
 
-        entitiesContainer = ser.searchEntities(query, size);
+        entitiesContainer = ser.searchEntities(Main.removeStopwords(query), size);
 
         maxPages = entitiesContainer.getEntities().size() / 10;
         if (page == maxPages + 1) {
@@ -163,11 +164,24 @@ public class Elas4rdfDemoApplication {
     }
 
     @GetMapping("/results/qa")
-    public String handleQa(@RequestParam(name = "query") String query, Model model, HttpServletRequest request) {
+    public String handleQa(@RequestParam(name = "query") String query, @RequestParam(name = "size", required = true, defaultValue = "10") int size, Model model, HttpServletRequest request) {
 
-        model.addAttribute("query", query);
-        model.addAttribute("type", "qa");
-        Logging.logRequest(getClientIpAddr(request), "qa", query, 0, triplesContainer.getTriples().size(), 0);
+        Elas4RDFRest er = new Elas4RDFRest();
+        JSONObject entitiesJson = er.simpleSearch(query, size, "entities");
+        QAResponse qar = null;
+        try{
+            qar = er.qaAnswer(query,entitiesJson.toString());
+            model.addAttribute("selectedCategory", qar.getCategory());
+            model.addAttribute("selectedType", qar.getTypes());
+            model.addAttribute("answers", qar.getAnswers());
+            model.addAttribute("query", query);
+            model.addAttribute("type", "qa");
+            model.addAttribute("error",false);
+        } catch (Exception e){
+            model.addAttribute("error",true);
+        }
+
+        Logging.logRequest(getClientIpAddr(request), "qa", query, 0, 0, 0);
 
         return "qa";
     }
@@ -341,14 +355,6 @@ public class Elas4rdfDemoApplication {
         Logging.logRequest(getClientIpAddr(request), "triplesforschemaPredicate", predicate, 0, triplesContainer.getMaxSize(), 0);
 
         return "fragments :: schemaEntities";
-    }
-
-    @RequestMapping(value = "/entities_json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public String handleEntitiesJson(@RequestParam(name = "query") String query, @RequestParam(name = "size") int size) {
-        Elas4RDFRest er = new Elas4RDFRest();
-        JSONObject entitiesJson = er.simpleSearch(query, size, "entities");
-        return entitiesJson.toString();
     }
 
     public static String getClientIpAddr(HttpServletRequest request) {

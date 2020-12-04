@@ -3,6 +3,8 @@ package gr.forth.ics.isl.elas4rdfdemo;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
 
+import com.google.gson.Gson;
+import gr.forth.ics.isl.elas4rdfdemo.models.QAResponse;
 import gr.forth.ics.isl.elas4rdfdemo.utilities.HttpGetWithEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -13,6 +15,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +32,7 @@ import static gr.forth.ics.isl.elas4rdfdemo.Main.props;
 public class Elas4RDFRest {
 
     private static final String baseURL = props.getProperty("elas4rdfurl");
+    private static final String qaURL = props.getProperty("qaurl");
     private final HttpClient client;
 
     public Elas4RDFRest() {
@@ -67,6 +71,34 @@ public class Elas4RDFRest {
 
     }
 
+    public QAResponse qaAnswer(String question, String entitiesJson){
+        QAResponse responseObject = null;
+
+        try{
+            URIBuilder builder = new URIBuilder(qaURL + "/answer");
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("question", question));
+            params.add(new BasicNameValuePair("entities", entitiesJson));
+            builder.setParameters(params);
+
+            HttpGet request = new HttpGet(builder.build());
+            HttpResponse response = client.execute(request);
+            String json_string = EntityUtils.toString(response.getEntity());
+
+            try {
+                Gson gson = new Gson();
+                responseObject = gson.fromJson(json_string, QAResponse.class);
+            } catch (Exception ex) {
+                System.err.println(json_string);
+                ex.printStackTrace();
+                return null;
+            }
+            return responseObject;
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public JSONObject simpleSearch(String query, int size, String type) {
         JSONObject responseObject = null;
 

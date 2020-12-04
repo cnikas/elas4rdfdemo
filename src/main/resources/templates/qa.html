@@ -31,7 +31,30 @@
     </div>
 </div>
 <div class="results-info">
-    Under construction...
+</div>
+<div class="qa-container">
+    <div th:if="${error}">
+        Error from QA module
+    </div>
+    <div class="stages-container" th:if="${!error}">
+        <div class="qa-col-1">
+            <h2>Answer Type</h2>
+            <h4>Category</h4>
+            <span th:text="${selectedCategory}"></span>
+            <h4>Type</h4>
+            <span th:text="${selectedType}"></span>
+        </div>
+        <div class="qa-col-2">
+            <h2>Answers</h2>
+            <div class="qa-box" th:each="a : ${answers}">
+                <span class="qa-bold" th:text="${a.getAnswer()}"></span></br>
+                <span>From entity: </span></br>
+                </span><a th:href="${a.getEntity()}" th:text="${a.getEntity()}"></a></br>
+                <span th:utext="${a.getText()}"></span></br>
+                <span th:text="${'Score: '+a.getScore()}"></span>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="copyright">
     <a class="about-link" href="/elas4rdf/about">About</a>
