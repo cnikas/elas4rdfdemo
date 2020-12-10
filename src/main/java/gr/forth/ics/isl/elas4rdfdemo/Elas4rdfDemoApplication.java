@@ -186,6 +186,29 @@ public class Elas4rdfDemoApplication {
         return "qa";
     }
 
+    @RequestMapping(value = "/qa_eval", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String handleQaEval(@RequestParam(name = "query") String query, @RequestParam(name = "size", required = true, defaultValue = "10") int size, @RequestParam(name = "id", required = true) String id, Model model, HttpServletRequest request, HttpServletResponse response) {
+
+        Elas4RDFRest er = new Elas4RDFRest();
+        JSONObject entitiesJson = er.simpleSearch(query, size, "entities");
+        QAResponse qar = null;
+        JSONObject responseObject = new JSONObject();
+        try{
+            qar = er.qaAnswer(query,entitiesJson.toString());
+            JSONArray answers = new JSONArray();
+            for(QAResponse.QAAnswer a:qar.getAnswers()){
+                answers.put(a.getAnswer());
+            }
+            responseObject.put("id",id);
+            responseObject.put("question",query);
+            responseObject.put("answers",answers);
+        } catch (Exception e){
+            responseObject.put("error",true);
+        }
+        return responseObject.toString();
+    }
+
     @GetMapping("/results/graph")
     public String handleGraph(@RequestParam(name = "query") String query, @RequestParam(name = "size", defaultValue = "15") int size, Model model, HttpServletRequest request) {
 
