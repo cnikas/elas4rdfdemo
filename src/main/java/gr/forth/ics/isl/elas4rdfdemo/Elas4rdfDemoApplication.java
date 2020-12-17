@@ -1,6 +1,7 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleEntityRepository;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleTripleRepository;
 import gr.forth.ics.isl.elas4rdfdemo.models.*;
@@ -198,7 +199,10 @@ public class Elas4rdfDemoApplication {
             qar = er.qaAnswer(query,entitiesJson.toString());
             JSONArray answers = new JSONArray();
             for(QAResponse.QAAnswer a:qar.getAnswers()){
-                answers.put(a.getAnswer());
+                JSONObject ansObject = new JSONObject();
+                ansObject.put("answer",a.getAnswer());
+                ansObject.put("score",a.getScore());
+                answers.put(ansObject);
             }
             responseObject.put("id",id);
             responseObject.put("question",query);
