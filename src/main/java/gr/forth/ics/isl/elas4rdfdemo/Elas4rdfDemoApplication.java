@@ -163,6 +163,14 @@ public class Elas4rdfDemoApplication {
 
         return "results";
     }
+    
+    @RequestMapping(value = "/entities_json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String handleEntitiesJson(@RequestParam(name = "query") String query, @RequestParam(name = "size", required = true, defaultValue = "1000") int size) {
+        Elas4RDFRest er = new Elas4RDFRest();
+        String response = er.simpleSearch(query,size,"entities").toString();
+        return response;
+    }
 
     @GetMapping("/results/qa")
     public String handleQa(@RequestParam(name = "query") String query, @RequestParam(name = "size", required = true, defaultValue = "10") int size, Model model, HttpServletRequest request) {

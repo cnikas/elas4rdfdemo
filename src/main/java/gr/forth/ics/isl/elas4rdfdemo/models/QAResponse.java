@@ -2,6 +2,8 @@ package gr.forth.ics.isl.elas4rdfdemo.models;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+
 public class QAResponse {
     private String category;
 
@@ -12,6 +14,15 @@ public class QAResponse {
         private String entity;
         private double score;
         private String text;
+        private ArrayList times;
+
+        public ArrayList getTimes() {
+            return times;
+        }
+
+        public void setTimes(ArrayList times) {
+            this.times = times;
+        }
 
         public String getAnswer() {
             return answer;
