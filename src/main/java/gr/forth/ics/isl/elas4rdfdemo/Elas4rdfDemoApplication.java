@@ -163,7 +163,7 @@ public class Elas4rdfDemoApplication {
 
         return "results";
     }
-    
+
     @RequestMapping(value = "/entities_json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String handleEntitiesJson(@RequestParam(name = "query") String query, @RequestParam(name = "size", required = true, defaultValue = "1000") int size) {
