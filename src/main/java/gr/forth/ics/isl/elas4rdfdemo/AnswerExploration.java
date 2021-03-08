@@ -14,6 +14,9 @@ import java.util.HashSet;
 
 import static org.apache.jena.riot.RDFFormat.*;
 
+/**
+ * This class contains methods for creating the graph tab
+ */
 public class AnswerExploration {
 
     private Model model;
@@ -132,6 +135,11 @@ public class AnswerExploration {
         return jsonGraph.toString();
     }
 
+    /**
+     * Creates a file in an RDF format from the model, used in the Triples tab
+     * @param type
+     * @return
+     */
     public String createFile(String type) {
         RDFFormat format = TURTLE_PRETTY;
         if (type.equals("ntriples")) {
