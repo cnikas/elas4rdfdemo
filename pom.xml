@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>gr.forth.ics.isl</groupId>
-    <artifactId>elas4rdf-demo</artifactId>
+    <artifactId>elas4rdfdemo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>elas4rdf-demo</name>
     <description>Demo project for Spring Boot</description>

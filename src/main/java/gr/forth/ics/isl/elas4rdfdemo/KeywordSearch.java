@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import static gr.forth.ics.isl.elas4rdfdemo.Main.props;
+import static gr.forth.ics.isl.elas4rdfdemo.utilities.Utils.props;
 
 /**
  * Contains methods used to retrieve triples for the triples tab and entities for the enitities tab.

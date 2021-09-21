@@ -1,10 +1,9 @@
 package gr.forth.ics.isl.elas4rdfdemo;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleEntityRepository;
 import gr.forth.ics.isl.elas4rdfdemo.caching.SimpleTripleRepository;
 import gr.forth.ics.isl.elas4rdfdemo.models.*;
+import gr.forth.ics.isl.elas4rdfdemo.utilities.Utils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
@@ -56,7 +55,7 @@ public class Elas4rdfDemoApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void doSomethingAfterStartup() {
-        Main.initializeTools();
+        Utils.initializeTools();
     }
 
     @GetMapping("/results/triples")
@@ -117,7 +116,7 @@ public class Elas4rdfDemoApplication {
         int endIndex = 0;
         int startIndex = (page - 1) * 10;
 
-        entitiesContainer = ser.searchEntities(Main.removeStopwords(query), size);
+        entitiesContainer = ser.searchEntities(Utils.removeStopwords(query), size);
 
         maxPages = entitiesContainer.getEntities().size() / 10;
         if (page == maxPages + 1) {

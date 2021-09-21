@@ -15,7 +15,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +23,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gr.forth.ics.isl.elas4rdfdemo.Main.props;
+import static gr.forth.ics.isl.elas4rdfdemo.utilities.Utils.props;
 
 /**
  * This class contains methods to use the Elas4RDF Rest api

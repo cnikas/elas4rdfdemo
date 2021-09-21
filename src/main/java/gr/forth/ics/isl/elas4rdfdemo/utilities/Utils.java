@@ -1,9 +1,9 @@
-package gr.forth.ics.isl.elas4rdfdemo;
+package gr.forth.ics.isl.elas4rdfdemo.utilities;
 
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class Utils {
 
     public static Properties props;
 
